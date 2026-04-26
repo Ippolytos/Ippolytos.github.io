@@ -8,32 +8,29 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-/* ══════════════════════════════════════════════════════
-   DARK MODE (default) — deep violet cosmos, plum & lavender
-══════════════════════════════════════════════════════ */
 :root{
-  /* backgrounds — deep indigo-violet space */
-  --bg:           #0F0D19;   /* bg_deep                 */
-  --surface:      #1A1726;   /* bg_dark                 */
-  --card:         #0A0812;   /* bg_deeper               */
-  --panel:        #06050C;   /* bg_deepest              */
-  --border:       #322D45;   /* surface_dark            */
+  
+  --bg:           #0F0D19;   
+  --surface:      #1A1726;   
+  --card:         #0A0812;   
+  --panel:        #06050C;   
+  --border:       #322D45;   
 
-  /* PRIMARY accent — lavender violet */
-  --accent:       #B7A4FF;   /* accent_lavender         */
+  
+  --accent:       #B7A4FF;   
 
-  /* SECONDARY accent — lilac soft */
-  --accent2:      #D0BDF2;   /* accent_lilac            */
+  
+  --accent2:      #D0BDF2;   
 
-  /* text — pale violet-white */
-  --text:         #F2E9FF;   /* text_primary            */
-  --muted:        #A69DC8;   /* text_muted              */
+  
+  --text:         #F2E9FF;   
+  --muted:        #A69DC8;   
 
-  /* glow / hover — lavender family */
-  --lavender:     #E0D2FF;   /* detail_lavender_light   */
-  --lavender-dim: #B09EE0;   /* detail_lavender_dim     */
-  --sky:          #CAB9FF;   /* detail_lavender         */
-  --surface-dark: #1A1726;   /* bg_dark                 */
+  
+  --lavender:     #E0D2FF;   
+  --lavender-dim: #B09EE0;   
+  --sky:          #CAB9FF;   
+  --surface-dark: #1A1726;   
 
   --header-bg:    rgba(15,13,25,0.92);
   --grid-color:   rgba(183,164,255,0.04);
@@ -43,37 +40,32 @@
   --dl-bg:        rgba(6,5,12,.90);
   --hint-bg:      rgba(15,13,25,.94);
   --checker-dark: #1A1726;
-  --sat-left:     #231F31;   /* bg_medium               */
+  --sat-left:     #231F31;   
 }
 
-/* ══════════════════════════════════════════════════════
-   LIGHT MODE — warm parchment & aurora teal
-   Max readability: near-black ink on warm off-white
-   Completely different from dark mode's violet cosmos
-══════════════════════════════════════════════════════ */
 :root[data-theme="light"]{
-  /* backgrounds — warm creamy parchment family */
-  --bg:           #F0EAE0;   /* neutral_light_warm — parchment       */
-  --surface:      #FAFAFA;   /* neutral_offwhite — clean surfaces    */
-  --card:         #FFFFFF;   /* pure white cards                     */
-  --panel:        #F5F0E8;   /* warm panel                           */
-  --border:       #A89C90;   /* neutral_dim_warm — visible borders   */
+  
+  --bg:           #F0EAE0;   
+  --surface:      #FAFAFA;   
+  --card:         #FFFFFF;   
+  --panel:        #F5F0E8;   
+  --border:       #A89C90;   
 
-  /* PRIMARY accent — aurora teal, deep & punchy on warm bg */
-  --accent:       #2E7391;   /* aurora_blue_deep — max contrast      */
+  
+  --accent:       #2E7391;   
 
-  /* SECONDARY accent — aurora green deep */
-  --accent2:      #3B8C4E;   /* aurora_green_deep                    */
+  
+  --accent2:      #3B8C4E;   
 
-  /* text — near-black for maximum readability */
-  --text:         #201C28;   /* shadow_deep — almost black           */
-  --muted:        #635147;   /* earth_umber — warm readable muted    */
+  
+  --text:         #201C28;   
+  --muted:        #635147;   
 
-  /* glow / hover — ice blue highlights */
-  --lavender:     #4A8FAD;   /* aurora_blue                          */
-  --lavender-dim: #2E7391;   /* aurora_blue_deep                     */
-  --sky:          #6AAFCD;   /* aurora_blue_bright                   */
-  --surface-dark: #D0C8BC;   /* neutral_warm                         */
+  
+  --lavender:     #4A8FAD;   
+  --lavender-dim: #2E7391;   
+  --sky:          #6AAFCD;   
+  --surface-dark: #D0C8BC;   
 
   --header-bg:    rgba(240,234,224,0.95);
   --grid-color:   rgba(46,115,145,0.07);
@@ -82,15 +74,12 @@
   --audio-color:  rgba(32,28,40,.70);
   --dl-bg:        rgba(240,234,224,.95);
   --hint-bg:      rgba(250,250,250,.97);
-  --checker-dark: #D0C8BC;   /* neutral_warm                         */
-  --sat-left:     #C8BFB5;   /* warm mid-tone                        */
+  --checker-dark: #D0C8BC;   
+  --sat-left:     #C8BFB5;   
 }
 
 html{scroll-behavior:smooth}
 
-/* ══════════════════════════════════════════════════════
-   CURSOR BACKGROUND BRUSH — canvas painted behind everything
-══════════════════════════════════════════════════════ */
 #bg-brush-canvas{
   position:fixed;
   inset:0;
@@ -98,7 +87,6 @@ html{scroll-behavior:smooth}
   z-index:0;
 }
 
-/* ── SHARPNESS TOGGLE ROW ────────────────────────────── */
 .us-sharprow{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;align-items:center}
 .us-sharpbtn{
   padding:5px 13px;border-radius:4px;border:1px solid var(--border);
@@ -134,7 +122,6 @@ html{scroll-behavior:smooth}
   letter-spacing:.04em;opacity:.8;
 }
 
-/* ── REMOVE IMAGE BUTTON ─────────────────────────────── */
 .btn-remove-img{
   border-color: rgba(255,80,80,.35);
   color: rgba(255,120,100,.8);
@@ -145,9 +132,6 @@ html{scroll-behavior:smooth}
   background: rgba(255,80,80,.08) !important;
 }
 
-/* ══════════════════════════════════════════════════════
-   SCROLL PROGRESS BAR
-══════════════════════════════════════════════════════ */
 #scroll-progress{
   position:fixed;top:0;left:0;height:2px;width:0%;
   background:linear-gradient(90deg,var(--accent),var(--accent2));
@@ -155,17 +139,11 @@ html{scroll-behavior:smooth}
   transition:width .08s linear;
 }
 
-/* ══════════════════════════════════════════════════════
-   AMBIENT PARTICLES
-══════════════════════════════════════════════════════ */
 #particle-canvas{
   position:fixed;inset:0;
   pointer-events:none;z-index:0;opacity:.5;
 }
 
-/* ══════════════════════════════════════════════════════
-   SCROLL REVEAL — all variants re-animate on scroll
-══════════════════════════════════════════════════════ */
 .reveal{opacity:0;transform:translateY(36px);transition:opacity .7s ease,transform .7s ease}
 .reveal.visible{opacity:1;transform:translateY(0)}
 .reveal-left{opacity:0;transform:translateX(-36px);transition:opacity .7s ease,transform .7s ease}
@@ -180,9 +158,6 @@ html{scroll-behavior:smooth}
 .reveal-d4{transition-delay:.38s}
 .reveal-d5{transition-delay:.48s}
 
-/* ══════════════════════════════════════════════════════
-   HEADING POP + GLOW — fires when .visible is added
-══════════════════════════════════════════════════════ */
 @keyframes headingPop{
   0%  {opacity:0;transform:translateY(28px) scale(.97);
        color:var(--lavender);
@@ -201,20 +176,13 @@ html{scroll-behavior:smooth}
 .hero-title.visible,.section-title.visible{
   animation:headingPop .85s cubic-bezier(.22,1,.36,1) forwards;
 }
-/* keep transition-delays working for headings inside .reveal parents */
+
 .reveal-d1 .hero-title,.reveal-d1 .section-title{animation-delay:.1s}
 .reveal-d2 .hero-title,.reveal-d2 .section-title{animation-delay:.18s}
 
-/* ══════════════════════════════════════════════════════
-   LARGE TEXT HOVER POP
-   The entry animation runs once and finishes. After it
-   settles (.anim-done class added by JS) the element
-   switches to pure CSS transitions — no animation/
-   transition conflict, no jank, fully gradual.
-══════════════════════════════════════════════════════ */
 .hero-title.anim-done,
 .section-title.anim-done {
-  /* kill the keyframe so transitions own the state */
+  
   animation: none;
   opacity: 1;
   transform: translateY(0) scale(1);
@@ -248,9 +216,6 @@ html{scroll-behavior:smooth}
   text-shadow: 0 0 32px rgba(183,164,255,.55);
 }
 
-/* ══════════════════════════════════════════════════════
-   BUTTON RIPPLE
-══════════════════════════════════════════════════════ */
 .btn{position:relative;overflow:hidden}
 .ripple-wave{
   position:absolute;border-radius:50%;
@@ -261,9 +226,6 @@ html{scroll-behavior:smooth}
 }
 @keyframes rippleAnim{to{transform:scale(4);opacity:0}}
 
-/* ══════════════════════════════════════════════════════
-   KEYBOARD HINT
-══════════════════════════════════════════════════════ */
 #shortcut-hint{
   position:fixed;bottom:28px;left:28px;z-index:8000;
   background:var(--hint-bg);
@@ -277,9 +239,6 @@ html{scroll-behavior:smooth}
 }
 #shortcut-hint.show{opacity:1;transform:translateY(0)}
 
-/* ══════════════════════════════════════════════════════
-   ROUNDED CORNERS — tool containers
-══════════════════════════════════════════════════════ */
 .picker-widget{border-radius:14px !important}
 .picker-preview-row{border-radius:10px !important}
 .sv-canvas-wrap{border-radius:8px !important}
@@ -316,7 +275,6 @@ body{
   overflow-x:hidden;
 }
 
-/* GRID BG */
 body::before{
   content:'';
   position:fixed;
@@ -329,7 +287,6 @@ body::before{
   z-index:0;
 }
 
-/* ── HEADER ────────────────────────────────────────── */
 header{
   position:fixed;
   top:0;left:0;right:0;
@@ -361,7 +318,6 @@ nav a{
 }
 nav a:hover{color:var(--text)}
 
-/* ── HERO ───────────────────────────────────────────── */
 #hero{
   position:relative;
   z-index:1;
@@ -449,7 +405,6 @@ nav a:hover{color:var(--text)}
 
 @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
 
-/* ── MARQUEE ─────────────────────────────────────────── */
 .marquee-wrap{
   position:relative;z-index:1;
   overflow:hidden;
@@ -477,7 +432,6 @@ nav a:hover{color:var(--text)}
 
 @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* ── SECTION COMMON ──────────────────────────────────── */
 .tool-section{
   position:relative;z-index:1;
   padding:100px 48px;
@@ -525,7 +479,6 @@ nav a:hover{color:var(--text)}
   letter-spacing:.3px;
 }
 
-/* ── TOOL 01: COLOR PICKER ───────────────────────────── */
 #colorpicker .picker-shell{
   display:flex;
   gap:32px;
@@ -629,7 +582,6 @@ nav a:hover{color:var(--text)}
   max-width:100%;
 }
 
-/* ── SWATCH POP-IN ANIMATION ───────────────────────── */
 @keyframes swatchPop{
   0%  {transform:scale(0) rotate(-15deg);opacity:0}
   60% {transform:scale(1.18) rotate(3deg);opacity:1}
@@ -689,7 +641,7 @@ nav a:hover{color:var(--text)}
 }
 
 .hue-wrap{flex:1;height:24px}
-.alpha-wrap{width:24px;height:200px;display:none;/* shown later */}
+.alpha-wrap{width:24px;height:200px;display:none;}
 
 #hueCanvas{width:100%;height:100%;display:block}
 #alphaCanvas{width:100%;height:100%;display:block}
@@ -740,7 +692,6 @@ nav a:hover{color:var(--text)}
   color:var(--text);
 }
 
-/* ── RGBA ADJUSTABLE INPUT ROW ──────────────────────── */
 .rgba-input-row{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -782,7 +733,6 @@ nav a:hover{color:var(--text)}
 .rgba-copy-btn:hover{border-color:var(--accent);color:var(--accent)}
 .rgba-copy-btn.copied{border-color:var(--accent2);color:var(--accent2)}
 
-/* ── TOOL 02: HUE EDITOR ─────────────────────────────── */
 #hueeditor .editor-shell{
   display:grid;
   grid-template-columns:1fr 300px;
@@ -916,7 +866,6 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.3)}
 }
 .reset-small:hover{color:var(--accent2)}
 
-/* no-image state */
 .no-image-state{
   padding:24px;display:flex;flex-direction:column;
   align-items:center;justify-content:center;
@@ -925,12 +874,10 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.3)}
 
 .no-image-state p{font-size:11px;color:var(--muted);line-height:1.7}
 
-/* scrollbar */
 .editor-panel::-webkit-scrollbar{width:3px}
 .editor-panel::-webkit-scrollbar-track{background:var(--panel)}
 .editor-panel::-webkit-scrollbar-thumb{background:var(--border)}
 
-/* ── TOOL 03: RECOLOR ─────────────────────────────────── */
 #recolor .recolor-shell{
   display:flex;flex-direction:column;gap:24px;
 }
@@ -1047,7 +994,6 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.3)}
   margin-top:20px;
 }
 
-/* ── FOOTER ──────────────────────────────────────────── */
 footer{
   position:relative;z-index:1;
   padding:60px 48px;
@@ -1071,7 +1017,6 @@ footer{
 
 .footer-copy{font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
 
-/* ── AUDIO TOGGLE ────────────────────────────────────── */
 #audio-toggle{
   position:fixed;bottom:28px;right:28px;
   z-index:9000;
@@ -1101,7 +1046,6 @@ footer{
 .playing .bar:nth-child(4){animation-delay:.25s;animation-duration:.75s}
 @keyframes barBounce{0%{height:3px;opacity:.5}100%{height:14px;opacity:1}}
 
-/* ── COPIED TOAST ─────────────────────────────────────── */
 .toast{
   position:fixed;bottom:80px;right:28px;
   background:var(--accent2);color:#0A0812;
@@ -1113,7 +1057,6 @@ footer{
 }
 .toast.show{opacity:1;transform:translateY(0)}
 
-/* ── DOWNLOAD PROGRESS OVERLAY ───────────────────────── */
 #dl-progress-overlay{
   position:fixed;inset:0;z-index:19999;
   background:var(--dl-bg);
@@ -1148,7 +1091,6 @@ footer{
   color:var(--accent);letter-spacing:-1px;
 }
 
-/* ── UPSCALE FULLSCREEN PROGRESS OVERLAY ─────────────── */
 #us-progress-overlay{
   position:fixed;inset:0;z-index:19999;
   background:var(--dl-bg);
@@ -1187,7 +1129,6 @@ footer{
   letter-spacing:.06em;
 }
 
-/* ── ROTATING TEXT DIVIDER ───────────────────────────── */
 .rotxt-divider{
   position:relative;
   z-index:1;
@@ -1201,7 +1142,6 @@ footer{
   background:var(--card);
 }
 
-/* the large background word that slowly rotates */
 .rotxt-bg{
   position:absolute;
   inset:0;
@@ -1228,7 +1168,6 @@ footer{
   100%{transform:rotate(-3deg) scale(1.02)}
 }
 
-/* the spinning circular text SVG */
 .rotxt-ring{
   position:relative;
   width:130px;
@@ -1252,7 +1191,6 @@ footer{
   fill:var(--muted);
 }
 
-/* centre dot inside the ring */
 .rotxt-dot{
   position:absolute;
   top:50%;left:50%;
@@ -1268,7 +1206,6 @@ footer{
   50%     {transform:translate(-50%,-50%) scale(1.35);box-shadow:0 0 30px rgba(183,164,255,.80)}
 }
 
-/* divider line + middle phrase */
 .rotxt-center{
   display:flex;
   align-items:center;
@@ -1296,7 +1233,6 @@ footer{
   color:var(--accent);
 }
 
-/* ── THEME TOGGLE BUTTON ─────────────────────────────── */
 #theme-toggle{
   background:none;
   border:1px solid var(--border);
@@ -1316,7 +1252,6 @@ footer{
   background:rgba(183,164,255,.10);
 }
 
-/* ── LIGHT MODE OVERRIDES for hard-coded rgba values ── */
 [data-theme="light"] .drop-zone:hover,
 [data-theme="light"] .drop-zone.drag-over{
   background:rgba(46,115,145,0.06);
@@ -1334,11 +1269,11 @@ footer{
 [data-theme="light"] .toggle-btn.active{color:#fff}
 [data-theme="light"] .toast{color:#fff;background:var(--accent2)}
 [data-theme="light"] body::before{opacity:.45}
-/* scroll progress — aurora teal → green */
+
 [data-theme="light"] #scroll-progress{
   background:linear-gradient(90deg,var(--accent),var(--accent2));
 }
-/* music bars — deep teal, fully visible on warm bg */
+
 [data-theme="light"] .bar{
   background:#2E7391;
   opacity:0.90;
@@ -1350,7 +1285,7 @@ footer{
   background:#4A8FAD;
   opacity:1;
 }
-/* heading glow in light mode — teal */
+
 [data-theme="light"] .hero-title.anim-done:hover,
 [data-theme="light"] .section-title.anim-done:hover{
   text-shadow:
@@ -1358,11 +1293,11 @@ footer{
     0 0 16px rgba(59,140,78,.18);
   color:var(--accent);
 }
-/* sharp btn active bg in light */
+
 [data-theme="light"] .us-sharpbtn.on{
   background:rgba(46,115,145,.10);
 }
-/* upscale badge ok in light */
+
 [data-theme="light"] #upscale .us-badge.ok{
   background:rgba(46,115,145,.10);
   color:var(--accent);
@@ -1379,9 +1314,6 @@ footer{
   footer{padding:40px 24px}
 }
 
-/* ══════════════════════════════════════════════════════
-   TOOL 04: UPSCALE — scoped styles
-══════════════════════════════════════════════════════ */
 #upscale #us-dropzone{
   border:2px dashed var(--border);border-radius:10px;padding:3rem 1.5rem;
   text-align:center;cursor:pointer;transition:border-color .2s,background .2s;
@@ -1465,11 +1397,6 @@ footer{
 #upscale #us-dlbtn{display:flex;align-items:center;gap:7px;background:transparent;border:1px solid var(--accent);color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;padding:9px 22px;border-radius:8px;cursor:pointer;transition:background .15s}
 #upscale #us-dlbtn:hover{background:rgba(183,164,255,.12)}
 
-/* ══════════════════════════════════════════════════════
-   DYNAMIC ENHANCEMENTS
-══════════════════════════════════════════════════════ */
-
-/* ── MORPHING HERO BLOB ─────────────────────────────── */
 .hero-blob{
   position:absolute;
   width:clamp(400px,50vw,700px);height:clamp(400px,50vw,700px);
@@ -1490,7 +1417,6 @@ footer{
 }
 @keyframes blobRotate{from{rotate:0deg}to{rotate:360deg}}
 
-/* ── FLOATING HERO SHAPES ────────────────────────────── */
 .hero-float{
   position:absolute;pointer-events:none;z-index:0;
   border:1px solid rgba(183,164,255,.12);border-radius:4px;
@@ -1506,12 +1432,10 @@ footer{
   50%{transform:translateY(-20px) rotate(8deg);opacity:.7}
 }
 
-/* ── AUTO-HIDE HEADER ────────────────────────────────── */
 header{transition:transform .4s cubic-bezier(.4,0,.2,1),background .3s,box-shadow .3s}
 header.header-hidden{transform:translateY(-100%)}
 header.header-scrolled{box-shadow:0 4px 30px rgba(0,0,0,.15)}
 
-/* ── 3D CARD TILT ────────────────────────────────────── */
 .card,.picker-widget,.editor-shell{
   transition:transform .35s cubic-bezier(.25,.46,.45,.94),box-shadow .35s ease,border-color .25s;
   transform-style:preserve-3d;
@@ -1524,7 +1448,6 @@ header.header-scrolled{box-shadow:0 4px 30px rgba(0,0,0,.15)}
   box-shadow:0 20px 60px rgba(0,0,0,.08),0 0 40px rgba(46,115,145,.06);
 }
 
-/* ── ANIMATED GRADIENT BORDER ON HOVER ───────────────── */
 .card::before,.picker-widget::before{
   content:'';position:absolute;inset:-1px;border-radius:inherit;
   background:conic-gradient(from var(--gradient-angle,0deg),var(--accent),var(--accent2),var(--lavender),var(--accent));
@@ -1542,7 +1465,6 @@ header.header-scrolled{box-shadow:0 4px 30px rgba(0,0,0,.15)}
 @property --gradient-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
 @keyframes gradientSpin{to{--gradient-angle:360deg}}
 
-/* ── ELASTIC SPRING HOVER ────────────────────────────── */
 .btn{transition:all .25s cubic-bezier(.34,1.56,.64,1)}
 .btn:hover{transform:translateY(-2px) scale(1.03)}
 .btn:active{transform:translateY(0) scale(.97);transition-duration:.1s}
@@ -1559,9 +1481,6 @@ header.header-scrolled{box-shadow:0 4px 30px rgba(0,0,0,.15)}
 .toggle-btn:hover{transform:scale(1.06)}
 .toggle-btn.active{transform:scale(1.04)}
 
-
-
-/* ── NAV ACTIVE UNDERLINE ────────────────────────────── */
 nav a{position:relative}
 nav a::after{
   content:'';position:absolute;bottom:-4px;left:0;right:0;
@@ -1571,7 +1490,6 @@ nav a::after{
 }
 nav a:hover::after,nav a.active::after{transform:scaleX(1)}
 
-/* ── STAGGER CHILDREN ANIMATION ──────────────────────── */
 .stagger-in > *{
   opacity:0;transform:translateY(20px);
   transition:opacity .5s ease,transform .5s cubic-bezier(.25,.46,.45,.94);
@@ -1583,22 +1501,19 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
 .stagger-in.visible > *:nth-child(5){transition-delay:.25s;opacity:1;transform:none}
 .stagger-in.visible > *:nth-child(6){transition-delay:.3s;opacity:1;transform:none}
 
-/* ── SMOOTH SECTION TRANSITIONS ──────────────────────── */
 .tool-section{transition:opacity .6s ease}
 
-/* ── MARQUEE PAUSE ON HOVER ──────────────────────────── */
 .marquee-wrap:hover .marquee-track{animation-play-state:paused}
 
 </style>
 </head>
 <body>
-<!-- INTERACTIVE OVERLAYS -->
+
 <div id="scroll-progress"></div>
 <canvas id="bg-brush-canvas"></canvas>
 <canvas id="particle-canvas"></canvas>
 <div id="shortcut-hint"></div>
 
-<!-- HEADER -->
 <header>
   <a href="#hero" class="logo">Hropiberhtaz</a>
   <nav>
@@ -1612,7 +1527,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </nav>
 </header>
 
-<!-- HERO -->
 <section id="hero">
   <div class="hero-blob"></div>
   <div class="hero-float"></div>
@@ -1632,12 +1546,10 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 </section>
 
-<!-- MARQUEE -->
 <div class="marquee-wrap">
   <div class="marquee-track" id="mq1"></div>
 </div>
 
-<!-- ── SECTION 01: COLOR PICKER ─────────────────────── -->
 <section class="tool-section" id="colorpicker">
   <div class="section-head reveal">
     <div class="section-num"><span class="section-icon">◈</span> 01 — Pick your hue</div>
@@ -1646,7 +1558,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 
   <div class="picker-shell">
-    <!-- Info side -->
+    
     <div class="picker-info reveal reveal-left">
       <div class="features-list">
         <div class="feature-item">HSV canvas with smooth gradient — drag to paint the perfect hue</div>
@@ -1658,9 +1570,9 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       </div>
     </div>
 
-    <!-- Widget -->
+    
     <div class="picker-widget reveal reveal-right reveal-d2">
-      <!-- Preview row -->
+      
       <div class="picker-preview-row">
         <div class="color-swatch-big">
           <div class="checker-bg"></div>
@@ -1678,7 +1590,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
         </button>
       </div>
 
-      <!-- SV Canvas + Alpha -->
+      
       <div style="display:flex;gap:10px;margin-bottom:12px">
         <div class="sv-canvas-wrap" id="svWrap" style="flex:1;position:relative">
           <canvas id="svCanvas" width="340" height="200"></canvas>
@@ -1690,13 +1602,13 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
         </div>
       </div>
 
-      <!-- Hue bar -->
+      
       <div class="hue-wrap" id="hueWrap" style="position:relative;height:26px;border-radius:2px;overflow:hidden;cursor:pointer;margin-bottom:14px">
         <canvas id="hueCanvas" width="340" height="26" style="width:100%;height:100%;display:block"></canvas>
         <div class="hue-indicator" id="hueIndicator" style="left:0%"></div>
       </div>
 
-      <!-- RGBA Adjustable Inputs -->
+      
       <div class="rgba-input-row">
         <div class="rgba-input-cell">
           <label style="color:#f87171">R</label>
@@ -1723,7 +1635,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 </section>
 
-<!-- ── DIVIDER 01→02 ─────────────────────────────────── -->
 <div class="rotxt-divider">
   <div class="rotxt-bg">
     <span>COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;COLORS</span>
@@ -1746,7 +1657,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 </div>
 
-<!-- ── SECTION 02: HUE EDITOR ────────────────────────── -->
 <section class="tool-section" id="hueeditor">
   <div class="section-head reveal">
     <div class="section-num"><span class="section-icon">✦</span> 02 — Edit your image</div>
@@ -1755,7 +1665,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 
   <div class="editor-shell reveal-scale reveal-d1">
-    <!-- Canvas area -->
+    
     <div class="editor-canvas-area">
       <div class="drop-zone" id="dropZone">
         <div class="drop-icon" id="dzIcon">◈</div>
@@ -1769,7 +1679,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       </div>
     </div>
 
-    <!-- Side panel -->
+    
     <div class="editor-panel" id="editorPanel">
       <div class="no-image-state" id="noImgMsg">
         <div style="font-size:36px;margin-bottom:14px;color:var(--accent);opacity:.3">◈</div>
@@ -1777,7 +1687,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       </div>
 
       <div id="editorControls" style="display:none">
-        <!-- Adjustments -->
+        
         <div class="panel-section">
           <div class="panel-label">Adjustments</div>
 
@@ -1808,13 +1718,13 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
           <button class="reset-small" id="editorResetSliders">↺ Reset adjustments</button>
         </div>
 
-        <!-- Presets -->
+        
         <div class="panel-section">
           <div class="panel-label">Presets</div>
           <div class="presets-grid" id="presetsGrid"></div>
         </div>
 
-        <!-- Export -->
+        
         <div class="panel-export">
           <button class="btn btn-accent btn-full" id="exportPng">↓ Download PNG</button>
           <div class="export-row">
@@ -1827,7 +1737,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 </section>
 
-<!-- ── DIVIDER 02→03 ─────────────────────────────────── -->
 <div class="rotxt-divider">
   <div class="rotxt-bg">
     <span>RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;RECOLOR</span>
@@ -1850,7 +1759,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 </div>
 
-<!-- ── SECTION 03: RECOLOR ────────────────────────────── -->
 <section class="tool-section" id="recolor">
   <div class="section-head reveal">
     <div class="section-num"><span class="section-icon">◈</span> 03 — Recolor your world</div>
@@ -1860,7 +1768,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
 
   <div class="recolor-shell">
 
-    <!-- Controls card -->
+    
     <div class="card reveal reveal-d1">
       <div class="card-label">Controls</div>
       <div class="control-row">
@@ -1899,7 +1807,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       </div>
     </div>
 
-    <!-- Palette card -->
+    
     <div class="card reveal reveal-d2">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
         <div class="card-label" style="margin-bottom:0">Palette</div>
@@ -1911,239 +1819,15 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
         </div>
       </div>
       <div class="palette-row" id="swatchesContainer">
-        <!-- swatches injected by JS -->
+        
       </div>
     </div>
 
-    <!-- Upload zone -->
+    
     <div class="upload-zone reveal reveal-d3" id="recolorUpload">
       <p>Drag & drop an image here or click to browse</p>
       <button class="btn btn-accent" id="recolorSelectBtn">Select Image</button>
-      <input type="file" id="recolorFileInput" accept="image/*" style="display:none">
-    </div>
-
-    <!-- Canvas panel -->
-    <div class="canvas-panel-r" id="canvasPanel">
-      <canvas id="recolorCanvas"></canvas>
-      <div class="action-row">
-        <button class="btn btn-accent" id="applyBtn">Apply Recolor</button>
-        <button class="btn" id="resetBtn">Reset</button>
-        <button class="btn" id="downloadBtn" style="display:none">↓ Download</button>
-        <button class="btn btn-remove-img" id="removeImgBtn">✕ Remove Image</button>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ── DIVIDER 03→04 ─────────────────────────────────── -->
-<div class="rotxt-divider">
-  <div class="rotxt-bg">
-    <span>UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;UPSCALE</span>
-  </div>
-  <div class="rotxt-center">
-    <div class="rotxt-line"></div>
-    <div class="rotxt-ring">
-      <svg viewBox="0 0 130 130">
-        <defs>
-          <path id="circle-c" d="M65,65 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/>
-        </defs>
-        <text>
-          <textPath href="#circle-c">zero sharpness loss ✦ lanczos-3 ✦ </textPath>
-        </text>
-      </svg>
-      <div class="rotxt-dot"></div>
-    </div>
-    <div class="rotxt-phrase">Next up — <em>UpScale</em></div>
-    <div class="rotxt-line right"></div>
-  </div>
-</div>
-
-<!-- ── SECTION 04: UPSCALE ────────────────────────────── -->
-<section class="tool-section" id="upscale">
-  <div class="section-head reveal">
-    <div class="section-num"><span class="section-icon">↑</span> 04 — Upscale your image</div>
-    <h2 class="section-title reveal reveal-d1">Up<em>Scale</em></h2>
-    <p class="section-desc">Lanczos-3 resampling with float-domain unsharp masking, calibrated to achieve ~0% sharpness loss at any scale. From HD to 4K to 8K — zero quality compromise.</p>
-  </div>
-
-  <div class="reveal-scale reveal-d1">
-
-    <!-- Upload card -->
-    <div class="card" style="margin-bottom:1rem">
-      <div class="panel-label">01 — Upload Image</div>
-      <div id="us-dropzone">
-        <div class="us-upicon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted)">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-          </svg>
-        </div>
-        <h3>Click to upload or drag &amp; drop</h3>
-        <p>JPG · PNG · WEBP · GIF · BMP</p>
-      </div>
-      <input type="file" id="us-fileinput" accept="image/*" style="display:none">
-      <div id="us-thumbrow">
-        <img id="us-thumbimg" alt="">
-        <div class="us-tinfo">
-          <div class="us-tname" id="us-tname">—</div>
-          <div class="us-tdim" id="us-tdim">—</div>
-        </div>
-        <button class="us-changebtn" id="us-changebtn">Change</button>
-      </div>
-    </div>
-
-    <!-- Size card -->
-    <div class="card" id="us-sizecard" style="display:none;margin-bottom:1rem">
-      <div class="panel-label">02 — Target Size</div>
-      <div class="us-sizerow">
-        <div class="us-field"><label>Width (px)</label><input type="number" id="us-outw" min="1" max="32000" placeholder="3840"></div>
-        <span class="us-xsep">×</span>
-        <div class="us-field"><label>Height (px)</label><input type="number" id="us-outh" min="1" max="32000" placeholder="2160"></div>
-        <label class="us-lockrow"><input type="checkbox" id="us-lockratio" checked><span>Lock ratio</span></label>
-      </div>
-      <div id="us-scalebadge" class="us-badge ok"></div>
-      <div id="us-ratiowarn" class="us-badge warn"></div>
-      <div class="panel-label" style="margin-top:1.2rem">Presets</div>
-      <div class="us-presets">
-        <button class="us-pbtn" data-w="7680" data-h="4320">8K</button>
-        <button class="us-pbtn" data-w="3840" data-h="2160">4K UHD</button>
-        <button class="us-pbtn" data-w="2560" data-h="1440">2K QHD</button>
-        <button class="us-pbtn" data-w="1920" data-h="1080">Full HD</button>
-        <button class="us-pbtn" data-w="1280" data-h="720">HD 720p</button>
-        <button class="us-pbtn" data-w="2048" data-h="2048">2048²</button>
-        <button class="us-pbtn" data-w="1080" data-h="1080">1080² IG</button>
-        <button class="us-pbtn" data-w="1080" data-h="1920">9:16 Story</button>
-        <button class="us-pbtn" id="us-btn2x">2×</button>
-        <button class="us-pbtn" id="us-btn4x">4×</button>
-      </div>
-    </div>
-
-    <!-- Crop card -->
-    <div class="card" id="us-cropcard" style="margin-bottom:1rem">
-      <div class="panel-label">03 — Crop to Target Ratio (drag to select)</div>
-      <div id="us-cropwrap">
-        <img id="us-previewimg" alt="">
-        <div class="us-cmask" id="us-mt"></div><div class="us-cmask" id="us-mb"></div>
-        <div class="us-cmask" id="us-ml"></div><div class="us-cmask" id="us-mr"></div>
-        <div id="us-cropbox">
-          <div class="us-ch tl" data-c="tl"></div><div class="us-ch tr" data-c="tr"></div>
-          <div class="us-ch bl" data-c="bl"></div><div class="us-ch br" data-c="br"></div>
-        </div>
-      </div>
-      <div id="us-cropinfo">Drag on the image to select crop area</div>
-      <div class="us-cropbtns">
-        <button class="us-sbtn" id="us-autofitbtn">Auto-fit centered</button>
-        <button class="us-sbtn" id="us-clearbtn">Clear</button>
-      </div>
-    </div>
-
-    <!-- Action card -->
-    <div class="card" id="us-actioncard" style="display:none;margin-bottom:1rem">
-      <div class="panel-label">04 — Upscale</div>
-      <div class="us-arow">
-        <div class="us-asummary" id="us-asummary">Set a target size above ↑</div>
-        <button id="us-upscalebtn">Upscale ↑</button>
-      </div>
-      <div class="panel-label" style="margin-top:1.2rem">Sharpness</div>
-      <div class="us-sharprow" id="us-sharprow">
-        <button class="us-sharpbtn" data-coeff="0" title="No sharpening applied">None</button>
-        <button class="us-sharpbtn" data-coeff="0.5" title="Subtle edge enhancement">Soft</button>
-        <button class="us-sharpbtn on" data-coeff="1.0" title="Calibrated ~0% sharpness loss (default)">Default</button>
-        <button class="us-sharpbtn" data-coeff="1.6" title="Punchy, high-contrast edges">Crisp</button>
-        <button class="us-sharpbtn" data-coeff="2.5" title="Maximum sharpening — use sparingly">Ultra</button>
-        <div class="us-sharpcustom">
-          <span class="us-sharpcustom-x">×</span>
-          <input type="number" id="us-sharpinput" class="us-sharpinput" min="0" max="10" step="0.1" value="1.0" placeholder="custom">
-        </div>
-      </div>
-      <div class="us-sharpinfo" id="us-sharpinfo">coefficient × 1.00 — calibrated zero-loss</div>
-      <div class="panel-label" style="margin-top:1.2rem">Output Format</div>
-      <div class="us-fmtrow">
-        <button class="us-fmtbtn on" data-fmt="png">PNG (lossless)</button>
-        <button class="us-fmtbtn" data-fmt="jpeg">JPEG</button>
-        <button class="us-fmtbtn" data-fmt="webp">WEBP</button>
-      </div>
-      <div id="us-progwrap">
-        <div class="us-progtrack"><div class="us-progfill" id="us-progfill"></div></div>
-        <div id="us-proglabel">Working…</div>
-      </div>
-    </div>
-
-    <!-- Result card -->
-    <div class="card" id="us-resultcard" style="margin-bottom:1rem">
-      <div class="panel-label">Result</div>
-      <div id="us-statsbar">
-        <div class="us-sc"><div class="us-sl">From</div><div class="us-sv" id="us-sfrom">—</div></div>
-        <div class="us-sarr">→</div>
-        <div class="us-sc"><div class="us-sl">To</div><div class="us-sv" id="us-sto">—</div></div>
-        <div style="width:1px;background:var(--border)"></div>
-        <div class="us-sc hi"><div class="us-sl">Scale</div><div class="us-sv" id="us-sscale">—</div></div>
-        <div class="us-sc"><div class="us-sl">Megapixels</div><div class="us-sv" id="us-smp">—</div></div>
-        <div class="us-sc"><div class="us-sl">File size</div><div class="us-sv" id="us-ssize">—</div></div>
-      </div>
-      <img id="us-resultimg" alt="upscaled result">
-      <div class="us-rmeta">
-        <div class="us-rdims" id="us-rdims">—</div>
-        <button id="us-dlbtn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/><line x1="12" y1="3" x2="12" y2="15"/>
-          </svg>
-          Download
-        </button>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="reveal">
-    <div class="footer-logo">Hropiberhtaz</div>
-    <div class="footer-tagline" style="margin-top:6px">feel the difference</div>
-  </div>
-  <div class="footer-copy reveal reveal-d2">© 2026 — Crafted with obsession</div>
-</footer>
-
-<!-- DOWNLOAD PROGRESS OVERLAY -->
-
-<div id="us-progress-overlay">
-  <div id="us-ov-title">Upscaling image…</div>
-  <div id="us-ov-pct">0%</div>
-  <div id="us-ov-track"><div id="us-ov-bar"></div></div>
-  <div id="us-ov-sub">Processing in chunks</div>
-  <div id="us-ov-eta"></div>
-</div>
-<div id="dl-progress-overlay">
-  <div id="dl-progress-title">Preparing download…</div>
-  <div id="dl-progress-pct">0%</div>
-  <div id="dl-progress-track"><div id="dl-progress-bar"></div></div>
-  <div id="dl-progress-sub">Processing image at full resolution</div>
-</div>
-
-<!-- AUDIO TOGGLE -->
-<button id="audio-toggle" title="Toggle lo-fi music">
-  <div class="bars">
-    <div class="bar" style="height:5px"></div>
-    <div class="bar" style="height:9px"></div>
-    <div class="bar" style="height:6px"></div>
-    <div class="bar" style="height:11px"></div>
-  </div>
-  <span id="audio-label">lo-fi</span>
-</button>
-
-<!-- COPIED TOAST -->
-<div class="toast" id="toast">Copied!</div>
-
-<!-- Hidden file input for editor -->
-<input type="file" id="editorFileInput" accept="image/*" style="display:none">
-
-<script>
-/* ═══════════════════════════════════════════════════
-   MARQUEE
-═══════════════════════════════════════════════════ */
+      <input type="file" id="recolorFileInput" accept="image
 (function(){
   const items = ['ColorDrop','●','HUE','●','Chroma','●','UpScale','●','Color Obsession','●','Precision Tools','●','Pick · Edit · Recolor · Upscale','●','Built Different','●','Zero Sharpness Loss','●'];
   const repeated = [...items,...items,...items,...items];
@@ -2151,9 +1835,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   mq.innerHTML = repeated.map(t => `<span class="${t==='●'?'dot':''}">${t}</span>`).join('');
 })();
 
-/* ═══════════════════════════════════════════════════
-   TOOL 01 — COLOR PICKER
-═══════════════════════════════════════════════════ */
 (function(){
   let hue = 0.04, sat = 1, val = 1, alpha = 1;
   let draggingSV = false, draggingHue = false, draggingAlpha = false;
@@ -2248,12 +1929,10 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     swatchFill.style.background=`rgba(${rgb.r},${rgb.g},${rgb.b},${alpha})`;
     hexDisplay.textContent=alpha===1?hex.toUpperCase():`rgba(${rgb.r},${rgb.g},${rgb.b},${alpha.toFixed(2)})`;
     rgbaDisplay.textContent=`rgba(${rgb.r},${rgb.g},${rgb.b},${alpha.toFixed(2)})`;
-    // sync number inputs
     document.getElementById('inR').value=rgb.r;
     document.getElementById('inG').value=rgb.g;
     document.getElementById('inB').value=rgb.b;
     document.getElementById('inA').value=Math.round(alpha*100);
-    // update copy button label
     const rgbaCopyBtn=document.getElementById('rgbaCopyBtn');
     if(rgbaCopyBtn) rgbaCopyBtn.querySelector('span.rgba-preview') && (rgbaCopyBtn.querySelector('span.rgba-preview').textContent=`rgba(${rgb.r},${rgb.g},${rgb.b},${alpha.toFixed(2)})`);
     svCursor.style.left=(sat*100)+'%';
@@ -2270,14 +1949,12 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     return{x,y};
   }
 
-  // SV drag
   svWrap.addEventListener('mousedown',e=>{
     draggingSV=true;
     const {x,y}=getSVPos(e,svWrap);
     sat=x;val=1-y;updateUI();
   });
 
-  // Hue drag
   hueWrap.addEventListener('mousedown',e=>{
     draggingHue=true;
     const r=hueWrap.getBoundingClientRect();
@@ -2285,7 +1962,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     drawSV();updateUI();
   });
 
-  // Alpha drag
   alphaWrap.addEventListener('mousedown',e=>{
     draggingAlpha=true;
     const r=alphaWrap.getBoundingClientRect();
@@ -2311,7 +1987,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
 
   document.addEventListener('mouseup',()=>{draggingSV=false;draggingHue=false;draggingAlpha=false});
 
-  // Touch support
   function touchToMouse(e,handler){
     if(e.touches.length){const t=e.touches[0];handler({clientX:t.clientX,clientY:t.clientY});}
     e.preventDefault();
@@ -2321,7 +1996,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   hueWrap.addEventListener('touchstart',e=>touchToMouse(e,e2=>hueWrap.dispatchEvent(new MouseEvent('mousedown',e2))),{passive:false});
   hueWrap.addEventListener('touchmove',e=>touchToMouse(e,e2=>document.dispatchEvent(new MouseEvent('mousemove',e2))),{passive:false});
 
-  // Hex edit on click
   hexDisplay.addEventListener('click',()=>{
     const rgb=hsvToRgb(hue,sat,val);
     const currentHex=rgbToHex(rgb.r,rgb.g,rgb.b);
@@ -2345,7 +2019,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     input.addEventListener('keydown',e=>{if(e.key==='Enter')commit();if(e.key==='Escape'){input.replaceWith(hexDisplay);}});
   });
 
-  // Copy HEX
   const toast=document.getElementById('toast');
   copyBtn.addEventListener('click',()=>{
     const rgb=hsvToRgb(hue,sat,val);
@@ -2357,7 +2030,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     });
   });
 
-  // RGBA number input → update picker
   function applyRgbaInputs(){
     const r=Math.max(0,Math.min(255,parseInt(document.getElementById('inR').value)||0));
     const g=Math.max(0,Math.min(255,parseInt(document.getElementById('inG').value)||0));
@@ -2374,7 +2046,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     el.addEventListener('change', applyRgbaInputs);
   });
 
-  // RGBA copy button
   const rgbaCopyBtn=document.getElementById('rgbaCopyBtn');
   if(rgbaCopyBtn){
     rgbaCopyBtn.addEventListener('click',()=>{
@@ -2392,15 +2063,10 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     });
   }
 
-  // Init
   drawHue();drawSV();updateUI();
-  // initial hue = salmon/orange-ish
   hue=0.045;sat=0.8;val=1;drawSV();updateUI();
 })();
 
-/* ═══════════════════════════════════════════════════
-   TOOL 02 — HUE IMAGE EDITOR
-═══════════════════════════════════════════════════ */
 (function(){
   let origImg=null;
 
@@ -2536,7 +2202,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     showProgress('Rendering image…','Applying filters at full resolution');
     setProgress(10);
 
-    // Use OffscreenCanvas when available for off-main-thread speed
     const useOffscreen=typeof OffscreenCanvas!=='undefined';
     const ex=useOffscreen?new OffscreenCanvas(w,h):document.createElement('canvas');
     if(!useOffscreen){ex.width=w;ex.height=h;}
@@ -2567,9 +2232,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   get('exportWebp').addEventListener('click',()=>exportImg('webp'));
 })();
 
-/* ═══════════════════════════════════════════════════
-   TOOL 03 — IMAGE RECOLOR
-═══════════════════════════════════════════════════ */
 (function(){
   const canvas=document.getElementById('recolorCanvas');
   const ctx=canvas.getContext('2d',{willReadFrequently:true});
@@ -2590,7 +2252,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   const loadJsonBtn=document.getElementById('loadJsonBtn');
   const jsonInput=document.getElementById('jsonInput');
 
-  // Quality & mode toggles
   let quality='high',mode='smooth';
   document.querySelectorAll('#qualityGroup .toggle-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
@@ -2610,9 +2271,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
 
   let origImgEl=null,previewImageData=null,fullResImageData=null;
 
-  // Build default palette — Noice violet cosmos + aurora teal
   const defaultColors=['#B7A4FF','#9F88D9','#D0BDF2','#4A8FAD','#6AAFCD','#57A86A'];
-  // Build default palette with staggered pop-in
   function buildDefaultSwatches(){
     defaultColors.forEach((hex, i)=>{
       setTimeout(()=>addSwatch(hex, true), i * 60);
@@ -2626,7 +2285,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     sw.querySelector('input').onchange=e=>{
       e.target.parentElement.style.background=e.target.value;
       sw.classList.remove('pulse');
-      void sw.offsetWidth; // reflow
+      void sw.offsetWidth;
       sw.classList.add('pulse');
       sw.addEventListener('animationend',()=>sw.classList.remove('pulse'),{once:true});
     };
@@ -2681,7 +2340,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
 
   fileInput.onchange=e=>{if(e.target.files[0])loadRecolorImage(e.target.files[0]);};
 
-  // Drag & drop on upload zone
   uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.style.borderColor='var(--accent)'});
   uploadZone.addEventListener('dragleave',()=>uploadZone.style.borderColor='');
   uploadZone.addEventListener('drop',e=>{
@@ -2698,14 +2356,12 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
         origImgEl=img;
         const nw=img.naturalWidth, nh=img.naturalHeight;
 
-        // Store full-res pixel data for export
         const fullCanvas=document.createElement('canvas');
         fullCanvas.width=nw; fullCanvas.height=nh;
         const fullCtx=fullCanvas.getContext('2d',{willReadFrequently:true});
         fullCtx.drawImage(img,0,0,nw,nh);
         fullResImageData=fullCtx.getImageData(0,0,nw,nh);
 
-        // Downscale for preview/processing speed
         let w=nw, h=nh;
         const maxDim=quality==='high'?1200:quality==='med'?800:500;
         if(w>maxDim||h>maxDim){
@@ -2810,7 +2466,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     const outData=new ImageData(nw,nh);
     const dst=outData.data;
     const totalPx=nw*nh;
-    // Process in chunks of ~80k pixels so the browser can breathe
     const CHUNK=80000;
     let idx=0;
 
@@ -2846,13 +2501,12 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
         }
       }
       idx=end;
-      const pct=Math.round(idx/totalPx*85); // 0–85% for processing
+      const pct=Math.round(idx/totalPx*85);
       dlBar.style.width=pct+'%';dlPct.textContent=pct+'%';
 
       if(idx<totalPx){
-        setTimeout(processChunk,0); // yield to browser between chunks
+        setTimeout(processChunk,0);
       } else {
-        // Encoding phase
         dlTitle.textContent='Encoding PNG…';
         dlSub.textContent='Almost done!';
         dlBar.style.width='90%';dlPct.textContent='90%';
@@ -2880,55 +2534,42 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       }
     }
 
-    // Kick off first chunk after overlay renders
     setTimeout(processChunk,60);
   });
 
-  // ── Remove Image ──────────────────────────────────────
   const removeImgBtn = document.getElementById('removeImgBtn');
   if(removeImgBtn){
     removeImgBtn.addEventListener('click', ()=>{
-      // Clear state
       origImgEl = null;
       previewImageData = null;
       fullResImageData = null;
-      // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       canvas.width = 0; canvas.height = 0;
-      // Hide canvas panel, show upload zone again
       canvasPanel.style.display = 'none';
       uploadZone.style.display = '';
       downloadBtn.style.display = 'none';
-      // Reset file input so the same file can be re-added
       fileInput.value = '';
     });
   }
 })();
 
-/* ═══════════════════════════════════════════════════
-   AMBIENT AUDIO ENGINE — soft, dreamy, relaxing
-   · Slower BPM (58) · Pure sine/triangle pads only
-   · Long slow attack & release · Reverb-style delay
-   · No harsh snare · Gentle ghost kick · Quiet hats
-   · Volume ceiling lowered to 0.55
-═══════════════════════════════════════════════════ */
 (function(){
   let audioCtx=null,masterGain=null,reverbNode=null,isPlaying=false;
   let scheduledNodes=[],loopTimeoutId=null,nextEventTime=0;
 
-  /* Dreamy minor / major 7ths — relaxing chord palette */
+  
   const chordSets=[
-    [0,4,7,11],   // maj7
-    [0,3,7,10],   // min7
-    [0,4,7,14],   // maj9  (open)
-    [0,3,7,14],   // min9
-    [0,5,7,12],   // sus2  (floaty)
+    [0,4,7,11],
+    [0,3,7,10],
+    [0,4,7,14],
+    [0,3,7,14],
+    [0,5,7,12],
   ];
-  const melodyOffsets=[0,2,4,7,9,12,14,16]; // pentatonic-ish, no half-steps
-  const rootNotes=[52,55,57,48,50];  // E3 G3 A3 C3 D3 — warm low roots
+  const melodyOffsets=[0,2,4,7,9,12,14,16];
+  const rootNotes=[52,55,57,48,50];
   let chordIdx=0;
 
-  const BPM=58;            // slow, breathing pace
+  const BPM=58;
   const BEAT=60/BPM;
   const BAR=BEAT*4;
 
@@ -2938,15 +2579,15 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     if(audioCtx)return;
     audioCtx=new(window.AudioContext||window.webkitAudioContext)();
 
-    /* master gain — quiet ceiling */
+    
     masterGain=audioCtx.createGain();
     masterGain.gain.setValueAtTime(0,audioCtx.currentTime);
     masterGain.connect(audioCtx.destination);
 
-    /* simple reverb via convolver with synthesised impulse */
+    
     reverbNode=audioCtx.createConvolver();
     const sRate=audioCtx.sampleRate;
-    const revLen=sRate*2.8;  // 2.8 s tail
+    const revLen=sRate*2.8;
     const revBuf=audioCtx.createBuffer(2,revLen,sRate);
     for(let c=0;c<2;c++){
       const d=revBuf.getChannelData(c);
@@ -2960,7 +2601,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     revGain.connect(masterGain);
   }
 
-  /* Soft pad note — sine + detuned triangle, long envelope */
+  
   function playPad(freq,st,dur,vol=0.055){
     const o1=audioCtx.createOscillator(),g1=audioCtx.createGain();
     const o2=audioCtx.createOscillator(),g2=audioCtx.createGain();
@@ -2973,20 +2614,20 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       gn.gain.setValueAtTime(gv,st+dur-rel);
       gn.gain.exponentialRampToValueAtTime(0.0001,st+dur);
     });
-    /* warm lowpass — cut everything harsh */
+    
     const lpf=audioCtx.createBiquadFilter();
     lpf.type='lowpass';lpf.frequency.setValueAtTime(900,st);lpf.Q.setValueAtTime(0.4,st);
     o1.connect(g1);o2.connect(g2);
     g1.connect(lpf);g2.connect(lpf);
     lpf.connect(masterGain);
-    /* also send to reverb */
+    
     lpf.connect(reverbNode);
     o1.start(st);o1.stop(st+dur+0.1);
     o2.start(st);o2.stop(st+dur+0.1);
     scheduledNodes.push(o1,o2);
   }
 
-  /* Sub bass — barely audible, just warmth */
+  
   function playBass(freq,st){
     const o=audioCtx.createOscillator(),g=audioCtx.createGain();
     o.type='sine';o.frequency.setValueAtTime(freq/2,st);
@@ -2998,7 +2639,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     scheduledNodes.push(o);
   }
 
-  /* Ghost kick — very soft thump, no click */
+  
   function playKick(st){
     const o=audioCtx.createOscillator(),g=audioCtx.createGain();
     o.type='sine';
@@ -3011,7 +2652,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     scheduledNodes.push(o);
   }
 
-  /* Whisper hi-hat — barely there */
+  
   function playHat(st,vol=0.012){
     const buf=audioCtx.createBuffer(1,Math.floor(audioCtx.sampleRate*0.06),audioCtx.sampleRate);
     const d=buf.getChannelData(0);
@@ -3026,7 +2667,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     src.start(st);scheduledNodes.push(src);
   }
 
-  /* Very faint vinyl crackle */
+  
   function createCrackle(){
     const buf=audioCtx.createBuffer(1,audioCtx.sampleRate*3,audioCtx.sampleRate);
     const d=buf.getChannelData(0);
@@ -3043,15 +2684,15 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     const root=rootNotes[chordIdx%rootNotes.length];
     const chord=chordSets[chordIdx%chordSets.length];
 
-    /* full-bar pad chord — very long, overlapping */
+    
     chord.forEach((semi,i)=>
       playPad(midiToFreq(root+semi), st+0.05, BAR*2.0, i===0?0.05:0.035)
     );
 
-    /* one lazy bass note per bar */
+    
     playBass(midiToFreq(root),st+0.1);
 
-    /* sparse melody — 1 or 2 notes per bar only */
+    
     const melCount=Math.random()<0.4?1:2;
     const offs=[BEAT*0.5,BEAT*1,BEAT*2,BEAT*2.5,BEAT*3];
     const used=new Set();
@@ -3063,10 +2704,10 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       playPad(midiToFreq(root+12+semi), st+off, BEAT*1.8, 0.038);
     }
 
-    /* very soft kick only on beat 1 */
+    
     playKick(st);
 
-    /* ghost hats — only 3-4 per bar, very quiet */
+    
     const hatTimes=[0, BEAT, BEAT*2, BEAT*3];
     hatTimes.forEach(ht=>{
       if(Math.random()<0.65)
@@ -3095,7 +2736,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     scheduledNodes=[];
   }
 
-  /* Slow, gentle fade — 3 s in, 2 s out */
+  
   function fadeIn(){
     masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
     masterGain.gain.setValueAtTime(masterGain.gain.value,audioCtx.currentTime);
@@ -3130,25 +2771,20 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
 </script>
 
 <script>
-/* ═══════════════════════════════════════════════════
-   GRID CELL ILLUMINATION — grid squares near the cursor
-   light up and fade out like glowing keyboard keys
-═══════════════════════════════════════════════════ */
+
 (function(){
   const canvas = document.getElementById('bg-brush-canvas');
   if(!canvas) return;
   const ctx = canvas.getContext('2d');
 
-  const CELL   = 48;   // matches the CSS grid in body::before
-  const RADIUS = 3;    // cells lit up around cursor (Chebyshev)
-  const DECAY  = 0.055; // how fast brightness fades per frame (0–1)
+  const CELL   = 48;
+  const RADIUS = 3;
+  const DECAY  = 0.055;
 
-  // Dark mode: accent_lavender → accent_plum drift
-  const DARK_A = [183, 164, 255]; // accent_lavender      #B7A4FF
-  const DARK_B = [159, 136, 217]; // accent_plum          #9F88D9
-  // Light mode: aurora_blue_deep → aurora_blue_bright (teal, vivid on warm bg)
-  const LIGHT_A = [ 46, 115, 145]; // aurora_blue_deep    #2E7391
-  const LIGHT_B = [106, 175, 205]; // aurora_blue_bright  #6AAFCD
+  const DARK_A = [183, 164, 255];
+  const DARK_B = [159, 136, 217];
+  const LIGHT_A = [ 46, 115, 145];
+  const LIGHT_B = [106, 175, 205];
   let hueT = 0;
 
   function accentRGB(t) {
@@ -3163,7 +2799,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   }
 
   let W, H, cols, rows;
-  // sparse Map: key = "col,row", value = brightness 0..1
   let cells = new Map();
 
   function resize() {
@@ -3179,19 +2814,16 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 
   function illuminate(mx, my) {
-    // find which cell the cursor is in
     const cx = Math.floor(mx / CELL);
     const cy = Math.floor(my / CELL);
     for (let dy = -RADIUS; dy <= RADIUS; dy++) {
       for (let dx = -RADIUS; dx <= RADIUS; dx++) {
         const col = cx + dx, row = cy + dy;
         if (col < 0 || row < 0 || col >= cols || row >= rows) continue;
-        // distance-based brightness falloff (Chebyshev-ish but smooth)
         const dist = Math.sqrt(dx*dx + dy*dy);
         const brightness = Math.max(0, 1 - dist / (RADIUS + 0.5));
         const key = col + ',' + row;
         const current = cells.get(key) || 0;
-        // only boost, never directly dim (decay handles dimming)
         if (brightness > current) cells.set(key, brightness);
       }
     }
@@ -3200,16 +2832,13 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   function draw() {
     ctx.clearRect(0, 0, W, H);
 
-    // drift hue slowly
     hueT = (hueT + 0.004) % 1;
-    // ping-pong  0→1→0
     const t = hueT < 0.5 ? hueT * 2 : (1 - hueT) * 2;
     const [r, g, b] = accentRGB(t);
 
     const toDelete = [];
 
     cells.forEach((brightness, key) => {
-      // decay
       const next = brightness - DECAY;
       if (next <= 0.005) { toDelete.push(key); return; }
       cells.set(key, next);
@@ -3218,16 +2847,13 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       const x = col * CELL;
       const y = row * CELL;
 
-      // filled cell with border — like a lit key
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
       const alpha = next * (isLight ? 0.22 : 0.18);
       const borderAlpha = next * (isLight ? 0.65 : 0.55);
 
-      // cell fill
       ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
       ctx.fillRect(x + 1, y + 1, CELL - 2, CELL - 2);
 
-      // cell border (top + left edges only — avoids double-drawing)
       ctx.strokeStyle = `rgba(${r},${g},${b},${borderAlpha})`;
       ctx.lineWidth = 1;
       ctx.strokeRect(x + 0.5, y + 0.5, CELL - 1, CELL - 1);
@@ -3244,15 +2870,12 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   loop();
 })();
 
-/* ═══════════════════════════════════════════════════
-   TOOL 04 — UPSCALE (Lanczos-3 · Zero Sharpness Loss)
-═══════════════════════════════════════════════════ */
 (function(){
 var usSrcImg=null,usSrcW=0,usSrcH=0,usSrcName='image';
 var usOutW=0,usOutH=0,usNeedsCrop=false;
 var usCropX=0,usCropY=0,usCropW=0,usCropH=0;
 var usFmt='png',usResultBlob=null;
-var usSharpCoeff=1.0; // multiplier for all USM amount values (0=none, 1=default, 2.5=ultra)
+var usSharpCoeff=1.0;
 
 var usFileinput   = document.getElementById('us-fileinput');
 var usDropzone    = document.getElementById('us-dropzone');
@@ -3278,7 +2901,6 @@ var usResultcard  = document.getElementById('us-resultcard');
 var usResultimg   = document.getElementById('us-resultimg');
 var usDlbtn       = document.getElementById('us-dlbtn');
 
-// Upload
 usDropzone.onclick = function(){ usFileinput.click(); };
 document.getElementById('us-changebtn').onclick = function(){ usFileinput.click(); };
 usDropzone.addEventListener('dragover',function(e){e.preventDefault();usDropzone.classList.add('over');});
@@ -3319,7 +2941,6 @@ function usHandleFile(file){
   reader.readAsDataURL(file);
 }
 
-// Size inputs
 usOutwEl.oninput=function(){
   var v=parseInt(usOutwEl.value);
   if(usLockratio.checked&&usSrcW&&usSrcH&&v>0)usOuthEl.value=Math.round(v*usSrcH/usSrcW);
@@ -3345,8 +2966,6 @@ document.querySelectorAll('.us-fmtbtn').forEach(function(btn){
   };
 });
 
-// Sharpness toggle
-// Sharpness toggle
 var usSharpLabels={
   '0':   'coefficient × 0.00 — no sharpening, pure Lanczos',
   '0.5': 'coefficient × 0.50 — subtle edge recovery',
@@ -3358,13 +2977,10 @@ var usSharpInput=document.getElementById('us-sharpinput');
 function usSetSharp(val,fromInput){
   val=Math.max(0,Math.min(10,val));
   usSharpCoeff=val;
-  // sync input field unless the change came from it
   if(!fromInput&&usSharpInput)usSharpInput.value=parseFloat(val.toFixed(2));
-  // highlight matching preset (or none if custom)
   document.querySelectorAll('.us-sharpbtn').forEach(function(b){
     b.classList.toggle('on', parseFloat(b.dataset.coeff)===val);
   });
-  // info line
   var info=document.getElementById('us-sharpinfo');
   if(!info)return;
   var key=String(val);
@@ -3380,7 +2996,6 @@ if(usSharpInput){
     if(!isNaN(v))usSetSharp(v,true);
   });
   usSharpInput.addEventListener('blur',function(){
-    // clamp and tidy on blur
     var v=parseFloat(usSharpInput.value);
     if(isNaN(v)||v<0)v=0;
     if(v>10)v=10;
@@ -3419,7 +3034,6 @@ function usUpdateSummary(){
   usAsummary.innerHTML='<b>'+sw+'×'+sh+'</b> → <b>'+usOutW+'×'+usOutH+' px</b><br>'+usRatioStr(sw,sh)+' → '+usRatioStr(usOutW,usOutH);
 }
 
-// Crop
 var usDrag={on:false,mode:'',sx:0,sy:0,sc:{}};
 function usImgPt(e){
   var r=usPreviewimg.getBoundingClientRect(),ds=usPreviewimg.clientWidth/usSrcW;
@@ -3494,12 +3108,10 @@ document.getElementById('us-clearbtn').onclick=function(){
   usCropW=0;usCropH=0;usCropinfo.textContent='Drag on the image to select crop area';
 };
 
-// Upscale button
 usUpscalebtn.onclick=usDoUpscale;
 function usSetprog(pct,txt){usProgfill.style.width=pct+'%';usProglabel.textContent=txt;}
 function usTick(){return new Promise(function(r){setTimeout(r,20);});}
 
-// Lanczos kernel
 function usLanczosKernel(x,a){
   if(x===0)return 1;if(Math.abs(x)>=a)return 0;
   var px=Math.PI*x;return(a*Math.sin(px)*Math.sin(px/a))/(px*px);
@@ -3587,7 +3199,6 @@ async function usDoUpscale(){
   if(!usOutW||!usOutH){alert('Set a target width and height first.');return;}
   if(usNeedsCrop&&usCropW<1){alert('Draw a crop region on the image first.');return;}
 
-  // ── Fullscreen overlay helpers ──
   var usOvEl   = document.getElementById('us-progress-overlay');
   var usOvBar  = document.getElementById('us-ov-bar');
   var usOvPct  = document.getElementById('us-ov-pct');
@@ -3619,7 +3230,6 @@ async function usDoUpscale(){
   usUpscalebtn.disabled=true;usUpscalebtn.textContent='Processing…';
   usResultcard.style.display='none';
 
-  // Show overlay and let it paint
   ovShow('Upscaling image…','Extracting source region');
   ovSet(2,'Extracting source region…',null);
   await tick();
@@ -3631,7 +3241,6 @@ async function usDoUpscale(){
 
   ovSet(6,'Multi-step pre-scaling…',null);await tick();
 
-  // ── Multi-step pre-scale (browser bilinear, fast) ──
   var cur=srcCv;
   while(cur.width<usOutW*0.5||cur.height<usOutH*0.5){
     var nw2=Math.min(cur.width*2,usOutW),nh2=Math.min(cur.height*2,usOutH);
@@ -3645,12 +3254,11 @@ async function usDoUpscale(){
 
   ovSet(12,'Lanczos resampling…',null);await tick();
 
-  // ── Chunked Lanczos resampling ──
   var tw=usOutW,th=usOutH,a=3;
   var xRatio=psw/tw,yRatio=psh/th;
   var dstCv=document.createElement('canvas');dstCv.width=tw;dstCv.height=th;
   var dstCtx=dstCv.getContext('2d'),dstImg=dstCtx.createImageData(tw,th),dstData=dstImg.data;
-  var LROW=8; // rows per chunk — keeps UI responsive
+  var LROW=8;
   var totalRows=th;
 
   for(var dy=0;dy<th;dy+=LROW){
@@ -3678,7 +3286,6 @@ async function usDoUpscale(){
         dstData[di+3]=Math.max(0,Math.min(255,Math.round(al/wSum)));
       }
     }
-    // Progress: Lanczos = 12→70%
     var lanczPct=12+((dy+LROW)/totalRows)*58;
     var elapsed=(Date.now()-_startTs)/1000;
     var eta=elapsed/Math.max(0.001,(dy+LROW)/totalRows)*(1-(dy+LROW)/totalRows);
@@ -3689,7 +3296,6 @@ async function usDoUpscale(){
 
   ovSet(72,'Sharpening (float-domain)…',null);await tick();
 
-  // ── Unsharp mask ──
   var scaleArea=(tw*th)/(sw*sh),logScale=Math.log2(Math.max(1.001,scaleArea));
   var amount=Math.min(6.0,2*Math.pow(logScale,0.9837));
   var sigmaSh=Math.min(2.5,0.6+0.2*logScale);
@@ -3739,13 +3345,11 @@ async function usDoUpscale(){
     setTimeout(function(){usResultcard.scrollIntoView({behavior:'smooth',block:'start'});},100);
     usUpscalebtn.disabled=false;usUpscalebtn.textContent='Upscale ↑';
     ovHide();
-    // also hide old inline bar
     setTimeout(function(){usProgwrap.style.display='none';},800);
   },mime,q);
 }
 
-})(); // end UpScale IIFE
-
+})();
 
 (function(){
   const bar=document.getElementById('scroll-progress');
@@ -3756,9 +3360,6 @@ async function usDoUpscale(){
   },{passive:true});
 })();
 
-/* ═══════════════════════════════════════════════════
-   AMBIENT PARTICLES
-═══════════════════════════════════════════════════ */
 (function(){
   const canvas=document.getElementById('particle-canvas');
   if(!canvas)return;
@@ -3767,9 +3368,7 @@ async function usDoUpscale(){
   const N=50;
   const particles=[];
   const isDark = () => document.documentElement.getAttribute('data-theme') !== 'light';
-  // Dark: violet, lavender, plum shimmer
   const COLORS_DARK  = ['#B7A4FF','#9A86E0','rgba(224,210,255,0.50)','#D0BDF2'];
-  // Light: aurora teal, green, warm umber — vivid on warm parchment bg
   const COLORS_LIGHT = ['#4A8FAD','#57A86A','#6AAFCD','#3B8C4E'];
   const getColors = () => isDark() ? COLORS_DARK : COLORS_LIGHT;
 
@@ -3821,18 +3420,11 @@ async function usDoUpscale(){
   })();
 })();
 
-/* ═══════════════════════════════════════════════════
-   SCROLL REVEAL — re-animates every time in view
-   Also hands off headings to .anim-done once their
-   entry keyframe finishes so hover transitions work
-   without any animation/transition conflict.
-═══════════════════════════════════════════════════ */
 (function(){
   const els=document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
 
   function addAnimDone(el){
-    /* wait for the headingPop keyframe to fully finish,
-       then swap to pure transition-based state        */
+    
     el.addEventListener('animationend', function onEnd(){
       el.removeEventListener('animationend', onEnd);
       el.classList.add('anim-done');
@@ -3844,7 +3436,7 @@ async function usDoUpscale(){
       const el = e.target;
       if(e.isIntersecting){
         el.classList.add('visible');
-        /* attach anim-done listener for heading elements */
+        
         if(
           (el.classList.contains('section-title') || el.classList.contains('hero-title'))
           && !el.classList.contains('anim-done')
@@ -3852,12 +3444,12 @@ async function usDoUpscale(){
           addAnimDone(el);
         }
       } else {
-        /* reset for re-animation on next scroll-in */
+        
         el.classList.remove('visible');
         el.classList.remove('anim-done');
         if(el.classList.contains('section-title')||el.classList.contains('hero-title')){
           el.style.animation='none';
-          void el.offsetWidth; /* force reflow */
+          void el.offsetWidth; 
           el.style.animation='';
         }
       }
@@ -3867,9 +3459,6 @@ async function usDoUpscale(){
   els.forEach(el=>io.observe(el));
 })();
 
-/* ═══════════════════════════════════════════════════
-   BUTTON RIPPLE
-═══════════════════════════════════════════════════ */
 document.addEventListener('click',e=>{
   const btn=e.target.closest('.btn,.preset-btn,.toggle-btn');
   if(!btn)return;
@@ -3882,9 +3471,6 @@ document.addEventListener('click',e=>{
   rip.addEventListener('animationend',()=>rip.remove());
 });
 
-/* ═══════════════════════════════════════════════════
-   KEYBOARD SHORTCUTS
-═══════════════════════════════════════════════════ */
 (function(){
   const hint=document.getElementById('shortcut-hint');
   let t;
@@ -3906,15 +3492,11 @@ document.addEventListener('click',e=>{
   });
 })();
 
-/* ═══════════════════════════════════════════════════
-   THEME TOGGLE — Light / Dark
-═══════════════════════════════════════════════════ */
 (function(){
   const btn  = document.getElementById('theme-toggle');
   const icon = document.getElementById('theme-icon');
   const root = document.documentElement;
 
-  // Persist preference
   const saved = localStorage.getItem('theme') || 'dark';
   applyTheme(saved);
 
@@ -3931,7 +3513,6 @@ document.addEventListener('click',e=>{
   }
 })();
 
-
 (function(){
   const links=document.querySelectorAll('nav a');
   const ids=['colorpicker','hueeditor','recolor','upscale'];
@@ -3946,13 +3527,8 @@ document.addEventListener('click',e=>{
 })();
 </script>
 
-
 <script>
-/* ═══════════════════════════════════════════════════
-   DYNAMIC ENHANCEMENTS — JS
-═══════════════════════════════════════════════════ */
 
-/* ── AUTO-HIDE HEADER ──────────────────────────────── */
 (function(){
   const header=document.querySelector('header');
   let lastY=0,ticking=false;
@@ -3973,7 +3549,6 @@ document.addEventListener('click',e=>{
 
 })();
 
-/* ── 3D CARD TILT ON MOUSEMOVE ─────────────────────── */
 (function(){
   const tiltEls=document.querySelectorAll('.card,.picker-widget');
   tiltEls.forEach(el=>{
@@ -3989,7 +3564,6 @@ document.addEventListener('click',e=>{
   });
 })();
 
-/* ── MAGNETIC BUTTON EFFECT ────────────────────────── */
 (function(){
   const btns=document.querySelectorAll('.btn-accent,.hero-cta .btn');
   btns.forEach(btn=>{
@@ -4005,7 +3579,6 @@ document.addEventListener('click',e=>{
   });
 })();
 
-/* ── TEXT SCRAMBLE ON HERO TITLE ────────────────────── */
 (function(){
   const title=document.querySelector('.hero-title');
   if(!title)return;
@@ -4022,7 +3595,6 @@ document.addEventListener('click',e=>{
   io.observe(title);
 
   function scrambleReveal(el){
-    // Get all text nodes and their positions
     const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
     const textNodes=[];
     let node;
@@ -4054,7 +3626,6 @@ document.addEventListener('click',e=>{
   }
 })();
 
-/* ── PARALLAX FLOATING SHAPES ──────────────────────── */
 (function(){
   const shapes=document.querySelectorAll('.hero-float');
   if(!shapes.length)return;
@@ -4067,7 +3638,6 @@ document.addEventListener('click',e=>{
   },{passive:true});
 })();
 
-/* ── SMOOTH NAV ACTIVE STATE ───────────────────────── */
 (function(){
   const links=document.querySelectorAll('nav a[href^="#"]');
   const ids=['colorpicker','hueeditor','recolor','upscale'];
@@ -4084,7 +3654,6 @@ document.addEventListener('click',e=>{
   },{passive:true});
 })();
 
-/* ── SECTION NUMBER COUNTER ────────────────────────── */
 (function(){
   const nums=document.querySelectorAll('.section-num');
   nums.forEach(n=>{
@@ -4103,7 +3672,6 @@ document.addEventListener('click',e=>{
   });
 })();
 
-/* ── FEATURE LIST STAGGER (add stagger-in class) ───── */
 (function(){
   document.querySelectorAll('.features-list').forEach(fl=>{
     fl.classList.add('stagger-in');
