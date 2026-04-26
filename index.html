@@ -4,8 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hropiberhtaz — Tools that feel alive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<style>body{margin:0;background:#0F0D19}</style>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:100%;min-height:100%;background:#0F0D19}
+</style>
 </head>
 <body>
 <script>
@@ -2207,9 +2212,27 @@
   var _bytes=new Uint8Array(_b.length);
   for(var i=0;i<_b.length;i++)_bytes[i]=_b.charCodeAt(i);
   var _text=new TextDecoder('utf-8').decode(_bytes);
-  document.open('text/html','replace');
-  document.write(_text);
-  document.close();
+
+  // Parse and inject into current document instead of document.write
+  var parser=new DOMParser();
+  var parsed=parser.parseFromString(_text,'text/html');
+
+  // Copy all head children except font links (already loaded)
+  Array.from(parsed.head.children).forEach(function(el){
+    if(el.tagName==='LINK'&&el.href&&el.href.includes('fonts.googleapis'))return;
+    document.head.appendChild(document.importNode(el,true));
+  });
+
+  // Replace body content
+  document.body.innerHTML=parsed.body.innerHTML;
+
+  // Re-execute all scripts in body
+  Array.from(document.body.querySelectorAll('script')).forEach(function(old){
+    var s=document.createElement('script');
+    if(old.src){s.src=old.src;}
+    else{s.textContent=old.textContent;}
+    old.parentNode.replaceChild(s,old);
+  });
 })();
 </script>
 </body>
