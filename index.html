@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hropiberhtaz — Tools that I made cause I was bored </title>
+<title>Hropiberhtaz — Tools that feel alive</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -302,10 +302,10 @@ header{
 
 .logo{
   font-family:'Orbitron',sans-serif;
-  font-size:22px;
-  font-weight: 700;
+  font-size:29px;
+  font-weight: 600;
   color:var(--accent);
-  letter-spacing:2px;
+  letter-spacing:.9px;
   text-decoration:none;
 }
 
@@ -1093,44 +1093,6 @@ footer{
   color:var(--accent);letter-spacing:-1px;
 }
 
-#us-progress-overlay{
-  position:fixed;inset:0;z-index:19999;
-  background:var(--dl-bg);
-  backdrop-filter:blur(14px);
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:22px;
-  opacity:0;pointer-events:none;
-  transition:opacity .3s;
-}
-#us-progress-overlay.active{opacity:1;pointer-events:all}
-#us-ov-title{
-  font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;
-  color:var(--text);letter-spacing:-0.5px;
-}
-#us-ov-sub{
-  font-size:11px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--muted);
-}
-#us-ov-track{
-  width:min(380px,80vw);height:3px;
-  background:var(--border);border-radius:3px;overflow:hidden;
-}
-#us-ov-bar{
-  height:100%;width:0%;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  border-radius:3px;
-  transition:width .15s ease;
-}
-#us-ov-pct{
-  font-family:'Share Tech Mono',monospace;font-size:28px;font-weight:500;
-  color:var(--accent);letter-spacing:-1px;
-}
-#us-ov-eta{
-  font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);
-  letter-spacing:.06em;
-}
-
 .rotxt-divider{
   position:relative;
   z-index:1;
@@ -1483,6 +1445,8 @@ header.header-scrolled{box-shadow:0 4px 30px rgba(0,0,0,.15)}
 .toggle-btn:hover{transform:scale(1.06)}
 .toggle-btn.active{transform:scale(1.04)}
 
+
+
 nav a{position:relative}
 nav a::after{
   content:'';position:absolute;bottom:-4px;left:0;right:0;
@@ -1536,7 +1500,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   <div class="hero-float"></div>
   <div class="hero-float"></div>
   <div class="hero-label reveal">✦ Creative tools suite</div>
-  <h1 class="hero-title reveal reveal-d1">We build tools<br>that are out<em>of boredom.</em></h1>
+  <h1 class="hero-title reveal reveal-d1">We build tools<br>that feel <em>alive.</em></h1>
   <p class="hero-sub reveal reveal-d2">Four precision instruments for image obsessives. Pick, edit, recolor, and upscale — crafted so every interaction feels like play.</p>
   <div class="hero-cta reveal reveal-d3">
     <a href="#colorpicker" class="btn btn-accent">Explore tools ↓</a>
@@ -1738,6 +1702,153 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     </div>
   </div>
 </section>
+
+<section class="tool-section" id="upscale">
+  <div class="section-head reveal">
+    <div class="section-num"><span class="section-icon">↑</span> 04 — Upscale your image</div>
+    <h2 class="section-title reveal reveal-d1">Up<em>Scale</em></h2>
+    <p class="section-desc">Lanczos-3 resampling with float-domain unsharp masking, calibrated to achieve ~0% sharpness loss at any scale. From HD to 4K to 8K — zero quality compromise.</p>
+  </div>
+
+  <div class="reveal-scale reveal-d1">
+
+    
+    <div class="card" style="margin-bottom:1rem">
+      <div class="panel-label">01 — Upload Image</div>
+      <div id="us-dropzone">
+        <div class="us-upicon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted)">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <h3>Click to upload or drag &amp; drop</h3>
+        <p>JPG · PNG · WEBP · GIF · BMP</p>
+      </div>
+      <input type="file" id="us-fileinput" accept="image/*" style="display:none">
+      <div id="us-thumbrow">
+        <img id="us-thumbimg" alt="">
+        <div class="us-tinfo">
+          <div class="us-tname" id="us-tname">—</div>
+          <div class="us-tdim" id="us-tdim">—</div>
+        </div>
+        <button class="us-changebtn" id="us-changebtn">Change</button>
+      </div>
+    </div>
+
+    
+    <div class="card" id="us-sizecard" style="display:none;margin-bottom:1rem">
+      <div class="panel-label">02 — Target Size</div>
+      <div class="us-sizerow">
+        <div class="us-field"><label>Width (px)</label><input type="number" id="us-outw" min="1" max="32000" placeholder="3840"></div>
+        <span class="us-xsep">×</span>
+        <div class="us-field"><label>Height (px)</label><input type="number" id="us-outh" min="1" max="32000" placeholder="2160"></div>
+        <label class="us-lockrow"><input type="checkbox" id="us-lockratio" checked><span>Lock ratio</span></label>
+      </div>
+      <div id="us-scalebadge" class="us-badge ok"></div>
+      <div id="us-ratiowarn" class="us-badge warn"></div>
+      <div class="panel-label" style="margin-top:1.2rem">Presets</div>
+      <div class="us-presets">
+        <button class="us-pbtn" data-w="7680" data-h="4320">8K</button>
+        <button class="us-pbtn" data-w="3840" data-h="2160">4K UHD</button>
+        <button class="us-pbtn" data-w="2560" data-h="1440">2K QHD</button>
+        <button class="us-pbtn" data-w="1920" data-h="1080">Full HD</button>
+        <button class="us-pbtn" data-w="1280" data-h="720">HD 720p</button>
+        <button class="us-pbtn" data-w="2048" data-h="2048">2048²</button>
+        <button class="us-pbtn" data-w="1080" data-h="1080">1080² IG</button>
+        <button class="us-pbtn" data-w="1080" data-h="1920">9:16 Story</button>
+        <button class="us-pbtn" id="us-btn2x">2×</button>
+        <button class="us-pbtn" id="us-btn4x">4×</button>
+      </div>
+    </div>
+
+    
+    <div class="card" id="us-cropcard" style="margin-bottom:1rem">
+      <div class="panel-label">03 — Crop to Target Ratio (drag to select)</div>
+      <div id="us-cropwrap">
+        <img id="us-previewimg" alt="">
+        <div class="us-cmask" id="us-mt"></div><div class="us-cmask" id="us-mb"></div>
+        <div class="us-cmask" id="us-ml"></div><div class="us-cmask" id="us-mr"></div>
+        <div id="us-cropbox">
+          <div class="us-ch tl" data-c="tl"></div><div class="us-ch tr" data-c="tr"></div>
+          <div class="us-ch bl" data-c="bl"></div><div class="us-ch br" data-c="br"></div>
+        </div>
+      </div>
+      <div id="us-cropinfo">Drag on the image to select crop area</div>
+      <div class="us-cropbtns">
+        <button class="us-sbtn" id="us-autofitbtn">Auto-fit centered</button>
+        <button class="us-sbtn" id="us-clearbtn">Clear</button>
+      </div>
+    </div>
+
+    
+    <div class="card" id="us-actioncard" style="display:none;margin-bottom:1rem">
+      <div class="panel-label">04 — Upscale</div>
+      <div class="us-arow">
+        <div class="us-asummary" id="us-asummary">Set a target size above ↑</div>
+        <button id="us-upscalebtn">Upscale ↑</button>
+      </div>
+      <div class="panel-label" style="margin-top:1.2rem">Sharpness</div>
+      <div class="us-sharprow" id="us-sharprow">
+        <button class="us-sharpbtn" data-coeff="0" title="No sharpening applied">None</button>
+        <button class="us-sharpbtn" data-coeff="0.5" title="Subtle edge enhancement">Soft</button>
+        <button class="us-sharpbtn on" data-coeff="1.0" title="Calibrated ~0% sharpness loss (default)">Default</button>
+        <button class="us-sharpbtn" data-coeff="1.6" title="Punchy, high-contrast edges">Crisp</button>
+        <button class="us-sharpbtn" data-coeff="2.5" title="Maximum sharpening — use sparingly">Ultra</button>
+        <div class="us-sharpcustom">
+          <span class="us-sharpcustom-x">×</span>
+          <input type="number" id="us-sharpinput" class="us-sharpinput" min="0" max="10" step="0.1" value="1.0" placeholder="custom">
+        </div>
+      </div>
+      <div class="us-sharpinfo" id="us-sharpinfo">coefficient × 1.00 — calibrated zero-loss</div>
+      <div class="panel-label" style="margin-top:1.2rem">Output Format</div>
+      <div class="us-fmtrow">
+        <button class="us-fmtbtn on" data-fmt="png">PNG (lossless)</button>
+        <button class="us-fmtbtn" data-fmt="jpeg">JPEG</button>
+        <button class="us-fmtbtn" data-fmt="webp">WEBP</button>
+      </div>
+      <div id="us-progwrap">
+        <div class="us-progtrack"><div class="us-progfill" id="us-progfill"></div></div>
+        <div id="us-proglabel">Working…</div>
+      </div>
+    </div>
+
+    
+    <div class="card" id="us-resultcard" style="margin-bottom:1rem">
+      <div class="panel-label">Result</div>
+      <div id="us-statsbar">
+        <div class="us-sc"><div class="us-sl">From</div><div class="us-sv" id="us-sfrom">—</div></div>
+        <div class="us-sarr">→</div>
+        <div class="us-sc"><div class="us-sl">To</div><div class="us-sv" id="us-sto">—</div></div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div class="us-sc hi"><div class="us-sl">Scale</div><div class="us-sv" id="us-sscale">—</div></div>
+        <div class="us-sc"><div class="us-sl">Megapixels</div><div class="us-sv" id="us-smp">—</div></div>
+        <div class="us-sc"><div class="us-sl">File size</div><div class="us-sv" id="us-ssize">—</div></div>
+      </div>
+      <img id="us-resultimg" alt="upscaled result">
+      <div class="us-rmeta">
+        <div class="us-rdims" id="us-rdims">—</div>
+        <button id="us-dlbtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/><line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          Download
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<footer>
+  <div class="reveal">
+    <div class="footer-logo">Hropiberhtaz</div>
+    <div class="footer-tagline" style="margin-top:6px">feel the difference</div>
+  </div>
+  <div class="footer-copy reveal reveal-d2">© 2026 — Crafted with obsession</div>
+</footer>
 
 <div class="rotxt-divider">
   <div class="rotxt-bg">
@@ -3200,49 +3311,33 @@ async function usDoUpscale(){
   if(!usSrcImg){alert('Upload an image first.');return;}
   if(!usOutW||!usOutH){alert('Set a target width and height first.');return;}
   if(usNeedsCrop&&usCropW<1){alert('Draw a crop region on the image first.');return;}
-
-  var usOvEl   = document.getElementById('us-progress-overlay');
-  var usOvBar  = document.getElementById('us-ov-bar');
-  var usOvPct  = document.getElementById('us-ov-pct');
-  var usOvTitle= document.getElementById('us-ov-title');
-  var usOvSub  = document.getElementById('us-ov-sub');
-  var usOvEta  = document.getElementById('us-ov-eta');
-  var _startTs = Date.now();
-
-  function ovShow(title,sub){
-    usOvTitle.textContent=title;
-    usOvSub.textContent=sub;
-    usOvEl.classList.add('active');
-  }
+  var usOvEl=document.getElementById('us-progress-overlay');
+  var usOvBar=document.getElementById('us-ov-bar');
+  var usOvPct=document.getElementById('us-ov-pct');
+  var usOvTitle=document.getElementById('us-ov-title');
+  var usOvSub=document.getElementById('us-ov-sub');
+  var usOvEta=document.getElementById('us-ov-eta');
+  var _startTs=Date.now();
+  function ovShow(title,sub){usOvTitle.textContent=title;usOvSub.textContent=sub;usOvEl.classList.add('active');}
   function ovSet(pct,label,eta){
     var p=Math.max(0,Math.min(100,Math.round(pct)));
-    usOvBar.style.width=p+'%';
-    usOvPct.textContent=p+'%';
+    usOvBar.style.width=p+'%';usOvPct.textContent=p+'%';
     if(label)usOvSub.textContent=label;
-    if(eta!=null){
-      usOvEta.textContent=eta>0?'~'+Math.ceil(eta)+'s remaining':'Almost done…';
-    }else{usOvEta.textContent='';}
+    if(eta!=null){usOvEta.textContent=eta>0?'~'+Math.ceil(eta)+'s remaining':'Almost done…';}
+    else{usOvEta.textContent='';}
   }
-  function ovHide(){
-    setTimeout(function(){usOvEl.classList.remove('active');},700);
-  }
-
+  function ovHide(){setTimeout(function(){usOvEl.classList.remove('active');},700);}
   function tick(){return new Promise(function(r){setTimeout(r,0);});}
-
   usUpscalebtn.disabled=true;usUpscalebtn.textContent='Processing…';
   usResultcard.style.display='none';
-
   ovShow('Upscaling image…','Extracting source region');
   ovSet(2,'Extracting source region…',null);
   await tick();
-
   var sx=usNeedsCrop?usCropX:0,sy=usNeedsCrop?usCropY:0;
   var sw=usNeedsCrop?usCropW:usSrcW,sh=usNeedsCrop?usCropH:usSrcH;
   var srcCv=document.createElement('canvas');srcCv.width=sw;srcCv.height=sh;
   srcCv.getContext('2d').drawImage(usSrcImg,sx,sy,sw,sh,0,0,sw,sh);
-
   ovSet(6,'Multi-step pre-scaling…',null);await tick();
-
   var cur=srcCv;
   while(cur.width<usOutW*0.5||cur.height<usOutH*0.5){
     var nw2=Math.min(cur.width*2,usOutW),nh2=Math.min(cur.height*2,usOutH);
@@ -3253,16 +3348,12 @@ async function usDoUpscale(){
   var preSrcCtx=cur.getContext('2d');
   var preSrcData=preSrcCtx.getImageData(0,0,cur.width,cur.height).data;
   var psw=cur.width,psh=cur.height;
-
   ovSet(12,'Lanczos resampling…',null);await tick();
-
   var tw=usOutW,th=usOutH,a=3;
   var xRatio=psw/tw,yRatio=psh/th;
   var dstCv=document.createElement('canvas');dstCv.width=tw;dstCv.height=th;
   var dstCtx=dstCv.getContext('2d'),dstImg=dstCtx.createImageData(tw,th),dstData=dstImg.data;
-  var LROW=8;
-  var totalRows=th;
-
+  var LROW=8,totalRows=th;
   for(var dy=0;dy<th;dy+=LROW){
     var rowEnd=Math.min(dy+LROW,th);
     for(var dyr=dy;dyr<rowEnd;dyr++){
@@ -3295,9 +3386,7 @@ async function usDoUpscale(){
     await tick();
   }
   dstCtx.putImageData(dstImg,0,0);
-
   ovSet(72,'Sharpening (float-domain)…',null);await tick();
-
   var scaleArea=(tw*th)/(sw*sh),logScale=Math.log2(Math.max(1.001,scaleArea));
   var amount=Math.min(6.0,2*Math.pow(logScale,0.9837));
   var sigmaSh=Math.min(2.5,0.6+0.2*logScale);
@@ -3321,9 +3410,7 @@ async function usDoUpscale(){
     d[j*4+2]=Math.max(0,Math.min(255,Math.round(B[j])));
   }
   dstCtx.putImageData(imgd,0,0);
-
   ovSet(92,'Encoding…','Encoding to '+usFmt.toUpperCase());await tick();
-
   var mime=usFmt==='jpeg'?'image/jpeg':usFmt==='webp'?'image/webp':'image/png';
   var q=usFmt==='png'?undefined:1.0;
   dstCv.toBlob(function(blob){
@@ -3350,6 +3437,16 @@ async function usDoUpscale(){
     setTimeout(function(){usProgwrap.style.display='none';},800);
   },mime,q);
 }
+
+usDlbtn.onclick=function(){
+  if(!usResultBlob){alert('Upscale an image first.');return;}
+  var ext=usFmt==='jpeg'?'jpg':usFmt;
+  var filename=usSrcName+'_'+usOutW+'x'+usOutH+'.'+ext;
+  var url=URL.createObjectURL(usResultBlob);
+  var a=document.createElement('a');a.href=url;a.download=filename;a.style.display='none';
+  document.body.appendChild(a);a.click();
+  setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},5000);
+};
 
 })();
 
@@ -3549,6 +3646,20 @@ document.addEventListener('click',e=>{
   },{passive:true});
 })();
 
+(function(){
+  const dot=document.getElementById('cursorDot');
+  if(!dot||matchMedia('(pointer:coarse)').matches)return;
+  let cx=0,cy=0,dx=0,dy=0;
+  document.addEventListener('mousemove',e=>{cx=e.clientX;cy=e.clientY;});
+  document.addEventListener('mouseover',e=>{
+    const t=e.target.closest('a,button,.btn,.swatch,.toggle-btn,.preset-btn,input[type=range],.drop-zone,.upload-zone');
+    dot.classList.toggle('active',!!t);
+  });
+  (function loop(){
+    dx+=(cx-dx)*.15;dy+=(cy-dy)*.15;
+    dot.style.left=dx+'px';dot.style.top=dy+'px';
+    requestAnimationFrame(loop);
+  })();
 })();
 
 (function(){
