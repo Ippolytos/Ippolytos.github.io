@@ -9,19 +9,19 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  --bg:           #0F0D19;   
-  --surface:      #1A1726;   
-  --card:         #0A0812;   
-  --panel:        #06050C;   
-  --border:       #322D45;   
-  --accent:       #B7A4FF;   
+  --bg:           #0F0D19;
+  --surface:      #1A1726;
+  --card:         #0A0812;
+  --panel:        #06050C;
+  --border:       #322D45;
+  --accent:       #B7A4FF;
   --accent2:      #D0BDF2;
-  --text:         #F2E9FF;   
-  --muted:        #A69DC8;   
-  --lavender:     #E0D2FF;   
-  --lavender-dim: #B09EE0;   
-  --sky:          #CAB9FF;   
-  --surface-dark: #1A1726;   
+  --text:         #F2E9FF;
+  --muted:        #A69DC8;
+  --lavender:     #E0D2FF;
+  --lavender-dim: #B09EE0;
+  --sky:          #CAB9FF;
+  --surface-dark: #1A1726;
   --header-bg:    rgba(15,13,25,0.92);
   --grid-color:   rgba(183,164,255,0.04);
   --audio-bg:     rgba(183,164,255,.06);
@@ -30,24 +30,23 @@
   --dl-bg:        rgba(6,5,12,.90);
   --hint-bg:      rgba(15,13,25,.94);
   --checker-dark: #1A1726;
-  --sat-left:     #231F31;   
+  --sat-left:     #231F31;
 }
 
-
 :root[data-theme="light"]{
-  --bg:           #F0EAE0;   
-  --surface:      #FAFAFA;   
-  --card:         #FFFFFF;   
-  --panel:        #F5F0E8;   
-  --border:       #A89C90;   
-  --accent:       #2E7391;   
-  --accent2:      #3B8C4E;   
-  --text:         #201C28;   
-  --muted:        #635147;   
-  --lavender:     #4A8FAD;   
-  --lavender-dim: #2E7391;   
-  --sky:          #6AAFCD;   
-  --surface-dark: #D0C8BC;   
+  --bg:           #F0EAE0;
+  --surface:      #FAFAFA;
+  --card:         #FFFFFF;
+  --panel:        #F5F0E8;
+  --border:       #A89C90;
+  --accent:       #2E7391;
+  --accent2:      #3B8C4E;
+  --text:         #201C28;
+  --muted:        #635147;
+  --lavender:     #4A8FAD;
+  --lavender-dim: #2E7391;
+  --sky:          #6AAFCD;
+  --surface-dark: #D0C8BC;
   --header-bg:    rgba(240,234,224,0.95);
   --grid-color:   rgba(46,115,145,0.07);
   --audio-bg:     rgba(32,28,40,.05);
@@ -55,8 +54,8 @@
   --audio-color:  rgba(32,28,40,.70);
   --dl-bg:        rgba(240,234,224,.95);
   --hint-bg:      rgba(250,250,250,.97);
-  --checker-dark: #D0C8BC;   
-  --sat-left:     #C8BFB5;   
+  --checker-dark: #D0C8BC;
+  --sat-left:     #C8BFB5;
 }
 
 html{scroll-behavior:smooth}
@@ -243,6 +242,7 @@ html{scroll-behavior:smooth}
 .hero-label{border-radius:24px !important}
 .toast{border-radius:8px !important}
 #audio-toggle{border-radius:50px !important}
+#next-tool-btn{border-radius:50px !important}
 
 body{
   font-family:'DM Mono',monospace;
@@ -276,8 +276,8 @@ header{
 }
 
 .logo{
-  font-family:'Great Vibes','Times New Roman',serif;
-  font-size:24px;
+  font-family:'Vivaldi','Great Vibes',serif;
+  font-size:29px;
   font-weight: 600;
   color:var(--accent);
   letter-spacing:.9px;
@@ -980,7 +980,7 @@ footer{
 }
 
 .footer-logo{
-  font-family:'Great Vibes','Times New Roman',serif;
+  font-family:'Vivaldi','Great Vibes',serif;
   font-size:28px;
   font-weight: 600;
   color:var(--accent);
@@ -1022,6 +1022,40 @@ footer{
 .playing .bar:nth-child(3){animation-delay:.05s;animation-duration:.6s}
 .playing .bar:nth-child(4){animation-delay:.25s;animation-duration:.75s}
 @keyframes barBounce{0%{height:3px;opacity:.5}100%{height:14px;opacity:1}}
+
+#next-tool-btn{
+  position:fixed;bottom:90px;right:28px;
+  z-index:8999;
+  background:var(--audio-bg);
+  border:1px solid var(--audio-border);
+  border-radius:50px;
+  padding:10px 20px;
+  display:none;
+  align-items:center;gap:8px;
+  cursor:pointer;
+  backdrop-filter:blur(12px);
+  transition:background .3s,border-color .3s,box-shadow .3s,opacity .4s,transform .4s;
+  user-select:none;
+  font-family:'DM Mono',monospace;
+  color:var(--audio-color);
+  font-size:11px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:0;
+  transform:translateY(8px);
+}
+#next-tool-btn.visible{
+  display:flex;
+  opacity:1;
+  transform:translateY(0);
+}
+#next-tool-btn:hover{
+  background:var(--audio-bg);
+  filter:brightness(1.3);
+  border-color:rgba(183,164,255,.42);
+  color:var(--lavender);
+  box-shadow:0 0 20px rgba(183,164,255,.16);
+}
 
 .toast{
   position:fixed;bottom:80px;right:28px;
@@ -1400,8 +1434,7 @@ footer{
   50%{transform:translateY(-20px) rotate(8deg);opacity:.7}
 }
 
-header{transition:transform .4s cubic-bezier(.4,0,.2,1),background .3s,box-shadow .3s}
-header.header-hidden{transform:translateY(-100%)}
+header{transition:background .3s,box-shadow .3s}
 header.header-scrolled{box-shadow:0 4px 30px rgba(0,0,0,.15)}
 
 .card,.picker-widget,.editor-shell{
@@ -1491,13 +1524,11 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
 </style>
 </head>
 <body>
-<!-- INTERACTIVE OVERLAYS -->
 <div id="scroll-progress"></div>
 <canvas id="bg-brush-canvas"></canvas>
 <canvas id="particle-canvas"></canvas>
 <div id="shortcut-hint"></div>
 
-<!-- HEADER -->
 <header>
   <a href="#hero" class="logo">Hropiberhtaz</a>
   <nav>
@@ -1511,7 +1542,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </nav>
 </header>
 
-<!-- HERO -->
 <section id="hero">
   <div class="hero-blob"></div>
   <div class="hero-float"></div>
@@ -1522,7 +1552,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   <h1 class="hero-title reveal reveal-d1">We build tools<br>that feel <em>alive.</em></h1>
   <p class="hero-sub reveal reveal-d2">Four precision instruments for image obsessives. Pick, edit, recolor, and upscale — crafted so every interaction feels like play.</p>
   <div class="hero-cta reveal reveal-d3">
-    <a href="#colorpicker" class="btn btn-accent">Explore tools ↓</a>
+    <a href="#colorpicker" class="btn btn-accent" id="explore-tools-btn">Explore tools ↓</a>
     <a href="#upscale" class="btn">Upscale an image</a>
   </div>
   <div class="scroll-hint">
@@ -1531,12 +1561,10 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 </section>
 
-<!-- MARQUEE -->
 <div class="marquee-wrap">
   <div class="marquee-track" id="mq1"></div>
 </div>
 
-<!-- ── SECTION 01: COLOR PICKER ─────────────────────── -->
 <section class="tool-section" id="colorpicker">
   <canvas id="cp-brush-canvas"></canvas>
   <div class="section-head reveal">
@@ -1546,7 +1574,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 
   <div class="picker-shell">
-    <!-- Info side -->
     <div class="picker-info reveal reveal-left">
       <div class="features-list">
         <div class="feature-item">HSV canvas with smooth gradient — drag to paint the perfect hue</div>
@@ -1558,9 +1585,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       </div>
     </div>
 
-    <!-- Widget -->
     <div class="picker-widget reveal reveal-right reveal-d2">
-      <!-- Preview row -->
       <div class="picker-preview-row">
         <div class="color-swatch-big">
           <div class="checker-bg"></div>
@@ -1578,7 +1603,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
         </button>
       </div>
 
-      <!-- SV Canvas + Alpha -->
       <div style="display:flex;gap:10px;margin-bottom:12px">
         <div class="sv-canvas-wrap" id="svWrap" style="flex:1;position:relative">
           <canvas id="svCanvas" width="340" height="200"></canvas>
@@ -1590,13 +1614,11 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
         </div>
       </div>
 
-      <!-- Hue bar -->
       <div class="hue-wrap" id="hueWrap" style="position:relative;height:26px;border-radius:2px;overflow:hidden;cursor:pointer;margin-bottom:14px">
         <canvas id="hueCanvas" width="340" height="26" style="width:100%;height:100%;display:block"></canvas>
         <div class="hue-indicator" id="hueIndicator" style="left:0%"></div>
       </div>
 
-      <!-- RGBA Adjustable Inputs -->
       <div class="rgba-input-row">
         <div class="rgba-input-cell">
           <label style="color:#f87171">R</label>
@@ -1623,7 +1645,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 </section>
 
-<!-- ── DIVIDER 01→02 ─────────────────────────────────── -->
 <div class="rotxt-divider">
   <div class="rotxt-bg">
     <span>COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;COLORS</span>
@@ -1646,7 +1667,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 </div>
 
-<!-- ── SECTION 02: HUE EDITOR ────────────────────────── -->
 <section class="tool-section" id="hueeditor">
   <div class="section-head reveal">
     <div class="section-num"><span class="section-icon">✦</span> 02 — Edit your image</div>
@@ -1655,7 +1675,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 
   <div class="editor-shell reveal-scale reveal-d1">
-    <!-- Canvas area -->
     <div class="editor-canvas-area">
       <div class="drop-zone" id="dropZone">
         <div class="drop-icon" id="dzIcon">◈</div>
@@ -1669,7 +1688,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       </div>
     </div>
 
-    <!-- Side panel -->
     <div class="editor-panel" id="editorPanel">
       <div class="no-image-state" id="noImgMsg">
         <div style="font-size:36px;margin-bottom:14px;color:var(--accent);opacity:.3">◈</div>
@@ -1677,7 +1695,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       </div>
 
       <div id="editorControls" style="display:none">
-        <!-- Adjustments -->
         <div class="panel-section">
           <div class="panel-label">Adjustments</div>
 
@@ -1708,13 +1725,11 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
           <button class="reset-small" id="editorResetSliders">↺ Reset adjustments</button>
         </div>
 
-        <!-- Presets -->
         <div class="panel-section">
           <div class="panel-label">Presets</div>
           <div class="presets-grid" id="presetsGrid"></div>
         </div>
 
-        <!-- Export -->
         <div class="panel-export">
           <button class="btn btn-accent btn-full" id="exportPng">↓ Download PNG</button>
           <div class="export-row">
@@ -1727,7 +1742,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 </section>
 
-<!-- ── DIVIDER 02→03 ─────────────────────────────────── -->
 <div class="rotxt-divider">
   <div class="rotxt-bg">
     <span>RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;RECOLOR</span>
@@ -1750,7 +1764,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 </div>
 
-<!-- ── SECTION 03: RECOLOR ────────────────────────────── -->
 <section class="tool-section" id="recolor">
   <div class="section-head reveal">
     <div class="section-num"><span class="section-icon">◈</span> 03 — Recolor your world</div>
@@ -1760,7 +1773,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
 
   <div class="recolor-shell">
 
-    <!-- Controls card -->
     <div class="card reveal reveal-d1">
       <div class="card-label">Controls</div>
       <div class="control-row">
@@ -1799,7 +1811,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       </div>
     </div>
 
-    <!-- Palette card -->
     <div class="card reveal reveal-d2">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
         <div class="card-label" style="margin-bottom:0">Palette</div>
@@ -1810,19 +1821,15 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
           <input type="file" id="jsonInput" accept=".json" style="display:none">
         </div>
       </div>
-      <div class="palette-row" id="swatchesContainer">
-        <!-- swatches injected by JS -->
-      </div>
+      <div class="palette-row" id="swatchesContainer"></div>
     </div>
 
-    <!-- Upload zone -->
     <div class="upload-zone reveal reveal-d3" id="recolorUpload">
       <p>Drag & drop an image here or click to browse</p>
       <button class="btn btn-accent" id="recolorSelectBtn">Select Image</button>
       <input type="file" id="recolorFileInput" accept="image" style="display:none">
     </div>
 
-    <!-- Canvas panel -->
     <div class="canvas-panel-r" id="canvasPanel">
       <canvas id="recolorCanvas"></canvas>
       <div class="action-row">
@@ -1836,7 +1843,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 </section>
 
-<!-- ── DIVIDER 03→04 ─────────────────────────────────── -->
 <div class="rotxt-divider">
   <div class="rotxt-bg">
     <span>UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;UPSCALE</span>
@@ -1859,7 +1865,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 </div>
 
-<!-- ── SECTION 04: UPSCALE ────────────────────────────── -->
 <section class="tool-section" id="upscale">
   <div class="section-head reveal">
     <div class="section-num"><span class="section-icon">↑</span> 04 — Upscale your image</div>
@@ -1869,7 +1874,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
 
   <div class="reveal-scale reveal-d1">
 
-    <!-- Upload card -->
     <div class="card" style="margin-bottom:1rem">
       <div class="panel-label">01 — Upload Image</div>
       <div id="us-dropzone">
@@ -1893,7 +1897,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       </div>
     </div>
 
-    <!-- Size card -->
     <div class="card" id="us-sizecard" style="display:none;margin-bottom:1rem">
       <div class="panel-label">02 — Target Size</div>
       <div class="us-sizerow">
@@ -1919,7 +1922,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       </div>
     </div>
 
-    <!-- Crop card -->
     <div class="card" id="us-cropcard" style="margin-bottom:1rem">
       <div class="panel-label">03 — Crop to Target Ratio (drag to select)</div>
       <div id="us-cropwrap">
@@ -1938,7 +1940,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       </div>
     </div>
 
-    <!-- Action card -->
     <div class="card" id="us-actioncard" style="display:none;margin-bottom:1rem">
       <div class="panel-label">04 — Upscale</div>
       <div class="us-arow">
@@ -1970,7 +1971,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       </div>
     </div>
 
-    <!-- Result card -->
     <div class="card" id="us-resultcard" style="margin-bottom:1rem">
       <div class="panel-label">Result</div>
       <div id="us-statsbar">
@@ -1998,16 +1998,13 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <div class="reveal">
     <div class="footer-logo">Hropiberhtaz</div>
     <div class="footer-tagline" style="margin-top:6px">feel the difference</div>
   </div>
-  <div class="footer-copy reveal reveal-d2">© 2026 — Crafted with obsession</div>
+  <div class="footer-copy reveal reveal-d2">© 2026 — Crafted with boredom</div>
 </footer>
-
-<!-- DOWNLOAD PROGRESS OVERLAY -->
 
 <div id="us-progress-overlay">
   <div id="us-ov-title">Upscaling image…</div>
@@ -2023,7 +2020,11 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   <div id="dl-progress-sub">Processing image at full resolution</div>
 </div>
 
-<!-- AUDIO TOGGLE -->
+<button id="next-tool-btn" title="Scroll to next tool">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  <span id="next-tool-label">next tool</span>
+</button>
+
 <button id="audio-toggle" title="Toggle lo-fi music">
   <div class="bars">
     <div class="bar" style="height:5px"></div>
@@ -2034,13 +2035,63 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   <span id="audio-label">lo-fi</span>
 </button>
 
-<!-- COPIED TOAST -->
 <div class="toast" id="toast">Copied!</div>
 
-<!-- Hidden file input for editor -->
 <input type="file" id="editorFileInput" accept="image" style="display:none">
 
 <script>
+(function(){
+  var toolIds=['colorpicker','hueeditor','recolor','upscale'];
+  var nextBtn=document.getElementById('next-tool-btn');
+  var nextLabel=document.getElementById('next-tool-label');
+  if(!nextBtn)return;
+
+  var toolNames={colorpicker:'ColorDrop',hueeditor:'HUE Editor',recolor:'Chroma',upscale:'UpScale'};
+
+  function getCurrentToolIdx(){
+    var scrollY=window.scrollY;
+    var cur=-1;
+    for(var i=0;i<toolIds.length;i++){
+      var el=document.getElementById(toolIds[i]);
+      if(el&&scrollY>=el.offsetTop-250)cur=i;
+    }
+    return cur;
+  }
+
+  function updateLabel(){
+    if(!nextBtn.classList.contains('visible'))return;
+    var idx=getCurrentToolIdx();
+    var nextIdx=idx+1;
+    if(nextIdx>=toolIds.length){
+      if(nextLabel)nextLabel.textContent='back to top';
+    } else {
+      if(nextLabel)nextLabel.textContent=toolNames[toolIds[nextIdx]]||'next tool';
+    }
+  }
+
+  document.querySelectorAll('.hero-cta a').forEach(function(a){
+    a.addEventListener('click',function(){
+      nextBtn.classList.add('visible');
+      setTimeout(updateLabel,400);
+    });
+  });
+
+  nextBtn.addEventListener('click',function(){
+    var idx=getCurrentToolIdx();
+    var nextIdx=idx+1;
+    if(nextIdx>=toolIds.length){
+      window.scrollTo({top:0,behavior:'smooth'});
+      if(nextLabel)nextLabel.textContent=toolNames[toolIds[0]]||'next tool';
+      return;
+    }
+    var target=document.getElementById(toolIds[nextIdx]);
+    if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+    setTimeout(updateLabel,600);
+  });
+
+  window.addEventListener('scroll',updateLabel,{passive:true});
+})();
+
 (function(){
   const items = ['ColorDrop','●','HUE','●','Chroma','●','UpScale','●','Color Obsession','●','Precision Tools','●','Pick · Edit · Recolor · Upscale','●','Built Different','●','Zero Sharpness Loss','●'];
   const repeated = [...items,...items,...items,...items];
@@ -2142,12 +2193,10 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     swatchFill.style.background=`rgba(${rgb.r},${rgb.g},${rgb.b},${alpha})`;
     hexDisplay.textContent=alpha===1?hex.toUpperCase():`rgba(${rgb.r},${rgb.g},${rgb.b},${alpha.toFixed(2)})`;
     rgbaDisplay.textContent=`rgba(${rgb.r},${rgb.g},${rgb.b},${alpha.toFixed(2)})`;
-    // sync number inputs
     document.getElementById('inR').value=rgb.r;
     document.getElementById('inG').value=rgb.g;
     document.getElementById('inB').value=rgb.b;
     document.getElementById('inA').value=Math.round(alpha*100);
-    // update copy button label
     const rgbaCopyBtn=document.getElementById('rgbaCopyBtn');
     if(rgbaCopyBtn) rgbaCopyBtn.querySelector('span.rgba-preview') && (rgbaCopyBtn.querySelector('span.rgba-preview').textContent=`rgba(${rgb.r},${rgb.g},${rgb.b},${alpha.toFixed(2)})`);
     svCursor.style.left=(sat*100)+'%';
@@ -2164,14 +2213,12 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     return{x,y};
   }
 
-  // SV drag
   svWrap.addEventListener('mousedown',e=>{
     draggingSV=true;
     const {x,y}=getSVPos(e,svWrap);
     sat=x;val=1-y;updateUI();
   });
 
-  // Hue drag
   hueWrap.addEventListener('mousedown',e=>{
     draggingHue=true;
     const r=hueWrap.getBoundingClientRect();
@@ -2179,7 +2226,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     drawSV();updateUI();
   });
 
-  // Alpha drag
   alphaWrap.addEventListener('mousedown',e=>{
     draggingAlpha=true;
     const r=alphaWrap.getBoundingClientRect();
@@ -2205,7 +2251,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
 
   document.addEventListener('mouseup',()=>{draggingSV=false;draggingHue=false;draggingAlpha=false});
 
-  // Touch support
   function touchToMouse(e,handler){
     if(e.touches.length){const t=e.touches[0];handler({clientX:t.clientX,clientY:t.clientY});}
     e.preventDefault();
@@ -2215,7 +2260,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   hueWrap.addEventListener('touchstart',e=>touchToMouse(e,e2=>hueWrap.dispatchEvent(new MouseEvent('mousedown',e2))),{passive:false});
   hueWrap.addEventListener('touchmove',e=>touchToMouse(e,e2=>document.dispatchEvent(new MouseEvent('mousemove',e2))),{passive:false});
 
-  // Hex edit on click
   hexDisplay.addEventListener('click',()=>{
     const rgb=hsvToRgb(hue,sat,val);
     const currentHex=rgbToHex(rgb.r,rgb.g,rgb.b);
@@ -2239,7 +2283,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     input.addEventListener('keydown',e=>{if(e.key==='Enter')commit();if(e.key==='Escape'){input.replaceWith(hexDisplay);}});
   });
 
-  // Copy HEX
   const toast=document.getElementById('toast');
   copyBtn.addEventListener('click',()=>{
     const rgb=hsvToRgb(hue,sat,val);
@@ -2251,7 +2294,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     });
   });
 
-  // RGBA number input → update picker
   function applyRgbaInputs(){
     const r=Math.max(0,Math.min(255,parseInt(document.getElementById('inR').value)||0));
     const g=Math.max(0,Math.min(255,parseInt(document.getElementById('inG').value)||0));
@@ -2268,7 +2310,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     el.addEventListener('change', applyRgbaInputs);
   });
 
-  // RGBA copy button
   const rgbaCopyBtn=document.getElementById('rgbaCopyBtn');
   if(rgbaCopyBtn){
     rgbaCopyBtn.addEventListener('click',()=>{
@@ -2286,9 +2327,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     });
   }
 
-  // Init
   drawHue();drawSV();updateUI();
-  // initial hue = salmon/orange-ish
   hue=0.045;sat=0.8;val=1;drawSV();updateUI();
 })();
 
@@ -2427,7 +2466,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     showProgress('Rendering image…','Applying filters at full resolution');
     setProgress(10);
 
-    // Use OffscreenCanvas when available for off-main-thread speed
     const useOffscreen=typeof OffscreenCanvas!=='undefined';
     const ex=useOffscreen?new OffscreenCanvas(w,h):document.createElement('canvas');
     if(!useOffscreen){ex.width=w;ex.height=h;}
@@ -2478,7 +2516,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   const loadJsonBtn=document.getElementById('loadJsonBtn');
   const jsonInput=document.getElementById('jsonInput');
 
-  // Quality & mode toggles
   let quality='high',mode='smooth';
   document.querySelectorAll('#qualityGroup .toggle-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
@@ -2498,9 +2535,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
 
   let origImgEl=null,previewImageData=null,fullResImageData=null;
 
-  // Build default palette — Noice violet cosmos + aurora teal
   const defaultColors=['#B7A4FF','#9F88D9','#D0BDF2','#4A8FAD','#6AAFCD','#57A86A'];
-  // Build default palette with staggered pop-in
   function buildDefaultSwatches(){
     defaultColors.forEach((hex, i)=>{
       setTimeout(()=>addSwatch(hex, true), i * 60);
@@ -2514,7 +2549,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     sw.querySelector('input').onchange=e=>{
       e.target.parentElement.style.background=e.target.value;
       sw.classList.remove('pulse');
-      void sw.offsetWidth; // reflow
+      void sw.offsetWidth;
       sw.classList.add('pulse');
       sw.addEventListener('animationend',()=>sw.classList.remove('pulse'),{once:true});
     };
@@ -2569,7 +2604,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
 
   fileInput.onchange=e=>{if(e.target.files[0])loadRecolorImage(e.target.files[0]);};
 
-  // Drag & drop on upload zone
   uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.style.borderColor='var(--accent)'});
   uploadZone.addEventListener('dragleave',()=>uploadZone.style.borderColor='');
   uploadZone.addEventListener('drop',e=>{
@@ -2586,14 +2620,12 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
         origImgEl=img;
         const nw=img.naturalWidth, nh=img.naturalHeight;
 
-        // Store full-res pixel data for export
         const fullCanvas=document.createElement('canvas');
         fullCanvas.width=nw; fullCanvas.height=nh;
         const fullCtx=fullCanvas.getContext('2d',{willReadFrequently:true});
         fullCtx.drawImage(img,0,0,nw,nh);
         fullResImageData=fullCtx.getImageData(0,0,nw,nh);
 
-        // Downscale for preview/processing speed
         let w=nw, h=nh;
         const maxDim=quality==='high'?1200:quality==='med'?800:500;
         if(w>maxDim||h>maxDim){
@@ -2698,7 +2730,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     const outData=new ImageData(nw,nh);
     const dst=outData.data;
     const totalPx=nw*nh;
-    // Process in chunks of ~80k pixels so the browser can breathe
     const CHUNK=80000;
     let idx=0;
 
@@ -2734,13 +2765,12 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
         }
       }
       idx=end;
-      const pct=Math.round(idx/totalPx*85); // 0–85% for processing
+      const pct=Math.round(idx/totalPx*85);
       dlBar.style.width=pct+'%';dlPct.textContent=pct+'%';
 
       if(idx<totalPx){
-        setTimeout(processChunk,0); // yield to browser between chunks
+        setTimeout(processChunk,0);
       } else {
-        // Encoding phase
         dlTitle.textContent='Encoding PNG…';
         dlSub.textContent='Almost done!';
         dlBar.style.width='90%';dlPct.textContent='90%';
@@ -2768,26 +2798,20 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       }
     }
 
-    // Kick off first chunk after overlay renders
     setTimeout(processChunk,60);
   });
 
-  // ── Remove Image ──────────────────────────────────────
   const removeImgBtn = document.getElementById('removeImgBtn');
   if(removeImgBtn){
     removeImgBtn.addEventListener('click', ()=>{
-      // Clear state
       origImgEl = null;
       previewImageData = null;
       fullResImageData = null;
-      // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       canvas.width = 0; canvas.height = 0;
-      // Hide canvas panel, show upload zone again
       canvasPanel.style.display = 'none';
       uploadZone.style.display = '';
       downloadBtn.style.display = 'none';
-      // Reset file input so the same file can be re-added
       fileInput.value = '';
     });
   }
@@ -2796,17 +2820,17 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   let audioCtx=null,masterGain=null,reverbNode=null,isPlaying=false;
   let scheduledNodes=[],loopTimeoutId=null,nextEventTime=0;
   const chordSets=[
-    [0,4,7,11],   // maj7
-    [0,3,7,10],   // min7
-    [0,4,7,14],   // maj9  (open)
-    [0,3,7,14],   // min9
-    [0,5,7,12],   // sus2  (floaty)
+    [0,4,7,11],
+    [0,3,7,10],
+    [0,4,7,14],
+    [0,3,7,14],
+    [0,5,7,12],
   ];
-  const melodyOffsets=[0,2,4,7,9,12,14,16]; // pentatonic-ish, no half-steps
-  const rootNotes=[52,55,57,48,50];  // E3 G3 A3 C3 D3 — warm low roots
+  const melodyOffsets=[0,2,4,7,9,12,14,16];
+  const rootNotes=[52,55,57,48,50];
   let chordIdx=0;
 
-  const BPM=58;            // slow, breathing pace
+  const BPM=58;
   const BEAT=60/BPM;
   const BAR=BEAT*4;
 
@@ -2820,7 +2844,7 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
     masterGain.connect(audioCtx.destination);
     reverbNode=audioCtx.createConvolver();
     const sRate=audioCtx.sampleRate;
-    const revLen=sRate*2.8;  // 2.8 s tail
+    const revLen=sRate*2.8;
     const revBuf=audioCtx.createBuffer(2,revLen,sRate);
     for(let c=0;c<2;c++){
       const d=revBuf.getChannelData(c);
@@ -2997,16 +3021,14 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   if(!canvas) return;
   const ctx = canvas.getContext('2d');
 
-  const CELL   = 48;   // matches the CSS grid in body::before
-  const RADIUS = 3;    // cells lit up around cursor (Chebyshev)
-  const DECAY  = 0.055; // how fast brightness fades per frame (0–1)
+  const CELL   = 48;
+  const RADIUS = 3;
+  const DECAY  = 0.055;
 
-  // Dark mode: accent_lavender → accent_plum drift
-  const DARK_A = [183, 164, 255]; // accent_lavender      #B7A4FF
-  const DARK_B = [159, 136, 217]; // accent_plum          #9F88D9
-  // Light mode: aurora_blue_deep → aurora_blue_bright (teal, vivid on warm bg)
-  const LIGHT_A = [ 46, 115, 145]; // aurora_blue_deep    #2E7391
-  const LIGHT_B = [106, 175, 205]; // aurora_blue_bright  #6AAFCD
+  const DARK_A = [183, 164, 255];
+  const DARK_B = [159, 136, 217];
+  const LIGHT_A = [ 46, 115, 145];
+  const LIGHT_B = [106, 175, 205];
   let hueT = 0;
 
   function accentRGB(t) {
@@ -3021,7 +3043,6 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   }
 
   let W, H, cols, rows;
-  // sparse Map: key = "col,row", value = brightness 0..1
   let cells = new Map();
 
   function resize() {
@@ -3044,19 +3065,16 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   });
 
   function illuminate(mx, my) {
-    // find which cell the cursor is in
     const cx = Math.floor(mx / CELL);
     const cy = Math.floor(my / CELL);
     for (let dy = -RADIUS; dy <= RADIUS; dy++) {
       for (let dx = -RADIUS; dx <= RADIUS; dx++) {
         const col = cx + dx, row = cy + dy;
         if (col < 0 || row < 0 || col >= cols || row >= rows) continue;
-        // distance-based brightness falloff (Chebyshev-ish but smooth)
         const dist = Math.sqrt(dx*dx + dy*dy);
         const brightness = Math.max(0, 1 - dist / (RADIUS + 0.5));
         const key = col + ',' + row;
         const current = cells.get(key) || 0;
-        // only boost, never directly dim (decay handles dimming)
         if (brightness > current) cells.set(key, brightness);
       }
     }
@@ -3065,16 +3083,13 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
   function draw() {
     ctx.clearRect(0, 0, W, H);
 
-    // drift hue slowly
     hueT = (hueT + 0.004) % 1;
-    // ping-pong  0→1→0
     const t = hueT < 0.5 ? hueT * 2 : (1 - hueT) * 2;
     const [r, g, b] = accentRGB(t);
 
     const toDelete = [];
 
     cells.forEach((brightness, key) => {
-      // decay
       const next = brightness - DECAY;
       if (next <= 0.005) { toDelete.push(key); return; }
       cells.set(key, next);
@@ -3083,16 +3098,13 @@ nav a:hover::after,nav a.active::after{transform:scaleX(1)}
       const x = col * CELL;
       const y = row * CELL;
 
-      // filled cell with border — like a lit key
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
       const alpha = next * (isLight ? 0.22 : 0.18);
       const borderAlpha = next * (isLight ? 0.65 : 0.55);
 
-      // cell fill
       ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
       ctx.fillRect(x + 1, y + 1, CELL - 2, CELL - 2);
 
-      // cell border (top + left edges only — avoids double-drawing)
       ctx.strokeStyle = `rgba(${r},${g},${b},${borderAlpha})`;
       ctx.lineWidth = 1;
       ctx.strokeRect(x + 0.5, y + 0.5, CELL - 1, CELL - 1);
@@ -3114,7 +3126,7 @@ var usSrcImg=null,usSrcW=0,usSrcH=0,usSrcName='image';
 var usOutW=0,usOutH=0,usNeedsCrop=false;
 var usCropX=0,usCropY=0,usCropW=0,usCropH=0;
 var usFmt='png',usResultBlob=null;
-var usSharpCoeff=1.0; // multiplier for all USM amount values (0=none, 1=default, 2.5=ultra)
+var usSharpCoeff=1.0;
 
 var usFileinput   = document.getElementById('us-fileinput');
 var usDropzone    = document.getElementById('us-dropzone');
@@ -3140,7 +3152,6 @@ var usResultcard  = document.getElementById('us-resultcard');
 var usResultimg   = document.getElementById('us-resultimg');
 var usDlbtn       = document.getElementById('us-dlbtn');
 
-// Upload
 usDropzone.onclick = function(){ usFileinput.click(); };
 document.getElementById('us-changebtn').onclick = function(){ usFileinput.click(); };
 usDropzone.addEventListener('dragover',function(e){e.preventDefault();usDropzone.classList.add('over');});
@@ -3181,7 +3192,6 @@ function usHandleFile(file){
   reader.readAsDataURL(file);
 }
 
-// Size inputs
 usOutwEl.oninput=function(){
   var v=parseInt(usOutwEl.value);
   if(usLockratio.checked&&usSrcW&&usSrcH&&v>0)usOuthEl.value=Math.round(v*usSrcH/usSrcW);
@@ -3207,8 +3217,6 @@ document.querySelectorAll('.us-fmtbtn').forEach(function(btn){
   };
 });
 
-// Sharpness toggle
-// Sharpness toggle
 var usSharpLabels={
   '0':   'coefficient × 0.00 — no sharpening, pure Lanczos',
   '0.5': 'coefficient × 0.50 — subtle edge recovery',
@@ -3220,13 +3228,10 @@ var usSharpInput=document.getElementById('us-sharpinput');
 function usSetSharp(val,fromInput){
   val=Math.max(0,Math.min(10,val));
   usSharpCoeff=val;
-  // sync input field unless the change came from it
   if(!fromInput&&usSharpInput)usSharpInput.value=parseFloat(val.toFixed(2));
-  // highlight matching preset (or none if custom)
   document.querySelectorAll('.us-sharpbtn').forEach(function(b){
     b.classList.toggle('on', parseFloat(b.dataset.coeff)===val);
   });
-  // info line
   var info=document.getElementById('us-sharpinfo');
   if(!info)return;
   var key=String(val);
@@ -3242,7 +3247,6 @@ if(usSharpInput){
     if(!isNaN(v))usSetSharp(v,true);
   });
   usSharpInput.addEventListener('blur',function(){
-    // clamp and tidy on blur
     var v=parseFloat(usSharpInput.value);
     if(isNaN(v)||v<0)v=0;
     if(v>10)v=10;
@@ -3281,7 +3285,6 @@ function usUpdateSummary(){
   usAsummary.innerHTML='<b>'+sw+'×'+sh+'</b> → <b>'+usOutW+'×'+usOutH+' px</b><br>'+usRatioStr(sw,sh)+' → '+usRatioStr(usOutW,usOutH);
 }
 
-// Crop
 var usDrag={on:false,mode:'',sx:0,sy:0,sc:{}};
 function usImgPt(e){
   var r=usPreviewimg.getBoundingClientRect(),ds=usPreviewimg.clientWidth/usSrcW;
@@ -3356,12 +3359,10 @@ document.getElementById('us-clearbtn').onclick=function(){
   usCropW=0;usCropH=0;usCropinfo.textContent='Drag on the image to select crop area';
 };
 
-// Upscale button
 usUpscalebtn.onclick=usDoUpscale;
 function usSetprog(pct,txt){usProgfill.style.width=pct+'%';usProglabel.textContent=txt;}
 function usTick(){return new Promise(function(r){setTimeout(r,20);});}
 
-// Lanczos kernel
 function usLanczosKernel(x,a){
   if(x===0)return 1;if(Math.abs(x)>=a)return 0;
   var px=Math.PI*x;return(a*Math.sin(px)*Math.sin(px/a))/(px*px);
@@ -3449,7 +3450,6 @@ async function usDoUpscale(){
   if(!usOutW||!usOutH){alert('Set a target width and height first.');return;}
   if(usNeedsCrop&&usCropW<1){alert('Draw a crop region on the image first.');return;}
 
-  // ── Fullscreen overlay helpers ──
   var usOvEl   = document.getElementById('us-progress-overlay');
   var usOvBar  = document.getElementById('us-ov-bar');
   var usOvPct  = document.getElementById('us-ov-pct');
@@ -3481,7 +3481,6 @@ async function usDoUpscale(){
   usUpscalebtn.disabled=true;usUpscalebtn.textContent='Processing…';
   usResultcard.style.display='none';
 
-  // Show overlay and let it paint
   ovShow('Upscaling image…','Extracting source region');
   ovSet(2,'Extracting source region…',null);
   await tick();
@@ -3493,7 +3492,6 @@ async function usDoUpscale(){
 
   ovSet(6,'Multi-step pre-scaling…',null);await tick();
 
-  // ── Multi-step pre-scale (browser bilinear, fast) ──
   var cur=srcCv;
   while(cur.width<usOutW*0.5||cur.height<usOutH*0.5){
     var nw2=Math.min(cur.width*2,usOutW),nh2=Math.min(cur.height*2,usOutH);
@@ -3507,12 +3505,11 @@ async function usDoUpscale(){
 
   ovSet(12,'Lanczos resampling…',null);await tick();
 
-  // ── Chunked Lanczos resampling ──
   var tw=usOutW,th=usOutH,a=3;
   var xRatio=psw/tw,yRatio=psh/th;
   var dstCv=document.createElement('canvas');dstCv.width=tw;dstCv.height=th;
   var dstCtx=dstCv.getContext('2d'),dstImg=dstCtx.createImageData(tw,th),dstData=dstImg.data;
-  var LROW=8; // rows per chunk — keeps UI responsive
+  var LROW=8;
   var totalRows=th;
 
   for(var dy=0;dy<th;dy+=LROW){
@@ -3540,7 +3537,6 @@ async function usDoUpscale(){
         dstData[di+3]=Math.max(0,Math.min(255,Math.round(al/wSum)));
       }
     }
-    // Progress: Lanczos = 12→70%
     var lanczPct=12+((dy+LROW)/totalRows)*58;
     var elapsed=(Date.now()-_startTs)/1000;
     var eta=elapsed/Math.max(0.001,(dy+LROW)/totalRows)*(1-(dy+LROW)/totalRows);
@@ -3551,7 +3547,6 @@ async function usDoUpscale(){
 
   ovSet(72,'Sharpening (float-domain)…',null);await tick();
 
-  // ── Unsharp mask ──
   var scaleArea=(tw*th)/(sw*sh),logScale=Math.log2(Math.max(1.001,scaleArea));
   var amount=Math.min(6.0,2*Math.pow(logScale,0.9837));
   var sigmaSh=Math.min(2.5,0.6+0.2*logScale);
@@ -3601,12 +3596,11 @@ async function usDoUpscale(){
     setTimeout(function(){usResultcard.scrollIntoView({behavior:'smooth',block:'start'});},100);
     usUpscalebtn.disabled=false;usUpscalebtn.textContent='Upscale ↑';
     ovHide();
-    // also hide old inline bar
     setTimeout(function(){usProgwrap.style.display='none';},800);
   },mime,q);
 }
 
-})(); // end UpScale IIFE
+})();
 
 
 (function(){
@@ -3626,9 +3620,7 @@ async function usDoUpscale(){
   const N=50;
   const particles=[];
   const isDark = () => document.documentElement.getAttribute('data-theme') !== 'light';
-  // Dark: violet, lavender, plum shimmer
   const COLORS_DARK  = ['#B7A4FF','#9A86E0','rgba(224,210,255,0.50)','#D0BDF2'];
-  // Light: aurora teal, green, warm umber — vivid on warm parchment bg
   const COLORS_LIGHT = ['#4A8FAD','#57A86A','#6AAFCD','#3B8C4E'];
   const getColors = () => isDark() ? COLORS_DARK : COLORS_LIGHT;
 
@@ -3706,7 +3698,7 @@ async function usDoUpscale(){
         el.classList.remove('anim-done');
         if(el.classList.contains('section-title')||el.classList.contains('hero-title')){
           el.style.animation='none';
-          void el.offsetWidth; 
+          void el.offsetWidth;
           el.style.animation='';
         }
       }
@@ -3754,7 +3746,6 @@ document.addEventListener('click',e=>{
   const icon = document.getElementById('theme-icon');
   const root = document.documentElement;
 
-  // Persist preference
   const saved = localStorage.getItem('theme') || 'dark';
   applyTheme(saved);
 
@@ -3797,10 +3788,9 @@ document.addEventListener('click',e=>{
     requestAnimationFrame(()=>{
       const y=window.scrollY;
       if(y>120){
-        header.classList.toggle('header-hidden',y>lastY&&y>300);
         header.classList.add('header-scrolled');
       }else{
-        header.classList.remove('header-hidden','header-scrolled');
+        header.classList.remove('header-scrolled');
       }
       lastY=y;ticking=false;
     });
@@ -3853,7 +3843,6 @@ document.addEventListener('click',e=>{
   io.observe(title);
 
   function scrambleReveal(el){
-    // Get all text nodes and their positions
     const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
     const textNodes=[];
     let node;
