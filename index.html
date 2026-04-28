@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hropiberhtaz — Tools that feel alive</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
@@ -277,11 +277,11 @@ header{
 }
 
 .logo{
-  font-family:'Great Vibes',cursive;
+  font-family:'Vivaldi','Great Vibes',serif;
   font-size:29px;
   font-weight: 600;
   color:var(--accent);
-  letter-spacing:1px;
+  letter-spacing:.9px;
   text-decoration:none;
 }
 
@@ -981,7 +981,7 @@ footer{
 }
 
 .footer-logo{
-  font-family:'Great Vibes',cursive;
+  font-family:'Vivaldi','Great Vibes',serif;
   font-size:28px;
   font-weight: 600;
   color:var(--accent);
@@ -3152,6 +3152,14 @@ var usProglabel   = document.getElementById('us-proglabel');
 var usResultcard  = document.getElementById('us-resultcard');
 var usResultimg   = document.getElementById('us-resultimg');
 var usDlbtn       = document.getElementById('us-dlbtn');
+
+usDlbtn.addEventListener('click',function(){
+  if(!usResultBlob)return;
+  var ext=usFmt==='jpeg'?'jpg':usFmt;
+  var url=URL.createObjectURL(usResultBlob);
+  var a=document.createElement('a');a.href=url;a.download=usSrcName+'-upscaled.'+ext;a.click();
+  URL.revokeObjectURL(url);
+});
 
 usDropzone.onclick = function(){ usFileinput.click(); };
 document.getElementById('us-changebtn').onclick = function(){ usFileinput.click(); };
