@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hropiberhtaz — Tools that feel alive</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -53,8 +54,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 #keyboard-whisper.show{opacity:1;transform:translateY(0)}
 
 /* LIVE CLOCK */
-#live-clock{position: fixed;top: 20px;left: 50%;transform: translateX(-50%);z-index: 10000;padding: 6px 14px;font-family: 'Space Grotesk', 'Poppins', sans-serif;font-size: 16px;letter-spacing: 1px;color: var(--muted);opacity: 0.55;pointer-events: none;}
-
+#live-clock{position: fixed;top: 20px;left: 50%;transform: translateX(-50%);z-index: 10000;padding: 8px 20px;font-family: 'Orbitron', monospace;font-size: 28px;font-weight: 700;letter-spacing: 3px;color: #0ff;text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);background: rgba(0, 0, 0, 0.3);border-radius: 8px;backdrop-filter: blur(4px);pointer-events: none;}
 /* SECTION DOTS */
 #section-dots{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:9000;display:flex;flex-direction:column;gap:10px;}
 .s-dot{width:6px;height:6px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .3s cubic-bezier(.34,1.56,.64,1);position:relative;}
