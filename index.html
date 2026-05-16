@@ -56,17 +56,22 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 
 /* LIVE CLOCK */
 #live-clock { position: fixed;
-  top: 10px;
+  top: 14px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10000;
-  font-family: 'Cormorant Garamond', 'Playfair Display', serif;
-  font-weight: 300;
-  font-size: 28px;
-  letter-spacing: 6px;
-  color: #B3FD95;
-  opacity: 0.7;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--accent);
+  opacity: 0.6;
   pointer-events: none;
+  background: rgba(13,15,14,0.55);
+  padding: 5px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(168,196,144,0.1);
+  backdrop-filter: blur(12px);
 }
 /* SECTION DOTS */
 #section-dots{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:9000;display:flex;flex-direction:column;gap:10px;}
@@ -537,55 +542,53 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
   #section-dots{display:none}
 }
 
-/* YIN YANG INTRO */
+/* HARMONY INTRO */
 #yinyang-intro {
   position:fixed;inset:0;z-index:99999;
   background:#0d0f0e;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;
-  transition:opacity .7s ease, transform .7s ease;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;
+  transition:opacity .9s cubic-bezier(.4,0,.2,1), transform .9s cubic-bezier(.4,0,.2,1);
 }
-#yinyang-intro.fade-out{opacity:0;pointer-events:none;}
+#yinyang-intro.fade-out{opacity:0;transform:scale(1.04);pointer-events:none;}
 #yinyang-intro.gone{display:none;}
-
 .yy-canvas-wrap {
-  position:relative;width:200px;height:200px;
+  position:relative;width:240px;height:240px;
+  filter: drop-shadow(0 0 40px rgba(168,196,144,0.18)) drop-shadow(0 0 80px rgba(143,201,184,0.1));
 }
-#yy-canvas {
-  width:200px;height:200px;
-}
+#yy-canvas { width:240px;height:240px; }
 .yy-tagline {
   font-family:'Playfair Display',serif;
   font-style:italic;
-  font-size:18px;
-  color:rgba(226,232,222,0.7);
-  letter-spacing:2px;
+  font-size:20px;
+  color:rgba(226,232,222,0.8);
+  letter-spacing:3px;
   opacity:0;
-  animation: yyTextFade 0.8s ease 0.5s forwards;
+  animation: yyFadeUp 1s cubic-bezier(.22,1,.36,1) 0.6s forwards;
 }
 .yy-sub {
   font-family:'JetBrains Mono',monospace;
   font-size:9px;
-  letter-spacing:4px;
+  letter-spacing:5px;
   text-transform:uppercase;
   color:rgba(168,196,144,0.5);
   opacity:0;
-  animation: yyTextFade 0.8s ease 0.9s forwards;
+  animation: yyFadeUp 1s cubic-bezier(.22,1,.36,1) 1s forwards;
 }
-@keyframes yyTextFade{
-  from{opacity:0;transform:translateY(8px);}
-  to{opacity:1;transform:translateY(0);}
+@keyframes yyFadeUp{
+  from{opacity:0;transform:translateY(12px) scale(.98);}
+  to{opacity:1;transform:translateY(0) scale(1);}
 }
 </style>
 </head>
 <body>
 
-<!-- YIN YANG INTRO SPLASH -->
+<!-- HARMONY INTRO SPLASH -->
 <div id="yinyang-intro">
   <div class="yy-canvas-wrap">
-    <canvas id="yy-canvas" width="400" height="400"></canvas>
+    <canvas id="yy-canvas" width="480" height="480"></canvas>
   </div>
-  <div class="yy-tagline">balance in every pixel</div>
-  <div class="yy-sub">Hropiberhtaz — loading</div>
+  <div class="yy-tagline">Harmony in every pixel</div>
+  <div class="yy-sub">Hropiberhtaz — Loading</div>
 </div>
 
 <div id="fancy-cursor"></div>
@@ -606,6 +609,7 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
   <div class="s-dot" data-label="HUE" data-id="hueeditor"></div>
   <div class="s-dot" data-label="Chroma" data-id="recolor"></div>
   <div class="s-dot" data-label="UpScale" data-id="upscale"></div>
+  <div class="s-dot" data-label="URLClean" data-id="urlcleaner"></div>
 </div>
 
 <div id="mobile-nav">
@@ -1044,6 +1048,7 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
     <div>
       <div class="uc-section-label">Quick Presets</div>
       <div class="uc-preset-row">
+        <button class="uc-preset" data-preset="aggressive" style="border-color:rgba(200,176,96,.4);color:var(--gold);">Aggressive</button>
         <button class="uc-preset" data-preset="all">All trackers</button>
         <button class="uc-preset" data-preset="none">None</button>
         <button class="uc-preset" data-preset="utm">UTM only</button>
@@ -1123,167 +1128,251 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
 // LIVE CLOCK
 (function(){const el=document.getElementById('live-clock');function tick(){const n=new Date();el.textContent=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});}tick();setInterval(tick,1000);})();
 
-// YIN YANG KOI FISH INTRO ANIMATION
+// HARMONY SYMBOL INTRO ANIMATION
 (function(){
   const intro = document.getElementById('yinyang-intro');
   const canvas = document.getElementById('yy-canvas');
   const ctx = canvas.getContext('2d');
-  const W = 400, H = 400, cx = W/2, cy = H/2, R = 170;
+  const W = 480, H = 480, cx = W/2, cy = H/2;
 
+  const TOTAL_DURATION = 3200;
   let startTime = null;
-  const TOTAL_DURATION = 2800; // ms before fade starts
-  const SPIN_DURATION = 1800;  // ms for full spin-in
-  let raf;
 
-  function easeOutCubic(t){ return 1 - Math.pow(1-t, 3); }
-  function easeInOutCubic(t){ return t<0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
+  function ease(t){ return t<0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
+  function easeOut(t){ return 1-Math.pow(1-t,3); }
+  function easeIn(t){ return t*t*t; }
 
-  // Draw the classic Taijitu (yin yang) symbol with koi fish style
-  function drawYinYang(progress, spinAngle) {
+  // Color palette
+  const GREEN  = 'rgba(168,196,144,';
+  const TEAL   = 'rgba(143,201,184,';
+  const ROSE   = 'rgba(201,160,160,';
+  const GOLD   = 'rgba(200,176,96,';
+  const WHITE  = 'rgba(226,232,222,';
+
+  function drawHarmony(t) {
     ctx.clearRect(0, 0, W, H);
 
-    const scale = 0.3 + 0.7 * easeOutCubic(Math.min(progress * 1.5, 1));
-    const rot = -Math.PI/2 + spinAngle;
+    // ── Phase 1: Outer ring assembles (0 → 0.25) ──
+    const ringP = Math.min(t / 0.25, 1);
+    const ringAlpha = easeOut(ringP);
 
+    // Pulsing outer glow rings
+    const pulse = 0.5 + 0.5 * Math.sin(t * Math.PI * 8);
+    for (let i = 3; i >= 1; i--) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, 185 + i * 12, 0, Math.PI * 2);
+      ctx.strokeStyle = GREEN + (ringAlpha * 0.04 * (4-i) * (1 + pulse * 0.3)) + ')';
+      ctx.lineWidth = 8;
+      ctx.stroke();
+    }
+
+    // Main outer ring — draws in like a clock
+    const ringEnd = ringAlpha * Math.PI * 2;
     ctx.save();
     ctx.translate(cx, cy);
-    ctx.rotate(rot);
-    ctx.scale(scale, scale);
-
-    const alpha = Math.min(progress * 2, 1);
-    ctx.globalAlpha = alpha;
-
-    // Outer circle border (subtle glow)
-    ctx.shadowBlur = 30 * alpha;
-    ctx.shadowColor = 'rgba(168,196,144,0.3)';
-
-    // ── YANG (white/light) half ──
+    ctx.rotate(-Math.PI / 2);
     ctx.beginPath();
-    ctx.arc(0, 0, R, -Math.PI/2, Math.PI/2, false); // right arc
-    ctx.arc(0, R/2, R/2, Math.PI/2, -Math.PI/2, true);  // small upper circle (part of yang)
-    ctx.arc(0, -R/2, R/2, Math.PI/2, -Math.PI/2, false); // small lower circle (part of yin = cut out)
-    ctx.closePath();
-    ctx.fillStyle = '#f0f0f0';
-    ctx.fill();
-
-    // ── YIN (black/dark) half ──
-    ctx.beginPath();
-    ctx.arc(0, 0, R, Math.PI/2, -Math.PI/2, false); // left arc
-    ctx.arc(0, -R/2, R/2, -Math.PI/2, Math.PI/2, true);
-    ctx.arc(0, R/2, R/2, -Math.PI/2, Math.PI/2, false);
-    ctx.closePath();
-    ctx.fillStyle = '#111111';
-    ctx.fill();
-
-    // ── Kill all shadow before drawing dots ──
-    ctx.shadowBlur = 0;
-    ctx.shadowColor = 'transparent';
-
-    // ── Dots: correct opposite-color circles ──
-    // The yang (white) half BULGES up to (0, -R/2) → dot there must be BLACK
-    // The yin (black) half BULGES down to (0,  R/2) → dot there must be WHITE
-    const dotR = R / 6.5;
-
-    // BLACK dot in the yang (white) bulge at top
-    ctx.beginPath();
-    ctx.arc(0, -R/2, dotR, 0, Math.PI*2);
-    ctx.fillStyle = '#111111';
-    ctx.fill();
-
-    // WHITE dot in the yin (black) bulge at bottom
-    ctx.beginPath();
-    ctx.arc(0, R/2, dotR, 0, Math.PI*2);
-    ctx.fillStyle = '#f0f0f0';
-    ctx.fill();
-
-    // ── Outer ring (thin border) ──
-    ctx.beginPath();
-    ctx.arc(0, 0, R, 0, Math.PI*2);
-    ctx.strokeStyle = 'rgba(168,196,144,0.25)';
-    ctx.lineWidth = 2;
+    ctx.arc(0, 0, 185, 0, ringEnd);
+    ctx.strokeStyle = GREEN + Math.min(ringAlpha * 1.4, 1) + ')';
+    ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // ── KOI FISH body details on Yang (white fish) ──
-    // Scale/fin details on white side
-    ctx.save();
-    ctx.clip();  // clip won't work here, draw with opacity
-    ctx.restore();
-
-    // Draw koi scale texture on WHITE fish (yang = top-right area)
-    drawKoiScales(0, R/2, R, '#ccc', 0.18 * alpha);    // light scales on dark side's dot area
-    drawKoiFins(0, R*0.65, '#e8e8e8', 0.22 * alpha, 1); // yang fish fins
-
-    // Draw koi scale texture on BLACK fish (yin = top-left area)
-    drawKoiScales(0, -R/2, R, '#333', 0.15 * alpha);   // dark scales
-    drawKoiFins(0, -R*0.65, '#222', 0.2 * alpha, -1);  // yin fish fins
-
-    ctx.restore();
-  }
-
-  function drawKoiScales(fx, fy, r, color, alpha) {
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.rotate(-Math.PI/2 + (startTime ? (performance.now() - startTime) / 1000 * 0.8 : 0));
-    ctx.globalAlpha = alpha;
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1.2;
-    // Small arc "scales" arranged in a patch
-    for(let i = -2; i <= 2; i++) {
-      for(let j = -1; j <= 1; j++) {
-        const sx = fx + i * 14;
-        const sy = fy + j * 12;
-        if(Math.sqrt(sx*sx + sy*sy) < r * 0.45) {
-          ctx.beginPath();
-          ctx.arc(sx, sy, 7, 0, Math.PI);
-          ctx.stroke();
-        }
-      }
+    // Tick marks on outer ring (appear as ring completes)
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * Math.PI * 2;
+      const tickT = i / 12;
+      if (ringAlpha < tickT) continue;
+      const ta = easeOut(Math.max(0, (ringAlpha - tickT) / (1/12)));
+      const isMain = i % 3 === 0;
+      const len = isMain ? 14 : 8;
+      const r = 185;
+      ctx.save();
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.moveTo(r - len, 0);
+      ctx.lineTo(r, 0);
+      ctx.strokeStyle = isMain ? GREEN + (ta * 0.9) + ')' : TEAL + (ta * 0.45) + ')';
+      ctx.lineWidth = isMain ? 1.5 : 0.8;
+      ctx.stroke();
+      ctx.restore();
     }
     ctx.restore();
-  }
 
-  function drawKoiFins(fx, fy, color, alpha, dir) {
+    // ── Phase 2: 6-petal flower of life emerges (0.18 → 0.55) ──
+    const flowerP = Math.min(Math.max((t - 0.18) / 0.37, 0), 1);
+    const flowerAlpha = easeOut(flowerP);
+    const petalR = 72;
+
     ctx.save();
     ctx.translate(cx, cy);
-    ctx.rotate(-Math.PI/2 + (startTime ? (performance.now() - startTime) / 1000 * 0.8 : 0));
-    ctx.globalAlpha = alpha;
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1.5;
-    // Simple flowing fin curves
-    ctx.beginPath();
-    ctx.moveTo(fx, fy);
-    ctx.bezierCurveTo(fx + dir*30, fy - 20, fx + dir*50, fy + 10, fx + dir*25, fy + 30);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(fx, fy + 15);
-    ctx.bezierCurveTo(fx + dir*20, fy + 5, fx + dir*40, fy + 25, fx + dir*18, fy + 38);
-    ctx.stroke();
+    for (let i = 0; i < 6; i++) {
+      const angle = (i / 6) * Math.PI * 2 - Math.PI / 6;
+      const petalT = i / 6;
+      if (flowerP < petalT) continue;
+      const pa = easeOut(Math.min((flowerP - petalT) / (1/6), 1));
+      const px = Math.cos(angle) * petalR;
+      const py = Math.sin(angle) * petalR;
+
+      ctx.beginPath();
+      ctx.arc(px, py, petalR, 0, Math.PI * 2);
+      ctx.strokeStyle = TEAL + (pa * 0.22) + ')';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+    // Center circle
+    if (flowerAlpha > 0) {
+      ctx.beginPath();
+      ctx.arc(0, 0, petalR, 0, Math.PI * 2);
+      ctx.strokeStyle = TEAL + (flowerAlpha * 0.28) + ')';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
     ctx.restore();
+
+    // ── Phase 3: Inner tri-loop harmony symbol (0.35 → 0.75) ──
+    const symP = Math.min(Math.max((t - 0.35) / 0.4, 0), 1);
+    const symAlpha = easeOut(symP);
+    const loopR = 52;
+
+    // Three interlocking rings — the Borromean / harmony knot
+    ctx.save();
+    ctx.translate(cx, cy);
+    const triColors = [GREEN, ROSE, TEAL];
+    for (let i = 0; i < 3; i++) {
+      const angle = (i / 3) * Math.PI * 2 - Math.PI / 2;
+      const bx = Math.cos(angle) * (loopR * 0.72);
+      const by = Math.sin(angle) * (loopR * 0.72);
+      const ringProgress = Math.min(Math.max((symP - i * 0.15) / 0.55, 0), 1);
+      const ra = easeOut(ringProgress);
+
+      // Filled ring with gradient feel
+      ctx.beginPath();
+      ctx.arc(bx, by, loopR, 0, Math.PI * 2 * ra);
+      ctx.strokeStyle = triColors[i] + (ra * 0.85) + ')';
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      // Inner glow
+      ctx.beginPath();
+      ctx.arc(bx, by, loopR * 0.65, 0, Math.PI * 2 * ra);
+      ctx.strokeStyle = triColors[i] + (ra * 0.18) + ')';
+      ctx.lineWidth = 8;
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // ── Phase 4: Radiating spokes / mandala lines (0.5 → 0.82) ──
+    const spokeP = Math.min(Math.max((t - 0.5) / 0.32, 0), 1);
+    const spokeAlpha = easeOut(spokeP);
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    const numSpokes = 24;
+    for (let i = 0; i < numSpokes; i++) {
+      const angle = (i / numSpokes) * Math.PI * 2;
+      const sT = (i / numSpokes);
+      if (spokeP < sT * 0.6) continue;
+      const sa = easeOut(Math.min((spokeP - sT * 0.6) / 0.4, 1));
+      const innerR = 130;
+      const outerR = 165;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(angle) * innerR, Math.sin(angle) * innerR);
+      ctx.lineTo(Math.cos(angle) * (innerR + (outerR - innerR) * sa), Math.sin(angle) * (innerR + (outerR - innerR) * sa));
+      ctx.strokeStyle = i % 6 === 0 ? GOLD + (sa * 0.6) + ')' : GREEN + (sa * 0.2) + ')';
+      ctx.lineWidth = i % 6 === 0 ? 1.2 : 0.6;
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // ── Phase 5: Central star / seed (0.62 → 0.9) ──
+    const starP = Math.min(Math.max((t - 0.62) / 0.28, 0), 1);
+    const starAlpha = easeOut(starP);
+    const starScale = easeOut(starP);
+
+    if (starAlpha > 0) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(starScale, starScale);
+
+      // Six-pointed star (Star of David / hexagram = harmony in geometry)
+      const drawStar = (r1, r2, pts, rot, color, alpha, lw) => {
+        ctx.beginPath();
+        for (let i = 0; i <= pts * 2; i++) {
+          const a = (i / (pts * 2)) * Math.PI * 2 + rot;
+          const r = i % 2 === 0 ? r1 : r2;
+          i === 0 ? ctx.moveTo(Math.cos(a)*r, Math.sin(a)*r) : ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = color + alpha + ')';
+        ctx.lineWidth = lw;
+        ctx.stroke();
+      };
+
+      drawStar(38, 18, 6, -Math.PI/2, GREEN,  starAlpha * 0.9, 1.5);
+      drawStar(26, 12, 6, -Math.PI/6, TEAL,   starAlpha * 0.55, 1);
+      drawStar(14,  7, 6, -Math.PI/2, WHITE,  starAlpha * 0.7, 1);
+
+      // Center dot — the still point
+      ctx.beginPath();
+      ctx.arc(0, 0, 4 * starScale, 0, Math.PI * 2);
+      ctx.fillStyle = GREEN + (starAlpha) + ')';
+      ctx.fill();
+
+      // Tiny halo around center
+      ctx.beginPath();
+      ctx.arc(0, 0, 10, 0, Math.PI * 2);
+      ctx.strokeStyle = GREEN + (starAlpha * 0.35) + ')';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    // ── Phase 6: Final bloom — orbiting particles (0.75 → 1.0) ──
+    const bloomP = Math.min(Math.max((t - 0.75) / 0.25, 0), 1);
+    if (bloomP > 0) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      const numParticles = 18;
+      for (let i = 0; i < numParticles; i++) {
+        const baseAngle = (i / numParticles) * Math.PI * 2;
+        const orbitAngle = baseAngle + bloomP * Math.PI * 0.5 * (i % 2 === 0 ? 1 : -1);
+        const orbitR = 148 + Math.sin(baseAngle * 3) * 16;
+        const px = Math.cos(orbitAngle) * orbitR;
+        const py = Math.sin(orbitAngle) * orbitR;
+        const pa = easeOut(Math.min((bloomP - (i/numParticles)*0.3) / 0.7, 1));
+        if (pa <= 0) continue;
+        const dotR = i % 3 === 0 ? 2.5 : 1.5;
+        ctx.beginPath();
+        ctx.arc(px, py, dotR, 0, Math.PI * 2);
+        const colors = [GREEN, TEAL, ROSE, GOLD];
+        ctx.fillStyle = colors[i % 4] + (pa * 0.85) + ')';
+        ctx.fill();
+      }
+      ctx.restore();
+    }
   }
 
   function animate(ts) {
-    if(!startTime) startTime = ts;
+    if (!startTime) startTime = ts;
     const elapsed = ts - startTime;
-    const progress = Math.min(elapsed / SPIN_DURATION, 1);
-    const spinAngle = easeInOutCubic(progress) * Math.PI * 2;
+    const t = Math.min(elapsed / TOTAL_DURATION, 1);
 
-    drawYinYang(progress, spinAngle);
+    drawHarmony(ease(t));
 
-    if(elapsed < TOTAL_DURATION) {
-      raf = requestAnimationFrame(animate);
+    if (elapsed < TOTAL_DURATION + 600) {
+      requestAnimationFrame(animate);
     } else {
-      // Final resting state: fully drawn, no rotation
-      drawYinYang(1, 0);
-      // Begin fade out
+      // Hold final frame, then fade
       setTimeout(() => {
         intro.classList.add('fade-out');
-        setTimeout(() => intro.classList.add('gone'), 720);
-      }, 200);
+        setTimeout(() => intro.classList.add('gone'), 940);
+      }, 150);
     }
   }
 
-  // Start after a tiny delay so page has loaded
-  setTimeout(() => requestAnimationFrame(animate), 80);
+  setTimeout(() => requestAnimationFrame(animate), 60);
 })();
 
 // CURSOR + TRAIL
@@ -1304,7 +1393,7 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
 (function(){
   const dots=document.querySelectorAll('.s-dot');
   dots.forEach(d=>{d.addEventListener('click',()=>{const el=document.getElementById(d.dataset.id);if(el)el.scrollIntoView({behavior:'smooth'});});});
-  const sectionIds=['cozy-landing','colorpicker','hueeditor','recolor','upscale'];
+  const sectionIds=['cozy-landing','colorpicker','hueeditor','recolor','upscale','urlcleaner'];
   window.addEventListener('scroll',()=>{let cur='cozy-landing';sectionIds.forEach(id=>{const s=document.getElementById(id);if(s&&window.scrollY>=s.offsetTop-300)cur=id;});dots.forEach(d=>d.classList.toggle('active',d.dataset.id===cur));},{passive:true});
 })();
 
@@ -1511,7 +1600,7 @@ document.addEventListener('click',e=>{const btn=e.target.closest('.squish-btn,.p
 
 // NEXT TOOL
 (function(){
-  const tools=[{id:'colorpicker',label:'ColorDrop'},{id:'hueeditor',label:'HUE Editor'},{id:'recolor',label:'Chroma'},{id:'upscale',label:'UpScale'}];
+  const tools=[{id:'colorpicker',label:'ColorDrop'},{id:'hueeditor',label:'HUE Editor'},{id:'recolor',label:'Chroma'},{id:'upscale',label:'UpScale'},{id:'urlcleaner',label:'URLClean'}];
   const btn=document.getElementById('next-tool-sprout'),lbl=document.getElementById('next-tool-label');
   window.addEventListener('scroll',()=>{let cur=0;tools.forEach((t,i)=>{const s=document.getElementById(t.id);if(s&&window.scrollY>=s.offsetTop-200)cur=i;});const nxt=tools[cur+1];if(nxt){btn.classList.add('budding');lbl.textContent=nxt.label;btn.onclick=()=>document.getElementById(nxt.id).scrollIntoView({behavior:'smooth'});}else btn.classList.remove('budding');},{passive:true});
 })();
@@ -1794,6 +1883,224 @@ async function usDoUpscale(){
     setTimeout(function(){usProgwrap.style.display='none';},800);
   },mime,q);
 }
+})();
+
+// URL CLEANER
+(function(){
+  const PARAM_SETS = {
+    utm:     /^utm_/i,
+    fbclid:  /^(fbclid|gclid|gad_source|msclkid|dclid|twclid|ttclid|li_fat_id|igshid|reddit_cid)$/i,
+    ref:     /^(ref|referrer|referral|referer|source)$/i,
+    aff:     /^(aff|aff_id|affiliate|affid|partner|partner_id|tag|zanpid|yclid|srid|irclickid|impact_id|clickid|cid|click_id|clickId|tracking_id|trackingId|track_id|trackId|wickedid|affiliate_id|affiliateId)$/i,
+    mc:      /^(mc_|_ke$|__s$)/i,
+    si:      /^(si|igshid|__s|_hsenc|_hsmi|hsa_acc|hsa_cam|hsa_grp|hsa_ad|hsa_src|hsa_tgt|hsa_kw|hsa_mt|hsa_net|hsa_ver|hsCtaTracking|__hsfp|__hssc|__hstc)$/i,
+  };
+
+  // All params in the aggressive list
+  const AGGRESSIVE_PARAMS = new Set([
+    'utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id',
+    'utm_source_platform','utm_creative_format','utm_marketing_tactic',
+    'gclid','gclsrc','fbclid','msclkid','dclid','reddit_cid','twclid','li_fat_id',
+    'mc_cid','mc_eid','_ke','sb_referer_host',
+    'ref','referrer','referral','click_id','clickid','clickId','tracking_id','trackingId','track_id','trackId',
+    'source','pk_source','pk_medium','pk_campaign','pk_keyword','pk_content',
+    'mtm_source','mtm_medium','mtm_campaign','mtm_keyword','mtm_content','mtm_cid','mtm_group','mtm_placement',
+    'oly_anon_id','oly_enc_id','vero_conv','vero_id','yxm_campaign',
+    'adgroup_id','ad_id','adset_id','campaign_id','placement','device','matchtype','network','keyword','position','creative','targetid',
+    'affiliate_id','affiliateId','aff_id','partner','wickedid','_cid','_sid',
+    'hsCtaTracking','hsa_cam','hsa_grp','hsa_mt','hsa_src','hsa_ad','hsa_acc','hsa_net','hsa_kw','hsa_tgt','hsa_ver',
+    '__s','__hsfp','__hssc','__hstc','__utmz','__utma','__utmb','__utmc','__utmv',
+    'ga_client_id','_ga','_gac','_gl',
+    'sessionId','session_id','sid','phpsessid','jsessionid','aspsessionid','AWSALB','AWSALBCORS'
+  ]);
+
+  let aggressiveMode = false;
+
+  function getToggles() {
+    const on = {};
+    ['utm','fbclid','ref','aff','mc','si'].forEach(k => {
+      const el = document.querySelector('#uc-t-'+k+' input');
+      on[k] = el ? el.checked : false;
+    });
+    return on;
+  }
+
+  function getCustomParams() {
+    const raw = (document.getElementById('uc-custom').value || '').trim();
+    if (!raw) return [];
+    return raw.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+  }
+
+  function shouldRemove(param, toggles, customParams) {
+    const p = param.toLowerCase();
+    if (aggressiveMode) {
+      if (AGGRESSIVE_PARAMS.has(param) || AGGRESSIVE_PARAMS.has(p)) return true;
+      // Also match prefix patterns in aggressive mode
+      if (/^utm_/i.test(param) || /^mc_/i.test(param) || /^mtm_/i.test(param) || /^pk_/i.test(param) || /^hsa_/i.test(param) || /^__/i.test(param)) return true;
+    }
+    if (customParams.includes(p)) return true;
+    for (const k of Object.keys(toggles)) {
+      if (toggles[k] && PARAM_SETS[k] && PARAM_SETS[k].test(param)) return true;
+    }
+    return false;
+  }
+
+  function cleanSingleUrl(raw, toggles, customParams, decode, sortParams, stripTrailing) {
+    raw = raw.trim();
+    if (!raw) return { clean: '', removed: 0, original: raw };
+    let url;
+    try { url = new URL(raw); } catch(e) {
+      try { url = new URL('https://' + raw); } catch(e2) { return { clean: raw, removed: 0, original: raw }; }
+    }
+
+    const toDelete = [];
+    url.searchParams.forEach((_, key) => {
+      if (shouldRemove(key, toggles, customParams)) toDelete.push(key);
+    });
+    toDelete.forEach(k => url.searchParams.delete(k));
+
+    if (sortParams) {
+      const entries = [...url.searchParams.entries()].sort((a,b) => a[0].localeCompare(b[0]));
+      url.search = '';
+      entries.forEach(([k,v]) => url.searchParams.append(k,v));
+    }
+
+    let result = url.toString();
+    if (decode) { try { result = decodeURIComponent(result); } catch(e) {} }
+    if (stripTrailing) result = result.replace(/\/+$/, '');
+    result = result.replace(/\?$/, '');
+
+    return { clean: result, removed: toDelete.length, original: raw };
+  }
+
+  function runCleaner() {
+    const input = document.getElementById('uc-input').value.trim();
+    if (!input) { alert('Paste at least one URL first.'); return; }
+
+    const toggles = getToggles();
+    const customParams = getCustomParams();
+    const decode = document.querySelector('#uc-t-decode input').checked;
+    const sortParams = document.querySelector('#uc-t-sort input').checked;
+    const stripTrailing = document.querySelector('#uc-t-trailing input').checked;
+
+    const lines = input.split('\n').map(l => l.trim()).filter(Boolean);
+    const results = lines.map(l => cleanSingleUrl(l, toggles, customParams, decode, sortParams, stripTrailing));
+
+    const totalRemoved = results.reduce((s,r) => s + r.removed, 0);
+    const totalBytesSaved = results.reduce((s,r) => s + Math.max(0, r.original.length - r.clean.length), 0);
+    const alreadyClean = results.filter(r => r.removed === 0).length;
+
+    document.getElementById('uc-output').value = results.map(r => r.clean).join('\n');
+    document.getElementById('uc-s-urls').textContent = results.length;
+    document.getElementById('uc-s-removed').textContent = totalRemoved;
+    document.getElementById('uc-s-bytes').textContent = totalBytesSaved;
+    document.getElementById('uc-s-clean').textContent = alreadyClean;
+
+    const diffRow = document.getElementById('uc-diff-row');
+    diffRow.innerHTML = '';
+    results.forEach((r, i) => {
+      const chip = document.createElement('span');
+      chip.className = 'uc-diff-chip ' + (r.removed > 0 ? 'saved' : 'same');
+      chip.textContent = r.removed > 0 ? '−'+r.removed+' param'+(r.removed>1?'s':'') : 'clean';
+      chip.title = 'URL '+(i+1)+': '+r.original;
+      diffRow.appendChild(chip);
+    });
+
+    document.getElementById('uc-out-box').classList.add('has-result');
+    document.getElementById('uc-out-box').scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+
+  document.getElementById('uc-clean-btn').addEventListener('click', runCleaner);
+
+  document.getElementById('uc-clear-btn').addEventListener('click', function() {
+    document.getElementById('uc-input').value = '';
+    document.getElementById('uc-output').value = '';
+    document.getElementById('uc-out-box').classList.remove('has-result');
+    document.getElementById('uc-diff-row').innerHTML = '';
+    ['uc-s-urls','uc-s-removed','uc-s-bytes','uc-s-clean'].forEach(id => document.getElementById(id).textContent = '0');
+  });
+
+  document.getElementById('uc-copy-btn').addEventListener('click', function() {
+    const txt = document.getElementById('uc-output').value;
+    navigator.clipboard.writeText(txt).then(() => {
+      const btn = document.getElementById('uc-copy-btn');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('done-copying');
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('done-copying'); }, 1600);
+    });
+  });
+
+  document.getElementById('uc-dl-btn').addEventListener('click', function() {
+    const txt = document.getElementById('uc-output').value;
+    if (!txt) return;
+    const blob = new Blob([txt], {type:'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'cleaned-urls.txt'; a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.querySelectorAll('.uc-toggle').forEach(label => {
+    label.addEventListener('click', function() {
+      const cb = this.querySelector('input[type=checkbox]');
+      cb.checked = !cb.checked;
+      this.classList.toggle('on', cb.checked);
+      // If we touch toggles manually, deactivate aggressive mode visual
+      aggressiveMode = false;
+      document.querySelector('[data-preset="aggressive"]').style.background = '';
+    });
+  });
+
+  document.querySelectorAll('.uc-preset').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const preset = this.dataset.preset;
+      const allKeys = ['utm','fbclid','ref','aff','mc','si'];
+
+      // Reset aggressive mode
+      aggressiveMode = false;
+      document.querySelector('[data-preset="aggressive"]').style.background = '';
+      document.querySelector('[data-preset="aggressive"]').style.boxShadow = '';
+
+      if (preset === 'aggressive') {
+        aggressiveMode = true;
+        // Enable all toggles visually
+        allKeys.forEach(k => {
+          const label = document.getElementById('uc-t-'+k);
+          const cb = label.querySelector('input');
+          cb.checked = true;
+          label.classList.add('on');
+        });
+        // Highlight the aggressive button
+        this.style.background = 'rgba(200,176,96,0.13)';
+        this.style.boxShadow = '0 0 14px rgba(200,176,96,0.22)';
+        // Show what's being removed in the custom box as hint
+        document.getElementById('uc-custom').placeholder = 'Aggressive mode active — ' + AGGRESSIVE_PARAMS.size + ' tracking params targeted';
+        return;
+      }
+
+      // Restore placeholder
+      document.getElementById('uc-custom').placeholder = 'e.g. source, campaign, promo_id';
+
+      let toEnable = [];
+      if (preset === 'all')    toEnable = allKeys;
+      if (preset === 'none')   toEnable = [];
+      if (preset === 'utm')    toEnable = ['utm'];
+      if (preset === 'social') toEnable = ['fbclid','si','ref'];
+      if (preset === 'email')  toEnable = ['utm','mc'];
+      allKeys.forEach(k => {
+        const label = document.getElementById('uc-t-'+k);
+        const cb = label.querySelector('input');
+        const active = toEnable.includes(k);
+        cb.checked = active;
+        label.classList.toggle('on', active);
+      });
+    });
+  });
+
+  document.getElementById('uc-input').addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') runCleaner();
+  });
 })();
 </script>
 </body>
