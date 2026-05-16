@@ -20,14 +20,14 @@
   --radius-xs:6px;--radius-sm:10px;--radius-md:18px;--radius-lg:28px;--radius-xl:40px;
 }
 :root[data-theme="light"]{
-  --bg:#f2efe8;--surface:#fdfaf5;--card:#ffffff;--panel:#ece8df;
-  --border:#bab0a0;--accent:#4a7a52;--accent2:#b06060;--accent3:#3a8a78;
-  --text:#222018;--muted:#726050;--sage:#3a6a42;--sage-dim:#4a7a52;
-  --rose:#a04848;--gold:#8a7020;--surface-dark:#ddd8cc;
-  --header-bg:rgba(242,239,232,0.94);--grid-color:rgba(74,122,82,0.04);
-  --audio-bg:rgba(34,32,24,.04);--audio-border:rgba(34,32,24,.15);
-  --audio-color:rgba(34,32,24,.6);--dl-bg:rgba(242,239,232,.96);
-  --hint-bg:rgba(253,250,245,.98);--checker-dark:#d8d0c4;--sat-left:#c0d0b8;
+  --bg:#F5EDE0;--surface:#FFF5EB;--card:#FFFAF4;--panel:#EDE0CE;
+  --border:#C9A87A;--accent:#A45D3C;--accent2:#B86484;--accent3:#CC7722;
+  --text:#2A1A0E;--muted:#8A6B3E;--sage:#9C551F;--sage-dim:#A45D3C;
+  --rose:#9B525D;--gold:#B05D10;--surface-dark:#E8D5BA;
+  --header-bg:rgba(245,237,224,0.95);--grid-color:rgba(164,93,60,0.05);
+  --audio-bg:rgba(42,26,14,.04);--audio-border:rgba(42,26,14,.15);
+  --audio-color:rgba(42,26,14,.6);--dl-bg:rgba(245,237,224,.97);
+  --hint-bg:rgba(255,245,235,.99);--checker-dark:#DFC5A0;--sat-left:#E8C99A;
 }
 html{scroll-behavior:smooth}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;cursor:none;}
@@ -39,9 +39,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 [data-theme="light"] body::before{opacity:.5}
 
 /* CURSOR */
-#fancy-cursor{position:fixed;width:12px;height:12px;border-radius:50%;background:var(--accent);pointer-events:none;z-index:99999;mix-blend-mode:difference;transition:transform .12s ease,width .18s ease,height .18s ease;transform:translate(-50%,-50%);}
-#fancy-cursor-ring{position:fixed;width:36px;height:36px;border-radius:50%;border:1px solid rgba(168,196,144,.5);pointer-events:none;z-index:99998;transition:left .09s ease,top .09s ease;transform:translate(-50%,-50%);}
-#cursor-trail-canvas{position:fixed;inset:0;pointer-events:none;z-index:99996;}
+#cursor-trail-canvas{position:fixed;inset:0;pointer-events:none;z-index:99999;}
 *{cursor:none!important;}
 
 /* SCROLL PROGRESS */
@@ -486,13 +484,13 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
 
 /* MISC */
 [data-theme="light"] .toggle-pebble{color:var(--muted)}
-[data-theme="light"] .splat-zone:hover,[data-theme="light"] .splat-zone.draggy{background:rgba(74,122,82,.05);border-color:var(--sage)}
+[data-theme="light"] .splat-zone:hover,[data-theme="light"] .splat-zone.draggy{background:rgba(164,93,60,.05);border-color:var(--sage)}
 [data-theme="light"] .cozy-btn-filled{color:#fff}
-[data-theme="light"] .soundbar{background:#4a7a52;opacity:.9}
-[data-theme="light"] #upscale .us-badge.ok{background:rgba(74,122,82,.09);color:var(--accent);border:1px solid rgba(74,122,82,.25)}
+[data-theme="light"] .soundbar{background:#A45D3C;opacity:.9}
+[data-theme="light"] #upscale .us-badge.ok{background:rgba(164,93,60,.09);color:var(--accent);border:1px solid rgba(164,93,60,.25)}
 [data-theme="light"] #upscale .us-fmtbtn.on{color:#fff}
 [data-theme="light"] #upscale #us-upscalebtn{color:#fff}
-[data-theme="light"] .us-sharpbtn.on{background:rgba(74,122,82,.09)}
+[data-theme="light"] .us-sharpbtn.on{background:rgba(164,93,60,.09)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 ::selection{background:rgba(168,196,144,.22);color:var(--text)}
 
@@ -592,8 +590,6 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
   <div class="yy-sub">Hropiberhtaz — Loading</div>
 </div>
 
-<div id="fancy-cursor"></div>
-<div id="fancy-cursor-ring"></div>
 <canvas id="cursor-trail-canvas"></canvas>
 <div id="scroll-prog"></div>
 <div id="scan-line"></div>
@@ -1376,15 +1372,94 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
   setTimeout(() => requestAnimationFrame(animate), 60);
 })();
 
-// CURSOR + TRAIL
+// CURSOR + TRAIL (flow.html style — canvas lines + glowing dot)
 (function(){
-  const cur=document.getElementById('fancy-cursor'),ring=document.getElementById('fancy-cursor-ring'),tc=document.getElementById('cursor-trail-canvas'),tctx=tc.getContext('2d');
-  let rx=0,ry=0,tx=0,ty=0;const trail=[];const TL=18;
-  function resize(){tc.width=window.innerWidth;tc.height=window.innerHeight;}resize();window.addEventListener('resize',resize);
-  document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY;cur.style.left=tx+'px';cur.style.top=ty+'px';trail.push({x:tx,y:ty});if(trail.length>TL)trail.shift();});
-  function followRing(){rx+=(tx-rx)*.1;ry+=(ty-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(followRing);}followRing();
-  function drawTrail(){tctx.clearRect(0,0,tc.width,tc.height);for(let i=1;i<trail.length;i++){const a=(i/trail.length)*0.1,r=1.8*(i/trail.length);tctx.beginPath();tctx.arc(trail[i].x,trail[i].y,r,0,Math.PI*2);tctx.fillStyle=`rgba(168,196,144,${a})`;tctx.fill();}requestAnimationFrame(drawTrail);}drawTrail();
-  document.querySelectorAll('a,button,input,label,.swatch-pebble,.splat-zone,.dropper-zone,.preset-lump,.cfp-row,.hist-swatch').forEach(el=>{el.addEventListener('mouseenter',()=>{cur.style.width='22px';cur.style.height='22px';});el.addEventListener('mouseleave',()=>{cur.style.width='12px';cur.style.height='12px';});});
+  const tc = document.getElementById('cursor-trail-canvas');
+  const tctx = tc.getContext('2d');
+
+  // Spawn at top-left corner
+  let mouseX = 24;
+  let mouseY = 24;
+  let overLight = false; // whether cursor is hovering something light-colored
+
+  function resize(){ tc.width = window.innerWidth; tc.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Detect if cursor is over a button-like element with light bg and non-light text
+  function isLightButton(el) {
+    if (!el) return false;
+    const tag = el.tagName;
+    const role = el.getAttribute('role');
+    const isBtn = tag === 'BUTTON' || tag === 'A' || tag === 'LABEL' ||
+                  role === 'button' || el.classList.contains('cozy-btn') ||
+                  el.classList.contains('cozy-btn-filled') || el.classList.contains('preset-lump') ||
+                  el.classList.contains('toggle-pebble') || el.classList.contains('uc-preset') ||
+                  el.classList.contains('us-pbtn') || el.classList.contains('us-fmtbtn');
+    if (!isBtn) {
+      // Walk up one level (e.g. span inside button)
+      return el.parentElement ? isLightButton(el.parentElement) : false;
+    }
+    const style = window.getComputedStyle(el);
+    const bg = style.backgroundColor;
+    const color = style.color;
+    const parseBrightness = (str) => {
+      const m = str.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if (!m) return null;
+      return (parseInt(m[1])*299 + parseInt(m[2])*587 + parseInt(m[3])*114) / 1000;
+    };
+    const bgB = parseBrightness(bg);
+    const fgB = parseBrightness(color);
+    if (bgB === null || bgB < 155) return false; // not a light bg
+    if (fgB !== null && fgB > 180) return false;  // light text = skip
+    return true;
+  }
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    overLight = isLightButton(e.target);
+  });
+
+  function drawCursor(){
+    tctx.clearRect(0, 0, tc.width, tc.height);
+
+    const t = Date.now() * 0.008;
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+
+    let glow, halo, mid, core, ring;
+
+    if (overLight) {
+      // Dark mode hovering light element → deep charcoal-brown
+      // Light mode hovering light element → deep espresso
+      glow = isLight ? 'rgba(42,20,10,0.85)'   : 'rgba(30,22,10,0.90)';
+      halo = isLight ? 'rgba(42,20,10,0.20)'   : 'rgba(30,22,10,0.20)';
+      mid  = isLight ? 'rgba(80,40,20,0.92)'   : 'rgba(55,38,15,0.92)';
+      core = isLight ? 'rgba(255,240,230,0.98)' : 'rgba(255,252,230,0.98)';
+      ring = isLight ? 'rgba(42,20,10,0.55)'   : 'rgba(30,22,10,0.55)';
+    } else {
+      // Normal: dark=gold, light=dusty rose
+      glow = isLight ? 'rgba(155,82,93,0.90)'  : 'rgba(210,178,96,0.90)';
+      halo = isLight ? 'rgba(155,82,93,0.22)'  : 'rgba(210,178,96,0.20)';
+      mid  = isLight ? 'rgba(183,110,121,0.92)': 'rgba(224,196,110,0.92)';
+      core = isLight ? 'rgba(255,240,244,0.98)': 'rgba(255,252,230,0.98)';
+      ring = isLight ? 'rgba(155,82,93,0.52)'  : 'rgba(210,178,96,0.52)';
+    }
+
+    tctx.shadowBlur = 18; tctx.shadowColor = glow;
+    tctx.beginPath(); tctx.arc(mouseX, mouseY, 8, 0, Math.PI*2);
+    tctx.fillStyle = halo; tctx.fill();
+    tctx.beginPath(); tctx.arc(mouseX, mouseY, 4, 0, Math.PI*2);
+    tctx.fillStyle = mid; tctx.fill();
+    tctx.beginPath(); tctx.arc(mouseX, mouseY, 2, 0, Math.PI*2);
+    tctx.fillStyle = core; tctx.fill();
+    tctx.shadowBlur = 0;
+    tctx.beginPath(); tctx.arc(mouseX, mouseY, 12 + Math.sin(t)*2, 0, Math.PI*2);
+    tctx.strokeStyle = ring; tctx.lineWidth = 1.5; tctx.stroke();
+
+    requestAnimationFrame(drawCursor);
+  }
+  drawCursor();
 })();
 
 // SCROLL PROGRESS
@@ -1404,14 +1479,14 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
   function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}resize();window.addEventListener('resize',resize);
   let mx=-9999,my=-9999,t=0;
   document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-  function loop(){ctx.clearRect(0,0,W,H);t+=0.007;const isLight=document.documentElement.getAttribute('data-theme')==='light';const a1=isLight?'rgba(74,122,82,0.03)':'rgba(168,196,144,0.025)';const a2=isLight?'rgba(176,96,96,0.025)':'rgba(201,160,160,0.02)';if(mx>0){const grd=ctx.createRadialGradient(mx,my,0,mx,my,280);grd.addColorStop(0,isLight?'rgba(74,122,82,.04)':'rgba(168,196,144,.035)');grd.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);}for(let i=0;i<3;i++){const bx=W*(0.2+i*0.3)+Math.sin(t+i)*70,by=H*(0.3+i*0.2)+Math.cos(t*.7+i)*55,br=260+Math.sin(t+i*2)*45;const g=ctx.createRadialGradient(bx,by,0,bx,by,br);g.addColorStop(0,i===1?a2:a1);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);}requestAnimationFrame(loop);}loop();
+  function loop(){ctx.clearRect(0,0,W,H);t+=0.007;const isLight=document.documentElement.getAttribute('data-theme')==='light';const a1=isLight?'rgba(164,93,60,0.03)':'rgba(168,196,144,0.025)';const a2=isLight?'rgba(176,96,96,0.025)':'rgba(201,160,160,0.02)';if(mx>0){const grd=ctx.createRadialGradient(mx,my,0,mx,my,280);grd.addColorStop(0,isLight?'rgba(164,93,60,.04)':'rgba(168,196,144,.035)');grd.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);}for(let i=0;i<3;i++){const bx=W*(0.2+i*0.3)+Math.sin(t+i)*70,by=H*(0.3+i*0.2)+Math.cos(t*.7+i)*55,br=260+Math.sin(t+i*2)*45;const g=ctx.createRadialGradient(bx,by,0,bx,by,br);g.addColorStop(0,i===1?a2:a1);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);}requestAnimationFrame(loop);}loop();
 })();
 
 // PARTICLES
 (function(){
   const canvas=document.getElementById('floaty-dot-world'),ctx=canvas.getContext('2d');let W,H;
   const isDark=()=>document.documentElement.getAttribute('data-theme')!=='light';
-  const CDARK=['#a8c490','#7a9870','rgba(184,208,170,.5)','#c9a0a0'],CLIGHT=['#4a7a52','#3a8a78','#5a9a6a','#a04848'];
+  const CDARK=['#a8c490','#7a9870','rgba(184,208,170,.5)','#c9a0a0'],CLIGHT=['#A45D3C','#CC7722','#B86484','#9B525D'];
   const gc=()=>isDark()?CDARK:CLIGHT;
   function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}resize();window.addEventListener('resize',resize);
   function P(){this.boot(true);}
@@ -1479,24 +1554,24 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
     bx.fillStyle = isLight ? '#d0ccc4' : '#000000';
     bx.fill();
 
-    // Dots at full opacity so they're clearly visible against their half
-    // Yang (white) half owns top bulge (0,-r/2) → BLACK dot
-    // Yin  (black) half owns bottom bulge (0,r/2) → WHITE dot
+    // Dots — must contrast the ACTUAL rendered color of their half
+    // Yang half (-r/2): dark=#ffffff, light=#1a1a1a → dot should be opposite
+    // Yin  half (+r/2): dark=#000000, light=#d0ccc4 → dot should be opposite
     const dotR = r / 6.5;
     bx.beginPath();
     bx.arc(0, -r/2, dotR, 0, Math.PI*2);
-    bx.fillStyle = isLight ? '#1a1a1a' : '#000000';
+    bx.fillStyle = isLight ? '#f0ece4' : '#000000'; // light mode: yang is dark → light dot; dark mode: yang is white → black dot
     bx.fill();
 
     bx.beginPath();
     bx.arc(0,  r/2, dotR, 0, Math.PI*2);
-    bx.fillStyle = isLight ? '#d0ccc4' : '#ffffff';
+    bx.fillStyle = isLight ? '#2a1a0e' : '#ffffff'; // light mode: yin is light → dark dot; dark mode: yin is black → white dot
     bx.fill();
 
     // Outer ring
     bx.beginPath();
     bx.arc(0, 0, r, 0, Math.PI*2);
-    bx.strokeStyle = isLight ? 'rgba(74,122,82,0.9)' : 'rgba(168,196,144,0.7)';
+    bx.strokeStyle = isLight ? 'rgba(164,93,60,0.9)' : 'rgba(168,196,144,0.7)';
     bx.lineWidth = 1.5;
     bx.stroke();
 
