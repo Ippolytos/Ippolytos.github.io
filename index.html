@@ -420,9 +420,10 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
 
 /* ROTARY NOODLE */
 .rotary-noodle{position:relative;z-index:1;overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;flex-direction:column;align-items:stretch;background:var(--panel);}
-.noodle-bg{padding:13px 0;overflow:hidden;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--border);display:flex;}
-.noodle-bg span{white-space:nowrap;animation:noodleMarch 13s linear infinite;display:inline-block;padding-right:40px;}
-@keyframes noodleMarch{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.noodle-bg{padding:13px 0;overflow:hidden;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--border);display:flex;width:100%;}
+.noodle-bg span{white-space:nowrap;animation:noodleMarch 28s linear infinite;display:inline-block;padding-right:60px;flex-shrink:0;}
+.noodle-bg span:nth-child(2){animation-delay:-14s;}
+@keyframes noodleMarch{from{transform:translateX(0)}to{transform:translateX(-100%)}}
 .noodle-midrow{display:flex;align-items:center;padding:22px 60px;gap:28px;border-top:1px solid var(--border);}
 .noodle-stick{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border));}
 .noodle-stick.right-stick{background:linear-gradient(90deg,var(--border),transparent);}
@@ -726,7 +727,7 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
 </section>
 
 <div class="rotary-noodle">
-  <div class="noodle-bg"><span>COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;</span></div>
+  <div class="noodle-bg"><span>COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;</span><span>COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;COLORS&nbsp;&nbsp;</span></div>
   <div class="noodle-midrow">
     <div class="noodle-stick"></div>
     <div class="noodle-ring-wrap">
@@ -795,7 +796,7 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
 </section>
 
 <div class="rotary-noodle">
-  <div class="noodle-bg"><span>RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;</span></div>
+  <div class="noodle-bg"><span>RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;</span><span>RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;RECOLOR&nbsp;&nbsp;</span></div>
   <div class="noodle-midrow">
     <div class="noodle-stick"></div>
     <div class="noodle-ring-wrap">
@@ -861,7 +862,7 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
 </section>
 
 <div class="rotary-noodle">
-  <div class="noodle-bg"><span>UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;</span></div>
+  <div class="noodle-bg"><span>UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;</span><span>UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;UPSCALE&nbsp;&nbsp;</span></div>
   <div class="noodle-midrow">
     <div class="noodle-stick"></div>
     <div class="noodle-ring-wrap">
@@ -992,7 +993,7 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
 </section>
 
 <div class="rotary-noodle">
-  <div class="noodle-bg"><span>URLCLEAN&nbsp;&nbsp;URLCLEAN&nbsp;&nbsp;URLCLEAN&nbsp;&nbsp;URLCLEAN&nbsp;&nbsp;URLCLEAN&nbsp;&nbsp;URLCLEAN&nbsp;&nbsp;</span></div>
+  <div class="noodle-bg"><span>URLCLEAN&nbsp;&nbsp;URLCLEAN&nbsp;&nbsp;URLCLEAN&nbsp;&nbsp;URLCLEAN&nbsp;&nbsp;URLCLEAN&nbsp;&nbsp;URLCLEAN&nbsp;&nbsp;</span><span>URLCLEAN&nbsp;&nbsp;URLCLEAN&nbsp;&nbsp;URLCLEAN&nbsp;&nbsp;URLCLEAN&nbsp;&nbsp;URLCLEAN&nbsp;&nbsp;URLCLEAN&nbsp;&nbsp;</span></div>
   <div class="noodle-midrow">
     <div class="noodle-stick"></div>
     <div class="noodle-ring-wrap">
@@ -2185,6 +2186,37 @@ async function usDoUpscale(){
   document.getElementById('uc-input').addEventListener('keydown', function(e) {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') runCleaner();
   });
+})();
+</script>
+<script>
+// Fill noodle marquee spans to always cover full screen width
+(function() {
+  function fillNoodles() {
+    document.querySelectorAll('.noodle-bg').forEach(function(bg) {
+      var spans = bg.querySelectorAll('span');
+      if (!spans.length) return;
+      // Get the base text from first span (strip existing repetitions by using first word chunk)
+      var baseText = spans[0].innerHTML;
+      // Measure one unit width
+      var tmp = document.createElement('span');
+      tmp.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-family:JetBrains Mono,monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;';
+      tmp.innerHTML = baseText;
+      document.body.appendChild(tmp);
+      var unitW = tmp.offsetWidth;
+      document.body.removeChild(tmp);
+      if (unitW <= 0) return;
+      // How many repetitions needed to fill 3× screen width (so animation never shows gap)
+      var needed = Math.ceil((window.innerWidth * 3) / unitW) + 2;
+      // Rebuild each span with enough copies
+      spans.forEach(function(span) {
+        var copies = '';
+        for (var i = 0; i < needed; i++) copies += baseText;
+        span.innerHTML = copies;
+      });
+    });
+  }
+  fillNoodles();
+  window.addEventListener('resize', fillNoodles);
 })();
 </script>
 </body>
