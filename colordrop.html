@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ColorDrop — Hropiberhtaz</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .colordrop-layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 900px) { .colordrop-layout { grid-template-columns: 1fr; } }
+
+    .hsv-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    #hsvCanvas {
+      width: 100%; height: 260px;
+      border-radius: 2px; cursor: crosshair; display: block;
+    }
+    .sliders-row {
+      display: grid; grid-template-columns: 1fr 28px;
+      gap: 10px; margin-top: 14px;
+    }
+    .hue-bar-wrap, .alpha-bar-wrap {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .slider-label {
+      font-family: var(--font-mono); font-size: 9px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+    }
+    #hueBar { width: 100%; height: 12px; border-radius: 6px; cursor: pointer; }
+    #alphaBar { width: 12px; height: 100%; border-radius: 6px; cursor: pointer; writing-mode: vertical-lr; }
+
+    .output-panel { display: flex; flex-direction: column; gap: 12px; }
+    .color-preview-big {
+      height: 72px; border-radius: var(--radius);
+      border: 1px solid var(--border); background: #c8402a;
+    }
+    .hex-input-wrap { display: flex; align-items: center; }
+    .hex-hash {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-right: none; border-radius: 2px 0 0 2px;
+      padding: 9px 10px; font-family: var(--font-mono);
+      font-size: 12px; color: var(--muted);
+    }
+    #hexInput { border-radius: 0 2px 2px 0; }
+
+    .copy-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 8px 12px; gap: 10px;
+    }
+    .copy-row-label {
+      font-family: var(--font-mono); font-size: 9px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); min-width: 46px;
+    }
+    .copy-row-val {
+      font-family: var(--font-mono); font-size: 11px;
+      color: var(--text); flex: 1;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .copy-btn {
+      font-family: var(--font-mono); font-size: 9px; padding: 3px 9px;
+      border-radius: 2px; border: 1px solid var(--border);
+      background: none; color: var(--muted); cursor: pointer;
+      transition: all var(--transition);
+    }
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .copy-btn.copied { color: #2a7a3b; border-color: #2a7a3b; }
+
+    .history-label {
+      font-family: var(--font-mono); font-size: 9px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 8px;
+    }
+    .history-swatches { display: flex; flex-wrap: wrap; gap: 5px; }
+    .history-swatch {
+      width: 26px; height: 26px; border-radius: 2px;
+      border: 1px solid var(--border); cursor: pointer;
+      transition: transform var(--transition);
+    }
+    .history-swatch:hover { transform: scale(1.15); border-color: var(--accent); }
+
+    .rgb-grid {
+      display: grid; grid-template-columns: 18px 1fr 44px;
+      align-items: center; gap: 7px 10px;
+    }
+    .rgb-ch-label {
+      font-family: var(--font-mono); font-size: 10px;
+      font-weight: 700; color: var(--muted);
+    }
+    input[type=range].rgb-slider {
+      -webkit-appearance: none; width: 100%; height: 3px;
+      border-radius: 2px; outline: none; cursor: pointer;
+      border: none; background: var(--border);
+    }
+    input[type=range].rgb-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 13px; height: 13px;
+      border-radius: 50%; background: var(--accent); cursor: pointer;
+    }
+    .rgb-num {
+      font-family: var(--font-mono); font-size: 11px;
+      text-align: right; color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <div class="page-content">
+    <div class="tool-hero tool-layout">
+      <p class="tool-hero-tag">01 — Pick your hue</p>
+      <h1>Color<em>Drop</em></h1>
+      <p>A precision color picker with full HSV control, alpha transparency, live HEX/RGBA output and one-click clipboard copy. Every interaction is tactile.</p>
+      <div class="feature-pills">
+        <span class="pill">HSV Canvas</span><span class="pill">Alpha Control</span>
+        <span class="pill">HEX</span><span class="pill">RGBA</span>
+        <span class="pill">HSL Output</span><span class="pill">OKLCH Output</span>
+        <span class="pill">Color History</span>
+      </div>
+    </div>
+
+    <div class="marquee-band">
+      <div class="marquee-track">
+        <span>COLORS</span><span class="accent">+</span>
+        <span>COLORS</span><span class="accent">+</span>
+        <span>pick your hue</span><span class="accent">+</span>
+        <span>feel the difference</span><span class="accent">+</span>
+        <span>COLORS</span><span class="accent">+</span>
+        <span>pick your hue</span><span class="accent">+</span>
+        <span>feel the difference</span><span class="accent">+</span>
+      </div>
+    </div>
+
+    <div class="tool-layout">
+      <div class="colordrop-layout">
+        <div>
+          <div class="hsv-wrap">
+            <canvas id="hsvCanvas" width="600" height="420"></canvas>
+            <div class="sliders-row">
+              <div class="hue-bar-wrap">
+                <span class="slider-label">Hue</span>
+                <canvas id="hueBar" width="400" height="12"></canvas>
+              </div>
+              <div class="alpha-bar-wrap">
+                <span class="slider-label">A</span>
+                <canvas id="alphaBar" width="12" height="120"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:14px;">
+            <div class="rgb-grid">
+              <span class="rgb-ch-label">R</span>
+              <input type="range" class="rgb-slider" id="rSlider" min="0" max="255" value="200">
+              <span class="rgb-num" id="rVal">200</span>
+              <span class="rgb-ch-label">G</span>
+              <input type="range" class="rgb-slider" id="gSlider" min="0" max="255" value="64">
+              <span class="rgb-num" id="gVal">64</span>
+              <span class="rgb-ch-label">B</span>
+              <input type="range" class="rgb-slider" id="bSlider" min="0" max="255" value="42">
+              <span class="rgb-num" id="bVal">42</span>
+              <span class="rgb-ch-label">A</span>
+              <input type="range" class="rgb-slider" id="aSlider" min="0" max="100" value="100">
+              <span class="rgb-num" id="aVal">100%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="output-panel">
+          <div class="color-preview-big" id="colorPreview"></div>
+          <div class="hex-input-wrap">
+            <span class="hex-hash">#</span>
+            <input type="text" id="hexInput" value="C8402A" maxlength="8">
+          </div>
+          <div class="copy-row">
+            <span class="copy-row-label">HEX</span>
+            <span class="copy-row-val" id="outHex">#C8402A</span>
+            <button class="copy-btn" data-target="outHex">copy</button>
+          </div>
+          <div class="copy-row">
+            <span class="copy-row-label">RGBA</span>
+            <span class="copy-row-val" id="outRgba">rgba(200,64,42,1)</span>
+            <button class="copy-btn" data-target="outRgba">copy</button>
+          </div>
+          <div class="copy-row">
+            <span class="copy-row-label">HSL</span>
+            <span class="copy-row-val" id="outHsl">hsl(7,65%,47%)</span>
+            <button class="copy-btn" data-target="outHsl">copy</button>
+          </div>
+          <div class="copy-row">
+            <span class="copy-row-label">OKLCH</span>
+            <span class="copy-row-val" id="outOklch">oklch(0.52 0.18 28)</span>
+            <button class="copy-btn" data-target="outOklch">copy</button>
+          </div>
+          <div>
+            <p class="history-label">History</p>
+            <div class="history-swatches" id="historySwatches"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="nav.js"></script>
+  <script>
+    /*
+     * ColorDrop logic
+     * Paste your existing colordrop JS here, or inline it below.
+     * The UI hooks (canvas IDs, output span IDs) match the original site's structure.
+     */
+
+    // ── Copy buttons ──────────────────────────────────────────
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const val = document.getElementById(targetId)?.textContent?.trim();
+        if (!val) return;
+        navigator.clipboard.writeText(val).then(() => {
+          btn.textContent = '✓';
+          btn.classList.add('copied');
+          setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1500);
+        });
+      });
+    });
+
+    // ── Minimal HSV color picker demo (replace with your full implementation) ──
+    const canvas = document.getElementById('hsvCanvas');
+    const ctx = canvas.getContext('2d');
+    let hue = 15, sat = 1, val = 1, alpha = 1;
+    let r = 255, g = 102, b = 51;
+    let history = [];
+
+    function drawHSV() {
+      const w = canvas.width, h = canvas.height;
+      // White to hue gradient
+      const gradH = ctx.createLinearGradient(0, 0, w, 0);
+      gradH.addColorStop(0, 'white');
+      gradH.addColorStop(1, `hsl(${hue},100%,50%)`);
+      ctx.fillStyle = gradH;
+      ctx.fillRect(0, 0, w, h);
+      // Black gradient overlay
+      const gradV = ctx.createLinearGradient(0, 0, 0, h);
+      gradV.addColorStop(0, 'transparent');
+      gradV.addColorStop(1, 'black');
+      ctx.fillStyle = gradV;
+      ctx.fillRect(0, 0, w, h);
+    }
+    drawHSV();
+
+    canvas.addEventListener('click', e => {
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+      sat = x; val = 1 - y;
+      updateFromHSV();
+      pushHistory();
+    });
+
+    function updateFromHSV() {
+      // HSV → RGB
+      const h6 = hue / 60, s = sat, v = val;
+      const i = Math.floor(h6), f = h6 - i;
+      const p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
+      let rr, gg, bb;
+      switch (i % 6) {
+        case 0: rr=v; gg=t; bb=p; break;
+        case 1: rr=q; gg=v; bb=p; break;
+        case 2: rr=p; gg=v; bb=t; break;
+        case 3: rr=p; gg=q; bb=v; break;
+        case 4: rr=t; gg=p; bb=v; break;
+        default: rr=v; gg=p; bb=q;
+      }
+      r = Math.round(rr * 255); g = Math.round(gg * 255); b = Math.round(bb * 255);
+      updateOutputs();
+    }
+
+    function updateOutputs() {
+      const hex = '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0').toUpperCase()).join('');
+      const hslVal = rgbToHsl(r, g, b);
+
+      document.getElementById('colorPreview').style.background = `rgba(${r},${g},${b},${alpha})`;
+      document.getElementById('hexInput').value = hex.slice(1);
+      document.getElementById('outHex').textContent = hex;
+      document.getElementById('outRgba').textContent = `rgba(${r},${g},${b},${alpha.toFixed(2)})`;
+      document.getElementById('outHsl').textContent = `hsl(${hslVal.h},${hslVal.s}%,${hslVal.l}%)`;
+      document.getElementById('outOklch').textContent = `oklch(${(hslVal.l/100).toFixed(2)} ${(sat*0.25).toFixed(2)} ${hue})`;
+
+      document.getElementById('rSlider').value = r;
+      document.getElementById('gSlider').value = g;
+      document.getElementById('bSlider').value = b;
+      document.getElementById('rVal').textContent = r;
+      document.getElementById('gVal').textContent = g;
+      document.getElementById('bVal').textContent = b;
+    }
+
+    function rgbToHsl(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h = 0, s = 0, l = (max + min) / 2;
+      if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+          case g: h = ((b - r) / d + 2) / 6; break;
+          case b: h = ((r - g) / d + 4) / 6; break;
+        }
+      }
+      return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+    }
+
+    function pushHistory() {
+      const hex = '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+      if (history[0] === hex) return;
+      history.unshift(hex);
+      if (history.length > 16) history.pop();
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const wrap = document.getElementById('historySwatches');
+      wrap.innerHTML = history.map(c =>
+        `<div class="history-swatch" style="background:${c}" title="${c}" data-hex="${c}"></div>`
+      ).join('');
+      wrap.querySelectorAll('.history-swatch').forEach(sw => {
+        sw.addEventListener('click', () => {
+          const hex = sw.getAttribute('data-hex');
+          const rr = parseInt(hex.slice(1,3),16);
+          const gg = parseInt(hex.slice(3,5),16);
+          const bb = parseInt(hex.slice(5,7),16);
+          r=rr; g=gg; b=bb;
+          updateOutputs();
+        });
+      });
+    }
+
+    // RGB sliders
+    ['r','g','b'].forEach(ch => {
+      document.getElementById(`${ch}Slider`).addEventListener('input', function() {
+        if (ch === 'r') r = +this.value;
+        if (ch === 'g') g = +this.value;
+        if (ch === 'b') b = +this.value;
+        updateOutputs();
+      });
+    });
+    document.getElementById('aSlider').addEventListener('input', function() {
+      alpha = this.value / 100;
+      document.getElementById('aVal').textContent = this.value + '%';
+      updateOutputs();
+    });
+
+    updateOutputs();
+    drawHSV();
+  </script>
+</body>
+</html>
