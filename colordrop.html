@@ -5,7 +5,237 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ColorDrop — Hropiberhtaz</title>
   <meta name="description" content="A precision color picker with full HSV control, alpha transparency, and live HEX/RGBA/OKLCH output.">
-  <link rel="stylesheet" href="style.css">
+  <style>
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Variables ── */
+:root {
+  --bg:         #0a0a0f;
+  --surface:    #111118;
+  --surface-2:  #1a1a24;
+  --border:     rgba(255,255,255,0.08);
+  --text:       #e8e8f0;
+  --muted:      rgba(232,232,240,0.45);
+  --accent:     #ff6633;
+  --accent-glow:rgba(255,102,51,0.18);
+  --radius:     10px;
+  --transition: 0.18s ease;
+  --font-mono:  'JetBrains Mono', 'Fira Mono', 'Courier New', monospace;
+  --font-display: 'Syne', 'Space Grotesk', sans-serif;
+}
+
+/* ── Base ── */
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Nav ── */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,10,15,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 24px;
+  height: 52px;
+}
+.nav-link {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: all var(--transition);
+}
+.nav-link:hover { color: var(--text); border-color: var(--border); }
+.nav-link.active {
+  color: #0a0a0f;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ── Page content ── */
+.page-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+}
+
+/* ── Tool layout ── */
+.tool-layout {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* ── Tool Hero ── */
+.tool-hero {
+  padding: 52px 0 36px;
+}
+.tool-hero-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.tool-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+.tool-hero h1 em {
+  font-style: normal;
+  color: var(--accent);
+}
+.tool-hero p {
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.feature-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: var(--surface-2);
+}
+
+/* ── Marquee ── */
+.marquee-band {
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  padding: 12px 0;
+  margin: 0 -24px 40px;
+  width: calc(100% + 48px);
+}
+.marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  white-space: nowrap;
+  width: max-content;
+  animation: marquee-scroll 28s linear infinite;
+}
+.marquee-track span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 4px;
+}
+.marquee-track span.accent { color: var(--accent); }
+
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 9px 18px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0a0a0f;
+  font-weight: 600;
+}
+.btn-primary:hover { background: #ff7744; border-color: #ff7744; color: #0a0a0f; }
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Inputs ── */
+input[type=text],
+input[type=number],
+textarea {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  width: 100%;
+}
+input[type=text]:focus,
+input[type=number]:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+</style>
   <style>
     /* ── ColorDrop-specific styles ── */
 
@@ -314,7 +544,45 @@
 
   </div><!-- /page-content -->
 
-  <script src="nav.js"></script>
+  <script>
+/* nav.js — injects sticky nav + fixes marquee to be truly infinite */
+(function () {
+  'use strict';
+
+  /* ── 1. Determine current page ── */
+  const path = location.pathname.split('/').pop() || 'index.html';
+
+  const PAGES = [
+    { file: 'colordrop.html', label: 'ColorDrop' },
+    { file: 'hue.html',       label: 'HUE'       },
+    { file: 'chroma.html',    label: 'Chroma'    },
+    { file: 'upscale.html',   label: 'UpScale'   },
+    { file: 'urlclean.html',  label: 'URLClean'  },
+  ];
+
+  /* ── 2. Build nav HTML ── */
+  const navEl = document.createElement('nav');
+  navEl.className = 'site-nav';
+  navEl.innerHTML = PAGES.map(p =>
+    `<a class="nav-link${p.file === path ? ' active' : ''}" href="${p.file}">${p.label}</a>`
+  ).join('');
+
+  /* Insert nav as first child of body */
+  document.body.insertBefore(navEl, document.body.firstChild);
+
+  /* ── 3. Fix marquee — make it truly infinite ── */
+  document.querySelectorAll('.marquee-track').forEach(track => {
+    /* Clone the full original content, then append enough copies so
+       the animation always has content scrolling even at any viewport width.
+       The CSS animates translateX(-50%) so we need exactly 2 copies total. */
+    const original = track.innerHTML;
+    // Ensure we have at least 4 repetitions of the content for seamless loop
+    track.innerHTML = original + original + original + original;
+  });
+
+})();
+
+</script>
   <script>
     /*
      * ColorDrop logic
@@ -465,5 +733,14 @@
     updateOutputs();
     drawHSV();
   </script>
+
+  <script>
+  // Infinite marquee fix: clone content so CSS -50% animation loops seamlessly
+  document.querySelectorAll('.marquee-track').forEach(function(track) {
+    var html = track.innerHTML;
+    track.innerHTML = html + html + html + html;
+  });
+  </script>
+
 </body>
 </html>
