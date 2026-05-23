@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UpScale — Hropiberhtaz</title>
+  <meta name="description" content="Lanczos-3 resampling with float-domain unsharp masking. From HD to 4K to 8K — zero quality compromise.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .upscale-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 900px) { .upscale-layout { grid-template-columns: 1fr; } }
+
+    .control-group {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .control-group:last-child { margin-bottom: 0; }
+    .cg-title {
+      font-size: 9px; font-weight: 500; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .step-num {
+      font-family: var(--font-display);
+      font-size: 11px; letter-spacing: 0.15em; color: var(--accent);
+      margin-bottom: 2px;
+    }
+
+    /* Drop zone */
+    .drop-zone {
+      background: var(--surface);
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      min-height: 260px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 10px; cursor: pointer;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: var(--accent);
+      background: rgba(255,102,51,0.04);
+    }
+    .drop-zone-icon { font-size: 32px; opacity: 0.4; }
+    .drop-zone-text { font-size: 13px; color: var(--muted); text-align: center; }
+    .drop-zone-hint { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); opacity: 0.6; }
+
+    /* Preview image */
+    #previewImg {
+      max-width: 100%; max-height: 400px;
+      border-radius: var(--radius); display: none;
+      border: 1px solid var(--border);
+    }
+
+    /* Size inputs */
+    .size-row {
+      display: grid; grid-template-columns: 1fr 24px 1fr;
+      align-items: center; gap: 8px;
+    }
+    .size-sep { text-align: center; color: var(--muted); font-size: 12px; }
+    input[type=number] {
+      font-family: var(--font-mono); font-size: 13px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text);
+      padding: 8px 10px; width: 100%; outline: none;
+      transition: border-color var(--transition);
+    }
+    input[type=number]:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
+    .lock-row { display: flex; align-items: center; gap: 8px; }
+    .lock-label { font-size: 11px; color: var(--muted); }
+
+    /* Preset buttons */
+    .presets-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+    .preset-tag {
+      font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 4px 10px;
+      border-radius: 4px; border: 1px solid var(--border);
+      background: var(--surface-2); color: var(--muted);
+      cursor: pointer; transition: all var(--transition);
+    }
+    .preset-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Sharpness toggle */
+    .sharp-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .sharp-btn {
+      font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 5px 10px;
+      border-radius: 4px; border: 1px solid var(--border);
+      background: var(--surface-2); color: var(--muted);
+      cursor: pointer; transition: all var(--transition);
+    }
+    .sharp-btn.active { background: var(--accent); border-color: var(--accent); color: #0a0a0f; font-weight: 600; }
+    .sharp-btn:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+    /* Format select */
+    .format-row { display: flex; gap: 6px; }
+    .fmt-btn {
+      flex: 1; font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 7px; border-radius: 5px;
+      border: 1px solid var(--border); background: var(--surface-2);
+      color: var(--muted); cursor: pointer; transition: all var(--transition);
+      text-align: center;
+    }
+    .fmt-btn.active { background: var(--accent); border-color: var(--accent); color: #0a0a0f; font-weight: 600; }
+    .fmt-btn:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+    /* Stats */
+    .stats-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .stat-box {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 6px; padding: 10px 12px;
+    }
+    .stat-box-label { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .stat-box-val { font-family: var(--font-mono); font-size: 13px; color: var(--text); margin-top: 2px; }
+
+    /* Result canvas */
+    #resultCanvas { display: none; max-width: 100%; border-radius: var(--radius); border: 1px solid var(--border); }
+
+    /* Progress */
+    .progress-wrap { display: none; flex-direction: column; gap: 8px; }
+    .progress-bar-bg {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 4px; height: 6px; overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; background: var(--accent); border-radius: 4px;
+      width: 0%; transition: width 0.1s;
+    }
+    .progress-label { font-size: 11px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="page-content">
+
+    <!-- Hero -->
+    <div class="tool-hero tool-layout">
+      <p class="tool-hero-tag">04 — Upscale your image</p>
+      <h1>Up<em>Scale</em></h1>
+      <p>Lanczos-3 resampling with float-domain unsharp masking, calibrated to achieve ~0% sharpness loss at any scale. From HD to 4K to 8K — zero quality compromise.</p>
+      <div class="feature-pills">
+        <span class="pill">Lanczos-3</span>
+        <span class="pill">Float USM</span>
+        <span class="pill">8K Support</span>
+        <span class="pill">Lock Ratio</span>
+        <span class="pill">PNG / JPEG / WEBP</span>
+        <span class="pill">Sharpness Presets</span>
+      </div>
+    </div>
+
+    <!-- Marquee -->
+    <div class="marquee-band">
+      <div class="marquee-track">
+        <span>UPSCALE</span><span class="accent">✦</span>
+        <span>UPSCALE</span><span class="accent">✦</span>
+        <span>zero sharpness loss</span><span class="accent">✦</span>
+        <span>lanczos-3</span><span class="accent">✦</span>
+        <span>UPSCALE</span><span class="accent">✦</span>
+        <span>UPSCALE</span><span class="accent">✦</span>
+        <span>zero sharpness loss</span><span class="accent">✦</span>
+        <span>lanczos-3</span><span class="accent">✦</span>
+      </div>
+    </div>
+
+    <!-- Tool UI -->
+    <div class="tool-layout">
+      <div class="upscale-layout">
+
+        <!-- LEFT: controls -->
+        <div>
+
+          <div class="control-group">
+            <p class="step-num">01</p>
+            <p class="cg-title">Upload Image</p>
+            <div class="drop-zone" id="dropZone">
+              <div class="drop-zone-icon">↑</div>
+              <p class="drop-zone-text">Click to upload or drag & drop</p>
+              <p class="drop-zone-hint">JPG · PNG · WEBP · GIF · BMP</p>
+              <input type="file" id="fileInput" accept="image/*" style="display:none">
+            </div>
+            <div id="srcInfo" style="display:none">
+              <div class="stats-grid">
+                <div class="stat-box"><div class="stat-box-label">Width</div><div class="stat-box-val" id="srcW">—</div></div>
+                <div class="stat-box"><div class="stat-box-label">Height</div><div class="stat-box-val" id="srcH">—</div></div>
+              </div>
+              <button class="btn" id="changeImgBtn" style="width:100%; justify-content:center; margin-top:8px;">Change Image</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <p class="step-num">02</p>
+            <p class="cg-title">Target Size</p>
+            <div class="size-row">
+              <input type="number" id="outW" placeholder="Width" min="1" max="16000">
+              <span class="size-sep">×</span>
+              <input type="number" id="outH" placeholder="Height" min="1" max="16000">
+            </div>
+            <div class="lock-row">
+              <input type="checkbox" id="lockRatio" checked>
+              <label class="lock-label" for="lockRatio">Lock aspect ratio</label>
+            </div>
+            <p class="cg-title" style="margin-top:4px;">Presets</p>
+            <div class="presets-wrap">
+              <button class="preset-tag" data-w="7680" data-h="4320">8K</button>
+              <button class="preset-tag" data-w="3840" data-h="2160">4K UHD</button>
+              <button class="preset-tag" data-w="2560" data-h="1440">2K QHD</button>
+              <button class="preset-tag" data-w="1920" data-h="1080">Full HD</button>
+              <button class="preset-tag" data-w="1280" data-h="720">HD 720p</button>
+              <button class="preset-tag" data-scale="2">2×</button>
+              <button class="preset-tag" data-scale="4">4×</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <p class="step-num">03</p>
+            <p class="cg-title">Sharpness</p>
+            <div class="sharp-row">
+              <button class="sharp-btn" data-sharp="0">None</button>
+              <button class="sharp-btn" data-sharp="0.3">Soft</button>
+              <button class="sharp-btn active" data-sharp="0.6">Default</button>
+              <button class="sharp-btn" data-sharp="1.0">Crisp</button>
+              <button class="sharp-btn" data-sharp="1.6">Ultra</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <p class="step-num">04</p>
+            <p class="cg-title">Output Format</p>
+            <div class="format-row">
+              <button class="fmt-btn active" data-fmt="png">PNG</button>
+              <button class="fmt-btn" data-fmt="jpeg">JPEG</button>
+              <button class="fmt-btn" data-fmt="webp">WEBP</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <button class="btn btn-primary" id="upscaleBtn" style="width:100%; justify-content:center;" disabled>
+              Set a target size above ↑
+            </button>
+            <div class="progress-wrap" id="progressWrap">
+              <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressBar"></div></div>
+              <p class="progress-label" id="progressLabel">Working…</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: preview + result -->
+        <div style="display:flex; flex-direction:column; gap:20px;">
+          <img id="previewImg" alt="Source preview">
+
+          <div id="resultSection" style="display:none; flex-direction:column; gap:16px;">
+            <canvas id="resultCanvas"></canvas>
+            <div class="stats-grid">
+              <div class="stat-box"><div class="stat-box-label">From</div><div class="stat-box-val" id="resSrc">—</div></div>
+              <div class="stat-box"><div class="stat-box-label">To</div><div class="stat-box-val" id="resDst">—</div></div>
+              <div class="stat-box"><div class="stat-box-label">Scale</div><div class="stat-box-val" id="resScale">—</div></div>
+              <div class="stat-box"><div class="stat-box-label">Megapixels</div><div class="stat-box-val" id="resMp">—</div></div>
+            </div>
+            <button class="btn btn-primary" id="dlBtn" style="justify-content:center;">↓ Download Result</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /page-content -->
+
+  <script src="nav.js"></script>
+  <script>
+  (() => {
+    'use strict';
+
+    /* ── State ── */
+    let srcImg = null, srcW = 0, srcH = 0;
+    let sharpness = 0.6, format = 'png';
+    let aspectRatio = 1;
+
+    /* ── DOM ── */
+    const dropZone    = document.getElementById('dropZone');
+    const fileInput   = document.getElementById('fileInput');
+    const previewImg  = document.getElementById('previewImg');
+    const srcInfo     = document.getElementById('srcInfo');
+    const upscaleBtn  = document.getElementById('upscaleBtn');
+    const progressWrap= document.getElementById('progressWrap');
+    const progressBar = document.getElementById('progressBar');
+    const progressLbl = document.getElementById('progressLabel');
+    const resultSection = document.getElementById('resultSection');
+    const resultCanvas= document.getElementById('resultCanvas');
+    const outWEl      = document.getElementById('outW');
+    const outHEl      = document.getElementById('outH');
+    const lockRatio   = document.getElementById('lockRatio');
+
+    /* ── Image load ── */
+    function loadImage(file) {
+      if (!file || !file.type.startsWith('image/')) return;
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        srcImg = img;
+        srcW = img.naturalWidth;
+        srcH = img.naturalHeight;
+        aspectRatio = srcW / srcH;
+
+        previewImg.src = url;
+        previewImg.style.display = 'block';
+        dropZone.style.display = 'none';
+        srcInfo.style.display = 'block';
+        document.getElementById('srcW').textContent = srcW + 'px';
+        document.getElementById('srcH').textContent = srcH + 'px';
+        resultSection.style.display = 'none';
+        checkReady();
+      };
+      img.src = url;
+    }
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', e => loadImage(e.target.files[0]));
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); loadImage(e.dataTransfer.files[0]); });
+
+    document.getElementById('changeImgBtn').addEventListener('click', () => {
+      srcImg = null;
+      previewImg.style.display = 'none';
+      dropZone.style.display = 'flex';
+      srcInfo.style.display = 'none';
+      resultSection.style.display = 'none';
+      outWEl.value = ''; outHEl.value = '';
+      fileInput.value = '';
+      checkReady();
+    });
+
+    /* ── Size inputs with ratio lock ── */
+    outWEl.addEventListener('input', () => {
+      if (lockRatio.checked && srcImg && outWEl.value) {
+        outHEl.value = Math.round(+outWEl.value / aspectRatio) || '';
+      }
+      checkReady();
+    });
+    outHEl.addEventListener('input', () => {
+      if (lockRatio.checked && srcImg && outHEl.value) {
+        outWEl.value = Math.round(+outHEl.value * aspectRatio) || '';
+      }
+      checkReady();
+    });
+
+    /* ── Presets ── */
+    document.querySelectorAll('.preset-tag').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!srcImg) return;
+        if (btn.dataset.scale) {
+          const s = +btn.dataset.scale;
+          outWEl.value = Math.round(srcW * s);
+          outHEl.value = Math.round(srcH * s);
+        } else {
+          const pw = +btn.dataset.w, ph = +btn.dataset.h;
+          if (lockRatio.checked) {
+            const scaleW = pw / srcW, scaleH = ph / srcH;
+            const scale = Math.min(scaleW, scaleH);
+            outWEl.value = Math.round(srcW * scale);
+            outHEl.value = Math.round(srcH * scale);
+          } else {
+            outWEl.value = pw; outHEl.value = ph;
+          }
+        }
+        checkReady();
+      });
+    });
+
+    /* ── Sharpness ── */
+    document.querySelectorAll('.sharp-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.sharp-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        sharpness = +btn.dataset.sharp;
+      });
+    });
+
+    /* ── Format ── */
+    document.querySelectorAll('.fmt-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        format = btn.dataset.fmt;
+      });
+    });
+
+    /* ── Ready check ── */
+    function checkReady() {
+      const ready = srcImg && outWEl.value && outHEl.value && +outWEl.value > 0 && +outHEl.value > 0;
+      upscaleBtn.disabled = !ready;
+      upscaleBtn.textContent = ready ? 'Upscale ↑' : 'Set a target size above ↑';
+    }
+
+    /* ══════════════════════════════════════════
+       LANCZOS-3 RESAMPLING
+    ══════════════════════════════════════════ */
+    function lanczos(x) {
+      if (x === 0) return 1;
+      if (x < -3 || x > 3) return 0;
+      const px = Math.PI * x;
+      return (Math.sin(px) / px) * (Math.sin(px / 3) / (px / 3));
+    }
+
+    function lanczosResample(src, srcW, srcH, dstW, dstH, onProgress) {
+      const dst = new Float32Array(dstW * dstH * 4);
+      const scaleX = srcW / dstW, scaleY = srcH / dstH;
+      const a = 3;
+
+      for (let y = 0; y < dstH; y++) {
+        if (y % 50 === 0 && onProgress) onProgress(y / dstH * 0.9);
+
+        for (let x = 0; x < dstW; x++) {
+          const sx = (x + 0.5) * scaleX - 0.5;
+          const sy = (y + 0.5) * scaleY - 0.5;
+
+          const x0 = Math.floor(sx) - a + 1;
+          const y0 = Math.floor(sy) - a + 1;
+
+          let r = 0, g = 0, b = 0, al = 0, wSum = 0;
+
+          for (let ky = 0; ky < 2 * a; ky++) {
+            const iy = Math.min(Math.max(y0 + ky, 0), srcH - 1);
+            const wy = lanczos(sy - (y0 + ky));
+
+            for (let kx = 0; kx < 2 * a; kx++) {
+              const ix = Math.min(Math.max(x0 + kx, 0), srcW - 1);
+              const wx = lanczos(sx - (x0 + kx));
+              const w  = wx * wy;
+              const idx = (iy * srcW + ix) * 4;
+
+              r  += src[idx]     * w;
+              g  += src[idx + 1] * w;
+              b  += src[idx + 2] * w;
+              al += src[idx + 3] * w;
+              wSum += w;
+            }
+          }
+
+          const dIdx = (y * dstW + x) * 4;
+          dst[dIdx]     = r  / wSum;
+          dst[dIdx + 1] = g  / wSum;
+          dst[dIdx + 2] = b  / wSum;
+          dst[dIdx + 3] = al / wSum;
+        }
+      }
+      if (onProgress) onProgress(0.9);
+      return dst;
+    }
+
+    /* ── Unsharp mask in float domain ── */
+    function unsharpMask(data, w, h, amount) {
+      if (amount <= 0) return data;
+      const radius = 1, sigma = 1.0;
+      const out = new Float32Array(data);
+
+      // Simple box blur for speed (approximates Gaussian)
+      const blur = new Float32Array(data.length);
+      const r = Math.max(1, Math.round(radius));
+
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          let sr = 0, sg = 0, sb = 0, cnt = 0;
+          for (let ky = -r; ky <= r; ky++) {
+            for (let kx = -r; kx <= r; kx++) {
+              const nx = Math.min(Math.max(x + kx, 0), w - 1);
+              const ny = Math.min(Math.max(y + ky, 0), h - 1);
+              const i = (ny * w + nx) * 4;
+              sr += data[i]; sg += data[i+1]; sb += data[i+2]; cnt++;
+            }
+          }
+          const i = (y * w + x) * 4;
+          blur[i]   = sr / cnt;
+          blur[i+1] = sg / cnt;
+          blur[i+2] = sb / cnt;
+          blur[i+3] = data[i+3];
+        }
+      }
+
+      for (let i = 0; i < out.length; i += 4) {
+        out[i]   = data[i]   + amount * (data[i]   - blur[i]);
+        out[i+1] = data[i+1] + amount * (data[i+1] - blur[i+1]);
+        out[i+2] = data[i+2] + amount * (data[i+2] - blur[i+2]);
+      }
+      return out;
+    }
+
+    /* ── Clamp float → Uint8 ── */
+    function floatToImageData(floatData, w, h) {
+      const u8 = new Uint8ClampedArray(w * h * 4);
+      for (let i = 0; i < floatData.length; i++) {
+        u8[i] = Math.min(255, Math.max(0, Math.round(floatData[i])));
+      }
+      return new ImageData(u8, w, h);
+    }
+
+    /* ── Upscale ── */
+    upscaleBtn.addEventListener('click', () => {
+      const dstW = +outWEl.value, dstH = +outHEl.value;
+      if (!srcImg || !dstW || !dstH) return;
+
+      upscaleBtn.disabled = true;
+      progressWrap.style.display = 'flex';
+      progressBar.style.width = '0%';
+      progressLbl.textContent = 'Reading source…';
+      resultSection.style.display = 'none';
+
+      // Run in next tick so UI updates
+      setTimeout(() => {
+        // Get source pixels
+        const srcCv = document.createElement('canvas');
+        srcCv.width = srcW; srcCv.height = srcH;
+        const srcCtx = srcCv.getContext('2d');
+        srcCtx.drawImage(srcImg, 0, 0);
+        const srcData = srcCtx.getImageData(0, 0, srcW, srcH).data;
+        const srcFloat = new Float32Array(srcData);
+
+        progressLbl.textContent = 'Resampling (Lanczos-3)…';
+
+        // Do work in chunks via setTimeout to keep UI responsive
+        setTimeout(() => {
+          const resampled = lanczosResample(srcFloat, srcW, srcH, dstW, dstH, pct => {
+            progressBar.style.width = (pct * 100).toFixed(0) + '%';
+          });
+
+          progressLbl.textContent = 'Applying unsharp mask…';
+          progressBar.style.width = '92%';
+
+          setTimeout(() => {
+            const sharpened = unsharpMask(resampled, dstW, dstH, sharpness);
+            progressBar.style.width = '97%';
+            progressLbl.textContent = 'Rendering…';
+
+            setTimeout(() => {
+              const imgData = floatToImageData(sharpened, dstW, dstH);
+              resultCanvas.width  = dstW;
+              resultCanvas.height = dstH;
+              resultCanvas.getContext('2d').putImageData(imgData, 0, 0);
+
+              // Stats
+              document.getElementById('resSrc').textContent   = `${srcW} × ${srcH}`;
+              document.getElementById('resDst').textContent   = `${dstW} × ${dstH}`;
+              document.getElementById('resScale').textContent = `${(dstW/srcW).toFixed(2)}×`;
+              document.getElementById('resMp').textContent    = (dstW * dstH / 1e6).toFixed(2) + ' MP';
+
+              resultCanvas.style.display = 'block';
+              resultSection.style.display = 'flex';
+              progressWrap.style.display  = 'none';
+              progressBar.style.width = '100%';
+              upscaleBtn.disabled = false;
+            }, 20);
+          }, 20);
+        }, 20);
+      }, 50);
+    });
+
+    /* ── Download ── */
+    document.getElementById('dlBtn').addEventListener('click', () => {
+      const mime = format === 'jpeg' ? 'image/jpeg' : format === 'webp' ? 'image/webp' : 'image/png';
+      const ext  = format === 'jpeg' ? 'jpg' : format;
+      resultCanvas.toBlob(blob => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `upscaled-${resultCanvas.width}x${resultCanvas.height}.${ext}`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }, mime, 0.95);
+    });
+
+  })();
+  </script>
+</body>
+</html>
