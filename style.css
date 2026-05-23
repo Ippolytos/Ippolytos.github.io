@@ -1,20 +1,25 @@
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
 /* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* ── Variables ── */
 :root {
-  --bg:         #0a0a0f;
-  --surface:    #111118;
-  --surface-2:  #1a1a24;
-  --border:     rgba(255,255,255,0.08);
-  --text:       #e8e8f0;
-  --muted:      rgba(232,232,240,0.45);
-  --accent:     #ff6633;
-  --accent-glow:rgba(255,102,51,0.18);
-  --radius:     10px;
-  --transition: 0.18s ease;
-  --font-mono:  'JetBrains Mono', 'Fira Mono', 'Courier New', monospace;
-  --font-display: 'Syne', 'Space Grotesk', sans-serif;
+  --bg:           #0a0a0f;
+  --surface:      #111118;
+  --surface-2:    #1a1a24;
+  --border:       rgba(255,255,255,0.08);
+  --text:         #e8e8f0;
+  --muted:        rgba(232,232,240,0.45);
+  --accent:       #ff6633;
+  --accent-glow:  rgba(255,102,51,0.18);
+  --radius:       10px;
+  --transition:   0.18s ease;
+  --font-mono:    'JetBrains Mono', 'Fira Mono', 'Courier New', monospace;
+  --font-display: 'Syne', sans-serif;
+  --font-serif:   'Playfair Display', Georgia, serif;
+  --nav-h:        52px;
 }
 
 /* ── Base ── */
@@ -22,7 +27,7 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-display), system-ui, sans-serif;
+  font-family: var(--font-display), sans-serif;
   font-size: 15px;
   line-height: 1.6;
   min-height: 100vh;
@@ -42,7 +47,7 @@ body {
   justify-content: center;
   gap: 4px;
   padding: 0 24px;
-  height: 52px;
+  height: var(--nav-h);
 }
 .nav-link {
   font-family: var(--font-mono);
@@ -132,8 +137,7 @@ body {
   border-bottom: 1px solid var(--border);
   background: var(--surface);
   padding: 12px 0;
-  margin: 0 -24px 40px;
-  width: calc(100% + 48px);
+  margin-bottom: 40px;
 }
 .marquee-track {
   display: flex;
@@ -141,7 +145,8 @@ body {
   gap: 20px;
   white-space: nowrap;
   width: max-content;
-  animation: marquee-scroll 28s linear infinite;
+  /* animate exactly half the content width — nav.js doubles the content */
+  animation: marquee-scroll 35s linear infinite;
 }
 .marquee-track span {
   font-family: var(--font-mono);
