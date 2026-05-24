@@ -95,7 +95,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;hei
 input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
 /* Footer */
 .footer-meadow{position:relative;z-index:1;padding:60px 80px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr auto;gap:28px;align-items:start;}
-.footer-brand{font-family:'Playfair Display',serif;font-style:italic;font-size:28px;font-weight:700;color:var(--accent);margin-bottom:8px}
+.footer-brand{font-family:'Licorice',cursive;font-style:normal;font-size:28px;font-weight:400;color:var(--accent);letter-spacing:.5px;text-decoration:none;position:relative;}
 .footer-tagline{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--muted)}
 .footer-right{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
 .footer-small{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;font-weight:600}
