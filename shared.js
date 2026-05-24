@@ -2,6 +2,72 @@
    HROPIBERHTAZ — Shared JavaScript (included on every page)
    ============================================================ */
 
+/* INITIAL PAGE LOAD SCREEN */
+(function(){
+  // Inject load screen before anything else paints
+  const screen = document.createElement('div');
+  screen.id = 'initial-load-screen';
+  screen.innerHTML = `
+    <div class="ils-inner">
+      <div class="ils-brand">Hropiberhtaz</div>
+      <div class="ils-yy" id="ils-yy"></div>
+      <div class="ils-bar-wrap"><div class="ils-bar" id="ils-bar"></div></div>
+      <div class="ils-hint" id="ils-hint">Initialising…</div>
+    </div>`;
+  document.body.insertBefore(screen, document.body.firstChild);
+
+  // Draw mini yin-yang
+  const size = 64;
+  const yyCv = document.createElement('canvas');
+  yyCv.width = yyCv.height = size;
+  document.getElementById('ils-yy').appendChild(yyCv);
+  const ctx = yyCv.getContext('2d');
+  const r = size * 0.44, cx = size/2, cy = size/2;
+  ctx.save(); ctx.translate(cx, cy);
+  ctx.beginPath();ctx.arc(0,0,r,-Math.PI/2,Math.PI/2,false);ctx.arc(0,r/2,r/2,Math.PI/2,-Math.PI/2,true);ctx.arc(0,-r/2,r/2,Math.PI/2,-Math.PI/2,false);ctx.closePath();ctx.fillStyle='#fff';ctx.fill();
+  ctx.beginPath();ctx.arc(0,0,r,Math.PI/2,-Math.PI/2,false);ctx.arc(0,-r/2,r/2,-Math.PI/2,Math.PI/2,true);ctx.arc(0,r/2,r/2,-Math.PI/2,Math.PI/2,false);ctx.closePath();ctx.fillStyle='#000';ctx.fill();
+  ctx.beginPath();ctx.arc(0,-r/2,r/6,0,Math.PI*2);ctx.fillStyle='#000';ctx.fill();
+  ctx.beginPath();ctx.arc(0,r/2,r/6,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+  ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.strokeStyle='rgba(168,196,144,0.7)';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.restore();
+
+  // Spin the yin-yang
+  let ang = 0;
+  const spinIt = () => { ang += 3; yyCv.style.transform = 'rotate('+ang+'deg)'; requestAnimationFrame(spinIt); };
+  spinIt();
+
+  // Fake progress bar with steps
+  const bar = document.getElementById('ils-bar');
+  const hint = document.getElementById('ils-hint');
+  const steps = [
+    [15,  80,  'Loading styles…'],
+    [40,  160, 'Building canvas…'],
+    [65,  280, 'Lighting particles…'],
+    [85,  420, 'Almost ready…'],
+    [100, 600, 'Welcome ✦'],
+  ];
+  steps.forEach(([pct, delay, msg]) => {
+    setTimeout(() => {
+      bar.style.width = pct + '%';
+      hint.textContent = msg;
+    }, delay);
+  });
+
+  // Dismiss after everything is loaded
+  function dismiss() {
+    screen.style.opacity = '0';
+    screen.style.pointerEvents = 'none';
+    setTimeout(() => screen.remove(), 600);
+  }
+  // At minimum wait 750ms so it's not a flash, then wait for load
+  const minWait = new Promise(res => setTimeout(res, 750));
+  const pageLoad = new Promise(res => {
+    if(document.readyState === 'complete') res();
+    else window.addEventListener('load', res);
+  });
+  Promise.all([minWait, pageLoad]).then(dismiss);
+})();
+
 /* PAGE TRANSITION OVERLAY */
 (function(){
   const overlay = document.createElement('div');
