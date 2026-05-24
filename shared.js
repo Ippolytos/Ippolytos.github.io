@@ -194,8 +194,8 @@ function showToast(msg){const t=document.getElementById('toasty-pop');t.textCont
   drawSymbol();
   new MutationObserver(drawSymbol).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
   let currentAngle=0,targetAngle=0,rafId=null;
-  function loop(){const diff=targetAngle-currentAngle;if(Math.abs(diff)<0.01){currentAngle=targetAngle;canvas.style.transform='rotate('+currentAngle.toFixed(3)+'deg)';rafId=null;return;}currentAngle+=diff*0.14;canvas.style.transform='rotate('+currentAngle.toFixed(3)+'deg)';rafId=requestAnimationFrame(loop);}
-  window.addEventListener('scroll',function(){const maxScroll=document.body.scrollHeight-window.innerHeight;const pct=maxScroll>0?window.scrollY/maxScroll:0;targetAngle=pct*2160;if(!rafId)rafId=requestAnimationFrame(loop);},{passive:true});
+  function loop(){const diff=targetAngle-currentAngle;if(Math.abs(diff)<0.01){currentAngle=targetAngle;canvas.style.transform='rotate('+currentAngle.toFixed(3)+'deg)';rafId=null;return;}currentAngle+=diff*0.03;canvas.style.transform='rotate('+currentAngle.toFixed(3)+'deg)';rafId=requestAnimationFrame(loop);}
+  window.addEventListener('scroll',function(){const maxScroll=document.body.scrollHeight-window.innerHeight;const pct=maxScroll>0?window.scrollY/maxScroll:0;targetAngle=pct*360;if(!rafId)rafId=requestAnimationFrame(loop);},{passive:true});
 })();
 
 (function(){
