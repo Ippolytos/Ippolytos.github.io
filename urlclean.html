@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>URLClean — Hropiberhtaz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.uc-shell{position:relative;z-index:1;padding:0 80px 100px;display:flex;flex-direction:column;gap:20px;max-width:860px;margin:0 auto;}
+.uc-input-wrap{position:relative;}
+.uc-textarea{width:100%;min-height:120px;padding:18px 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;resize:vertical;outline:none;transition:border-color .2s,box-shadow .2s;caret-color:var(--accent);}
+.uc-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(168,196,144,.08);}
+.uc-textarea::placeholder{color:var(--muted);opacity:.6;}
+.uc-options-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+.uc-toggle{display:flex;align-items:center;gap:8px;padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius-xl);background:var(--card);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);transition:all .2s;user-select:none;}
+.uc-toggle input{display:none;}
+.uc-toggle.on{border-color:rgba(168,196,144,.35);background:rgba(168,196,144,.07);color:var(--accent);}
+.uc-toggle-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background .2s,box-shadow .2s;flex-shrink:0;}
+.uc-toggle.on .uc-toggle-dot{background:var(--accent);box-shadow:0 0 6px rgba(168,196,144,.5);}
+.uc-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.uc-out-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;display:none;}
+.uc-out-box.has-result{display:block;}
+.uc-out-header{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--panel);}
+.uc-out-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:600;}
+.uc-out-actions{display:flex;gap:8px;}
+.uc-out-textarea{width:100%;min-height:120px;padding:18px 20px;background:transparent;border:none;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;resize:vertical;outline:none;}
+.uc-stats-row{display:flex;gap:20px;flex-wrap:wrap;padding:12px 20px;border-top:1px solid var(--border);background:var(--panel);}
+.uc-stat{display:flex;flex-direction:column;gap:3px;}
+.uc-stat-num{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--accent);letter-spacing:-1px;line-height:1;}
+.uc-stat-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.uc-diff-row{display:flex;gap:8px;padding:0 20px 14px;background:var(--panel);align-items:center;flex-wrap:wrap;}
+.uc-diff-chip{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 10px;border-radius:var(--radius-xl);letter-spacing:1px;}
+.uc-diff-chip.saved{background:rgba(168,196,144,.12);color:var(--accent);border:1px solid rgba(168,196,144,.25);}
+.uc-diff-chip.same{background:rgba(106,138,114,.07);color:var(--muted);border:1px solid var(--border);}
+.uc-preset-row{display:flex;gap:8px;flex-wrap:wrap;}
+.uc-preset{padding:5px 13px;border:1px solid var(--border);border-radius:var(--radius-xl);background:var(--card);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.uc-preset:hover{border-color:var(--accent2);color:var(--accent2);}
+.uc-section-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:600;}
+@media(max-width:900px){.uc-shell{padding:0 24px 80px}}
+</style>
+</head>
+<body>
+<div id="scroll-prog"></div>
+<div id="scan-line"></div>
+<canvas id="wobbly-bg-thingy"></canvas>
+<canvas id="floaty-dot-world"></canvas>
+<canvas id="bg-yinyang"></canvas>
+<div id="live-clock"></div>
+<div id="keyboard-whisper"></div>
+<div id="toasty-pop" class="toasty"></div>
+<div id="file-loading-veil"><div class="veil-spinner"></div><div class="veil-msg" id="veil-msg-text">Opening…</div></div>
+
+<div id="mobile-nav">
+  <button id="mobile-nav-close">✕</button>
+  <a href="index.html">Home</a>
+  <a href="colordrop.html">ColorDrop</a>
+  <a href="hue.html">HUE</a>
+  <a href="chroma.html">Chroma</a>
+  <a href="upscale.html">UpScale</a>
+  <a href="urlclean.html">URLClean</a>
+</div>
+
+<header id="main-header">
+  <a href="index.html" class="brand-scribble">Hropiberhtaz</a>
+  <div class="nav-cluster">
+    <a href="colordrop.html" class="nav-pill">ColorDrop</a>
+    <a href="hue.html" class="nav-pill">HUE</a>
+    <a href="chroma.html" class="nav-pill">Chroma</a>
+    <a href="upscale.html" class="nav-pill">UpScale</a>
+    <a href="urlclean.html" class="nav-pill lit">URLClean</a>
+    <button id="moonbeam-toggle" title="Toggle theme"><span id="moonbeam-icon">☀</span></button>
+  </div>
+  <button id="ham-toggle">☰</button>
+</header>
+
+<div class="page-hero">
+  <div class="page-eyebrow poppy-reveal"><span class="eyebrow-dot"></span>✦ 05 — Strip the noise</div>
+  <h1 class="chunk-title page-title poppy-reveal delay-sprout-1">URL<em>Clean</em></h1>
+  <p class="page-blurb poppy-reveal delay-sprout-2">Remove tracking parameters, UTM tags, affiliate tokens and other URL junk in one click. Paste one URL or a whole list — get back clean, shareable links instantly.</p>
+  <div class="feature-tags poppy-reveal delay-sprout-3">
+    <span class="ftag hot">UTM Removal</span><span class="ftag hot">Tracker Strip</span>
+    <span class="ftag">Batch Mode</span><span class="ftag">Decode %20</span>
+    <span class="ftag hot">Custom Params</span><span class="ftag">Diff Stats</span>
+  </div>
+</div>
+
+<div class="uc-shell poppy-reveal delay-sprout-1">
+  <div>
+    <div class="uc-section-label">Cleaning Options</div>
+    <div class="uc-options-row" id="uc-options">
+      <label class="uc-toggle on" id="uc-t-utm"><input type="checkbox" checked> <span class="uc-toggle-dot"></span> UTM tags</label>
+      <label class="uc-toggle on" id="uc-t-fbclid"><input type="checkbox" checked> <span class="uc-toggle-dot"></span> fbclid / gclid</label>
+      <label class="uc-toggle on" id="uc-t-ref"><input type="checkbox" checked> <span class="uc-toggle-dot"></span> ref / referral</label>
+      <label class="uc-toggle on" id="uc-t-aff"><input type="checkbox" checked> <span class="uc-toggle-dot"></span> affiliate tags</label>
+      <label class="uc-toggle on" id="uc-t-mc"><input type="checkbox" checked> <span class="uc-toggle-dot"></span> mc_* (mailchimp)</label>
+      <label class="uc-toggle on" id="uc-t-si"><input type="checkbox" checked> <span class="uc-toggle-dot"></span> si / igshid</label>
+      <label class="uc-toggle" id="uc-t-decode"><input type="checkbox"> <span class="uc-toggle-dot"></span> decode %xx</label>
+      <label class="uc-toggle" id="uc-t-sort"><input type="checkbox"> <span class="uc-toggle-dot"></span> sort params</label>
+      <label class="uc-toggle" id="uc-t-trailing"><input type="checkbox"> <span class="uc-toggle-dot"></span> strip trailing /</label>
+    </div>
+  </div>
+  <div>
+    <div class="uc-section-label">Custom Params to Remove (comma-separated)</div>
+    <input type="text" id="uc-custom" placeholder="e.g. source, campaign, promo_id" style="width:100%;padding:10px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+  </div>
+  <div>
+    <div class="uc-section-label">Quick Presets</div>
+    <div class="uc-preset-row">
+      <button class="uc-preset" data-preset="aggressive" style="border-color:rgba(200,176,96,.4);color:var(--gold);">Aggressive</button>
+      <button class="uc-preset" data-preset="all">All trackers</button>
+      <button class="uc-preset" data-preset="none">None</button>
+      <button class="uc-preset" data-preset="utm">UTM only</button>
+      <button class="uc-preset" data-preset="social">Social trackers</button>
+      <button class="uc-preset" data-preset="email">Email trackers</button>
+    </div>
+  </div>
+  <div class="uc-input-wrap">
+    <div class="uc-section-label">Input — paste one URL or multiple (one per line)</div>
+    <textarea class="uc-textarea" id="uc-input" placeholder="https://example.com/page?utm_source=newsletter&utm_medium=email&fbclid=abc123&#10;https://shop.example.com/product?ref=homepage&aff_id=42&sort=price"></textarea>
+  </div>
+  <div class="uc-actions">
+    <button class="cozy-btn cozy-btn-filled squish-btn" id="uc-clean-btn">✦ Clean URLs</button>
+    <button class="cozy-btn squish-btn" id="uc-clear-btn">Clear</button>
+  </div>
+  <div class="uc-out-box" id="uc-out-box">
+    <div class="uc-out-header">
+      <span class="uc-out-label">Cleaned Output</span>
+      <div class="uc-out-actions">
+        <button class="cozy-btn squish-btn" id="uc-copy-btn" style="padding:5px 14px;font-size:10px">Copy all</button>
+        <button class="cozy-btn squish-btn" id="uc-dl-btn" style="padding:5px 14px;font-size:10px">↓ Save .txt</button>
+      </div>
+    </div>
+    <textarea class="uc-out-textarea" id="uc-output" readonly></textarea>
+    <div class="uc-stats-row" id="uc-stats-row">
+      <div class="uc-stat"><div class="uc-stat-num" id="uc-s-urls">0</div><div class="uc-stat-lbl">URLs</div></div>
+      <div class="uc-stat"><div class="uc-stat-num" id="uc-s-removed">0</div><div class="uc-stat-lbl">Params removed</div></div>
+      <div class="uc-stat"><div class="uc-stat-num" id="uc-s-bytes">0</div><div class="uc-stat-lbl">Bytes saved</div></div>
+      <div class="uc-stat"><div class="uc-stat-num" id="uc-s-clean">0</div><div class="uc-stat-lbl">Already clean</div></div>
+    </div>
+    <div class="uc-diff-row" id="uc-diff-row"></div>
+  </div>
+</div>
+
+<footer class="footer-meadow">
+  <div><div class="footer-brand">Hropiberhtaz</div><div class="footer-tagline">tools that breathe</div></div>
+  <div class="footer-right">
+    <div class="footer-links">
+      <a href="index.html" class="footer-link">Home</a>
+      <a href="colordrop.html" class="footer-link">ColorDrop</a>
+      <a href="hue.html" class="footer-link">HUE</a>
+      <a href="chroma.html" class="footer-link">Chroma</a>
+      <a href="upscale.html" class="footer-link">UpScale</a>
+    </div>
+    <div class="footer-small">© 2026 · All rights reserved</div>
+  </div>
+</footer>
+
+<button id="lofi-leaf">
+  <div class="soundbars"><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div></div>
+  <span id="audio-label">lo-fi</span>
+</button>
+
+<script src="shared.js"></script>
+<script>
+(function(){
+  const PARAM_SETS={utm:/^utm_/i,fbclid:/^(fbclid|gclid|gad_source|msclkid|dclid|twclid|ttclid|li_fat_id|igshid|reddit_cid)$/i,ref:/^(ref|referrer|referral|referer|source)$/i,aff:/^(aff|aff_id|affiliate|affid|partner|partner_id|tag|zanpid|yclid|srid|irclickid|impact_id|clickid|cid|click_id|clickId|tracking_id|trackingId|track_id|trackId|wickedid|affiliate_id|affiliateId)$/i,mc:/^(mc_|_ke$|__s$)/i,si:/^(si|igshid|__s|_hsenc|_hsmi|hsa_acc|hsa_cam|hsa_grp|hsa_ad|hsa_src|hsa_tgt|hsa_kw|hsa_mt|hsa_net|hsa_ver|hsCtaTracking|__hsfp|__hssc|__hstc)$/i};
+  const AGGRESSIVE_PARAMS=new Set(['utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id','utm_source_platform','utm_creative_format','utm_marketing_tactic','gclid','gclsrc','fbclid','msclkid','dclid','reddit_cid','twclid','li_fat_id','mc_cid','mc_eid','_ke','sb_referer_host','ref','referrer','referral','click_id','clickid','clickId','tracking_id','trackingId','track_id','trackId','source','pk_source','pk_medium','pk_campaign','pk_keyword','pk_content','mtm_source','mtm_medium','mtm_campaign','mtm_keyword','mtm_content','mtm_cid','mtm_group','mtm_placement','oly_anon_id','oly_enc_id','vero_conv','vero_id','yxm_campaign','adgroup_id','ad_id','adset_id','campaign_id','placement','device','matchtype','network','keyword','position','creative','targetid','affiliate_id','affiliateId','aff_id','partner','wickedid','_cid','_sid','hsCtaTracking','hsa_cam','hsa_grp','hsa_mt','hsa_src','hsa_ad','hsa_acc','hsa_net','hsa_kw','hsa_tgt','hsa_ver','__s','__hsfp','__hssc','__hstc','__utmz','__utma','__utmb','__utmc','__utmv','ga_client_id','_ga','_gac','_gl','sessionId','session_id','sid','phpsessid','jsessionid','aspsessionid','AWSALB','AWSALBCORS']);
+  let aggressiveMode=false;
+  function getToggles(){const on={};['utm','fbclid','ref','aff','mc','si'].forEach(k=>{const el=document.querySelector('#uc-t-'+k+' input');on[k]=el?el.checked:false;});return on;}
+  function getCustomParams(){const raw=(document.getElementById('uc-custom').value||'').trim();if(!raw)return[];return raw.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);}
+  function shouldRemove(param,toggles,customParams){const p=param.toLowerCase();if(aggressiveMode){if(AGGRESSIVE_PARAMS.has(param)||AGGRESSIVE_PARAMS.has(p))return true;if(/^utm_/i.test(param)||/^mc_/i.test(param)||/^mtm_/i.test(param)||/^pk_/i.test(param)||/^hsa_/i.test(param)||/^__/i.test(param))return true;}if(customParams.includes(p))return true;for(const k of Object.keys(toggles)){if(toggles[k]&&PARAM_SETS[k]&&PARAM_SETS[k].test(param))return true;}return false;}
+  function cleanSingleUrl(raw,toggles,customParams,decode,sortParams,stripTrailing){raw=raw.trim();if(!raw)return{clean:'',removed:0,original:raw};let url;try{url=new URL(raw);}catch(e){try{url=new URL('https://'+raw);}catch(e2){return{clean:raw,removed:0,original:raw};}}const toDelete=[];url.searchParams.forEach((_,key)=>{if(shouldRemove(key,toggles,customParams))toDelete.push(key);});toDelete.forEach(k=>url.searchParams.delete(k));if(sortParams){const entries=[...url.searchParams.entries()].sort((a,b)=>a[0].localeCompare(b[0]));url.search='';entries.forEach(([k,v])=>url.searchParams.append(k,v));}let result=url.toString();if(decode){try{result=decodeURIComponent(result);}catch(e){}}if(stripTrailing)result=result.replace(/\/+$/,'');result=result.replace(/\?$/,'');return{clean:result,removed:toDelete.length,original:raw};}
+  function runCleaner(){const input=document.getElementById('uc-input').value.trim();if(!input){alert('Paste at least one URL first.');return;}const toggles=getToggles(),customParams=getCustomParams(),decode=document.querySelector('#uc-t-decode input').checked,sortParams=document.querySelector('#uc-t-sort input').checked,stripTrailing=document.querySelector('#uc-t-trailing input').checked;const lines=input.split('\n').map(l=>l.trim()).filter(Boolean);const results=lines.map(l=>cleanSingleUrl(l,toggles,customParams,decode,sortParams,stripTrailing));const totalRemoved=results.reduce((s,r)=>s+r.removed,0),totalBytesSaved=results.reduce((s,r)=>s+Math.max(0,r.original.length-r.clean.length),0),alreadyClean=results.filter(r=>r.removed===0).length;document.getElementById('uc-output').value=results.map(r=>r.clean).join('\n');document.getElementById('uc-s-urls').textContent=results.length;document.getElementById('uc-s-removed').textContent=totalRemoved;document.getElementById('uc-s-bytes').textContent=totalBytesSaved;document.getElementById('uc-s-clean').textContent=alreadyClean;const diffRow=document.getElementById('uc-diff-row');diffRow.innerHTML='';results.forEach((r,i)=>{const chip=document.createElement('span');chip.className='uc-diff-chip '+(r.removed>0?'saved':'same');chip.textContent=r.removed>0?'−'+r.removed+' param'+(r.removed>1?'s':''):'clean';chip.title='URL '+(i+1)+': '+r.original;diffRow.appendChild(chip);});document.getElementById('uc-out-box').classList.add('has-result');document.getElementById('uc-out-box').scrollIntoView({behavior:'smooth',block:'nearest'});}
+  document.getElementById('uc-clean-btn').addEventListener('click',runCleaner);
+  document.getElementById('uc-clear-btn').addEventListener('click',function(){document.getElementById('uc-input').value='';document.getElementById('uc-output').value='';document.getElementById('uc-out-box').classList.remove('has-result');document.getElementById('uc-diff-row').innerHTML='';['uc-s-urls','uc-s-removed','uc-s-bytes','uc-s-clean'].forEach(id=>document.getElementById(id).textContent='0');});
+  document.getElementById('uc-copy-btn').addEventListener('click',function(){const txt=document.getElementById('uc-output').value;navigator.clipboard.writeText(txt).then(()=>{const btn=document.getElementById('uc-copy-btn'),orig=btn.textContent;btn.textContent='✓ Copied!';btn.classList.add('done-copying');setTimeout(()=>{btn.textContent=orig;btn.classList.remove('done-copying');},1600);});});
+  document.getElementById('uc-dl-btn').addEventListener('click',function(){const txt=document.getElementById('uc-output').value;if(!txt)return;const blob=new Blob([txt],{type:'text/plain'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='cleaned-urls.txt';a.click();URL.revokeObjectURL(url);});
+  document.querySelectorAll('.uc-toggle').forEach(label=>{label.addEventListener('click',function(){const cb=this.querySelector('input[type=checkbox]');cb.checked=!cb.checked;this.classList.toggle('on',cb.checked);aggressiveMode=false;document.querySelector('[data-preset="aggressive"]').style.background='';});});
+  document.querySelectorAll('.uc-preset').forEach(btn=>{btn.addEventListener('click',function(){const preset=this.dataset.preset,allKeys=['utm','fbclid','ref','aff','mc','si'];aggressiveMode=false;document.querySelector('[data-preset="aggressive"]').style.background='';document.querySelector('[data-preset="aggressive"]').style.boxShadow='';if(preset==='aggressive'){aggressiveMode=true;allKeys.forEach(k=>{const label=document.getElementById('uc-t-'+k),cb=label.querySelector('input');cb.checked=true;label.classList.add('on');});this.style.background='rgba(200,176,96,0.13)';this.style.boxShadow='0 0 14px rgba(200,176,96,0.22)';document.getElementById('uc-custom').placeholder='Aggressive mode active — '+AGGRESSIVE_PARAMS.size+' tracking params targeted';return;}document.getElementById('uc-custom').placeholder='e.g. source, campaign, promo_id';let toEnable=[];if(preset==='all')toEnable=allKeys;if(preset==='none')toEnable=[];if(preset==='utm')toEnable=['utm'];if(preset==='social')toEnable=['fbclid','si','ref'];if(preset==='email')toEnable=['utm','mc'];allKeys.forEach(k=>{const label=document.getElementById('uc-t-'+k),cb=label.querySelector('input'),active=toEnable.includes(k);cb.checked=active;label.classList.toggle('on',active);});});});
+  document.getElementById('uc-input').addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&e.key==='Enter')runCleaner();});
+})();
+</script>
+</body>
+</html>

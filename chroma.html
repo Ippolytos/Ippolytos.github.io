@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chroma — Hropiberhtaz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.recolor-shell{position:relative;z-index:1;padding:0 80px 100px;display:flex;flex-direction:column;gap:24px;}
+.wibble-row{display:flex;flex-wrap:wrap;gap:18px 28px;align-items:center;margin-bottom:18px}
+.wibble-row:last-child{margin-bottom:0}
+.wibble-group{display:flex;flex-direction:column;gap:8px}
+.wibble-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;font-family:'JetBrains Mono',monospace}
+.toggle-cluster{display:flex;gap:3px;background:var(--card);padding:3px;border:1px solid var(--border);border-radius:var(--radius-xl);}
+.toggle-pebble{background:transparent;border:none;color:var(--muted);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:5px 14px;cursor:pointer;transition:all .16s cubic-bezier(.34,1.56,.64,1);font-family:'JetBrains Mono',monospace;font-weight:600;border-radius:var(--radius-xl);}
+.toggle-pebble.lit{background:var(--accent);color:#0d0f0e}
+[data-theme="light"] .toggle-pebble.lit{color:#fff}
+.toggle-pebble:hover{transform:scale(1.06)}
+.glide-container{display:flex;align-items:center;gap:12px;min-width:200px}
+.glide-container input[type="range"]{width:150px;height:2px}
+.glide-badge{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--text);background:var(--card);padding:3px 9px;border:1px solid var(--border);border-radius:var(--radius-md);min-width:50px;text-align:center;}
+.palette-strip{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.swatch-pebble{width:42px;height:42px;border-radius:var(--radius-md);cursor:pointer;border:2px solid var(--border);transition:transform .3s cubic-bezier(.34,1.56,.64,1),border-color .2s,box-shadow .3s;position:relative;flex-shrink:0;}
+.swatch-pebble:hover{transform:scale(1.12) rotate(3deg);border-color:var(--muted);box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.swatch-pebble input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.dropper-zone{border:1px dashed var(--border);border-radius:var(--radius-lg);padding:40px 28px;text-align:center;cursor:pointer;transition:background .16s,border-color .16s;}
+.dropper-zone:hover{background:rgba(168,196,144,.03);border-color:var(--accent)}
+.dropper-zone p{font-size:12px;color:var(--muted);margin-bottom:14px;letter-spacing:.3px;line-height:1.7}
+.canvas-result-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;display:none;}
+#recolorCanvas{max-width:100%;max-height:60vh;display:block;margin:0 auto;border:1px solid var(--border);border-radius:var(--radius-md)}
+.action-pile{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:20px}
+.btn-rude-remove{border-color:rgba(255,80,80,.3);color:rgba(255,120,100,.8)}
+.btn-rude-remove:hover{border-color:rgba(255,80,80,.7)!important;color:#ff6b6b!important;background:rgba(255,80,80,.07)!important}
+#progress-fog{position:fixed;inset:0;z-index:19999;background:var(--dl-bg);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;opacity:0;pointer-events:none;transition:opacity .3s;}
+#progress-fog.glowing{opacity:1;pointer-events:all}
+#fog-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px;font-style:italic}
+#fog-sub{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600}
+#fog-track{width:min(360px,80vw);height:2px;background:var(--border);border-radius:3px;overflow:hidden}
+#fog-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .12s ease}
+#fog-pct{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:var(--accent);letter-spacing:-1px}
+@media(max-width:900px){.recolor-shell{padding:0 24px 80px}}
+</style>
+</head>
+<body>
+<div id="scroll-prog"></div>
+<div id="scan-line"></div>
+<canvas id="wobbly-bg-thingy"></canvas>
+<canvas id="floaty-dot-world"></canvas>
+<canvas id="bg-yinyang"></canvas>
+<div id="live-clock"></div>
+<div id="keyboard-whisper"></div>
+<div id="toasty-pop" class="toasty"></div>
+<div id="file-loading-veil"><div class="veil-spinner"></div><div class="veil-msg" id="veil-msg-text">Opening…</div></div>
+<div id="progress-fog"><div id="fog-title">Working…</div><div id="fog-sub">Please wait</div><div id="fog-track"><div id="fog-bar"></div></div><div id="fog-pct">0%</div></div>
+
+<div id="mobile-nav">
+  <button id="mobile-nav-close">✕</button>
+  <a href="index.html">Home</a>
+  <a href="colordrop.html">ColorDrop</a>
+  <a href="hue.html">HUE</a>
+  <a href="chroma.html">Chroma</a>
+  <a href="upscale.html">UpScale</a>
+  <a href="urlclean.html">URLClean</a>
+</div>
+
+<header id="main-header">
+  <a href="index.html" class="brand-scribble">Hropiberhtaz</a>
+  <div class="nav-cluster">
+    <a href="colordrop.html" class="nav-pill">ColorDrop</a>
+    <a href="hue.html" class="nav-pill">HUE</a>
+    <a href="chroma.html" class="nav-pill lit">Chroma</a>
+    <a href="upscale.html" class="nav-pill">UpScale</a>
+    <a href="urlclean.html" class="nav-pill">URLClean</a>
+    <button id="moonbeam-toggle" title="Toggle theme"><span id="moonbeam-icon">☀</span></button>
+  </div>
+  <button id="ham-toggle">☰</button>
+</header>
+
+<div class="page-hero">
+  <div class="page-eyebrow poppy-reveal"><span class="eyebrow-dot"></span>✦ 03 — Recolor your world</div>
+  <h1 class="chunk-title page-title poppy-reveal delay-sprout-1"><em>Chroma</em> — Image Recolor</h1>
+  <p class="page-blurb poppy-reveal delay-sprout-2">Map any image's colors to a custom palette. Choose smooth, blocky, or detail mode. Load palettes from JSON. Full control over strength and blend.</p>
+  <div class="feature-tags poppy-reveal delay-sprout-3">
+    <span class="ftag hot">Palette Mapping</span><span class="ftag hot">Smooth/Blocky/Detail</span>
+    <span class="ftag">JSON Palette Import</span><span class="ftag">Strength Control</span><span class="ftag">Full-Res Export</span>
+  </div>
+</div>
+
+<div class="recolor-shell">
+  <div class="lumpy-card poppy-reveal delay-sprout-1">
+    <div class="lumpy-card-label">Controls</div>
+    <div class="wibble-row">
+      <div class="wibble-group"><div class="wibble-label">Quality</div><div class="toggle-cluster" id="qualityGroup"><button class="toggle-pebble lit" data-quality="high">HIGH</button><button class="toggle-pebble" data-quality="med">MED</button><button class="toggle-pebble" data-quality="low">LOW</button></div></div>
+      <div class="wibble-group"><div class="wibble-label">Mode</div><div class="toggle-cluster" id="modeGroup"><button class="toggle-pebble lit" data-mode="smooth">SMOOTH</button><button class="toggle-pebble" data-mode="blocky">BLOCKY</button><button class="toggle-pebble" data-mode="detail">DETAIL</button></div></div>
+    </div>
+    <div class="wibble-row">
+      <div class="wibble-group"><div class="wibble-label">Strength</div><div class="glide-container"><input type="range" id="strengthSlider" min="0" max="100" value="80"><div class="glide-badge" id="strengthVal">0.80</div></div></div>
+      <div class="wibble-group"><div class="wibble-label">Smoothing</div><div class="glide-container"><input type="range" id="smoothSlider" min="0" max="100" value="40"><div class="glide-badge" id="smoothVal">0.40</div></div></div>
+    </div>
+  </div>
+  <div class="lumpy-card poppy-reveal delay-sprout-2">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div class="lumpy-card-label" style="margin-bottom:0">Palette</div>
+      <div style="display:flex;gap:7px">
+        <button class="cozy-btn squish-btn" id="addColorBtn" style="padding:5px 12px;font-size:10px">+ Add</button>
+        <button class="cozy-btn squish-btn" id="removeColorBtn" style="padding:5px 12px;font-size:10px">− Remove</button>
+        <button class="cozy-btn squish-btn" id="loadJsonBtn" style="padding:5px 12px;font-size:10px">Load JSON</button>
+        <input type="file" id="jsonInput" accept=".json" style="display:none">
+      </div>
+    </div>
+    <div class="palette-strip" id="swatchesContainer"></div>
+  </div>
+  <div class="dropper-zone poppy-reveal delay-sprout-3" id="recolorUpload">
+    <p>Drag & drop an image here or click to browse</p>
+    <button class="cozy-btn cozy-btn-filled squish-btn" id="recolorSelectBtn">Select Image</button>
+    <input type="file" id="recolorFileInput" accept="image/*" style="display:none">
+  </div>
+  <div class="canvas-result-box" id="canvasPanel">
+    <canvas id="recolorCanvas"></canvas>
+    <div class="action-pile">
+      <button class="cozy-btn cozy-btn-filled squish-btn" id="applyBtn">Apply Recolor</button>
+      <button class="cozy-btn squish-btn" id="resetBtn">Reset</button>
+      <button class="cozy-btn squish-btn" id="downloadBtn" style="display:none">↓ Download</button>
+      <button class="cozy-btn btn-rude-remove squish-btn" id="removeImgBtn">✕ Remove</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer-meadow">
+  <div><div class="footer-brand">Hropiberhtaz</div><div class="footer-tagline">tools that breathe</div></div>
+  <div class="footer-right">
+    <div class="footer-links">
+      <a href="index.html" class="footer-link">Home</a>
+      <a href="colordrop.html" class="footer-link">ColorDrop</a>
+      <a href="hue.html" class="footer-link">HUE</a>
+      <a href="upscale.html" class="footer-link">UpScale</a>
+      <a href="urlclean.html" class="footer-link">URLClean</a>
+    </div>
+    <div class="footer-small">© 2026 · All rights reserved</div>
+  </div>
+</footer>
+
+<button id="lofi-leaf">
+  <div class="soundbars"><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div></div>
+  <span id="audio-label">lo-fi</span>
+</button>
+
+<script src="shared.js"></script>
+<script>
+(function(){
+  const canvas=document.getElementById('recolorCanvas'),ctx=canvas.getContext('2d'),canvasPanel=document.getElementById('canvasPanel'),uploadZone=document.getElementById('recolorUpload'),downloadBtn=document.getElementById('downloadBtn'),fileInput=document.getElementById('recolorFileInput'),swatchesContainer=document.getElementById('swatchesContainer');
+  let origImgEl=null,previewImageData=null,fullResImageData=null,mode='smooth';
+  let palette=['#a8c490','#c9a0a0','#7a9870','#141918','#e2e8de'];
+  const strengthSlider=document.getElementById('strengthSlider'),strengthVal=document.getElementById('strengthVal'),smoothSlider=document.getElementById('smoothSlider'),smoothVal=document.getElementById('smoothVal');
+  strengthSlider.addEventListener('input',()=>{strengthVal.textContent=(strengthSlider.value/100).toFixed(2);});
+  smoothSlider.addEventListener('input',()=>{smoothVal.textContent=(smoothSlider.value/100).toFixed(2);});
+  document.getElementById('qualityGroup').addEventListener('click',e=>{const b=e.target.closest('[data-quality]');if(!b)return;document.querySelectorAll('[data-quality]').forEach(el=>el.classList.remove('lit'));b.classList.add('lit');});
+  document.getElementById('modeGroup').addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(!b)return;document.querySelectorAll('[data-mode]').forEach(el=>el.classList.remove('lit'));b.classList.add('lit');mode=b.dataset.mode;});
+  function getPalette(){return Array.from(document.querySelectorAll('.swatch-pebble input[type=color]')).map(i=>i.value);}
+  function renderSwatches(){swatchesContainer.innerHTML='';palette.forEach(color=>{const div=document.createElement('div');div.className='swatch-pebble';div.style.background=color;const inp=document.createElement('input');inp.type='color';inp.value=color;inp.addEventListener('input',e=>{div.style.background=e.target.value;});div.appendChild(inp);swatchesContainer.appendChild(div);});}
+  document.getElementById('addColorBtn').addEventListener('click',()=>{palette.push('#a8c490');renderSwatches();});
+  document.getElementById('removeColorBtn').addEventListener('click',()=>{if(palette.length>1)palette.pop();renderSwatches();});
+  document.getElementById('loadJsonBtn').addEventListener('click',()=>document.getElementById('jsonInput').click());
+  document.getElementById('jsonInput').addEventListener('change',e=>{
+    const f=e.target.files[0];if(!f)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      try{
+        const d=JSON.parse(ev.target.result);
+        const toHex=v=>{if(typeof v==='string'){const s=v.trim();if(/^#[0-9a-fA-F]{3,8}$/.test(s))return s;if(/^[0-9a-fA-F]{6}$/.test(s))return '#'+s;}if(v&&typeof v==='object'){const candidate=v.hex||v.color||v.value||v.HEX||v.Color||v.hex_code||v['#'];if(candidate)return toHex(candidate);}return null;};
+        let colors=[];
+        if(Array.isArray(d)){colors=d.map(toHex).filter(Boolean);}
+        else if(d&&typeof d==='object'){const arr=d.colors||d.palette||d.swatches||d.Palette||d.Colors||null;if(Array.isArray(arr)){colors=arr.map(toHex).filter(Boolean);}else if(arr&&typeof arr==='object'){colors=Object.values(arr).map(toHex).filter(Boolean);}else{colors=Object.values(d).map(toHex).filter(Boolean);}}
+        if(colors.length){palette=colors;renderSwatches();}else{showToast('No colors found in JSON');}
+      }catch(err){showToast('Invalid JSON file');}
+      e.target.value='';
+    };reader.readAsText(f);
+  });
+  function hexToRgb(hex){const r=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);return r?[parseInt(r[1],16),parseInt(r[2],16),parseInt(r[3],16)]:null;}
+  function loadRecolorImage(file){if(!file)return;const reader=new FileReader();reader.onload=ev=>{const img=new Image();img.onload=()=>{origImgEl=img;const pw=Math.min(img.naturalWidth,800),ph=Math.round(img.naturalHeight*pw/img.naturalWidth);const preCanvas=document.createElement('canvas');preCanvas.width=pw;preCanvas.height=ph;const preCtx=preCanvas.getContext('2d');preCtx.drawImage(img,0,0,pw,ph);previewImageData=preCtx.getImageData(0,0,pw,ph);const frCanvas=document.createElement('canvas');frCanvas.width=img.naturalWidth;frCanvas.height=img.naturalHeight;const frCtx=frCanvas.getContext('2d');frCtx.drawImage(img,0,0);fullResImageData=frCtx.getImageData(0,0,img.naturalWidth,img.naturalHeight);canvas.width=pw;canvas.height=ph;ctx.putImageData(previewImageData,0,0);canvasPanel.style.display='block';uploadZone.style.display='none';};img.src=ev.target.result;};reader.readAsDataURL(file);}
+  uploadZone.addEventListener('click',()=>fileInput.click());
+  uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.style.borderColor='var(--accent)';});
+  uploadZone.addEventListener('dragleave',()=>{uploadZone.style.borderColor='';});
+  uploadZone.addEventListener('drop',e=>{e.preventDefault();uploadZone.style.borderColor='';const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))loadRecolorImage(f);});
+  fileInput.addEventListener('change',e=>loadRecolorImage(e.target.files[0]));
+  document.getElementById('recolorSelectBtn').addEventListener('click',()=>fileInput.click());
+  function applyRecolor(imageData,outCanvas){const src=imageData.data,w=imageData.width,h=imageData.height,pal=getPalette().map(hexToRgb).filter(Boolean);if(!pal.length)return;const strength=parseFloat(strengthVal.textContent),smoothFactor=parseFloat(smoothVal.textContent),sigma=mode==='blocky'?1:(30+smoothFactor*150),invSigma2=sigma>0.1?1/(sigma*sigma):10000;const outData=new ImageData(w,h),dst=outData.data;for(let i=0;i<w*h;i++){const pi=i*4,a=src[pi+3];if(a===0){dst[pi]=src[pi];dst[pi+1]=src[pi+1];dst[pi+2]=src[pi+2];dst[pi+3]=0;continue;}const r=src[pi],g=src[pi+1],b=src[pi+2];if(mode==='blocky'){let best=pal[0],minD=Infinity;for(const p of pal){const d=(r-p[0])**2+(g-p[1])**2+(b-p[2])**2;if(d<minD){minD=d;best=p;}}dst[pi]=Math.round(r+(best[0]-r)*strength);dst[pi+1]=Math.round(g+(best[1]-g)*strength);dst[pi+2]=Math.round(b+(best[2]-b)*strength);dst[pi+3]=a;}else{let wSum=0,cR=0,cG=0,cB=0;for(const p of pal){const d2=(r-p[0])**2+(g-p[1])**2+(b-p[2])**2,w=Math.exp(-d2*invSigma2);wSum+=w;cR+=p[0]*w;cG+=p[1]*w;cB+=p[2]*w;}if(wSum>0){cR/=wSum;cG/=wSum;cB/=wSum;}dst[pi]=Math.round(r+(cR-r)*strength);dst[pi+1]=Math.round(g+(cG-g)*strength);dst[pi+2]=Math.round(b+(cB-b)*strength);dst[pi+3]=a;}}const outCtx=outCanvas.getContext('2d');outCtx.putImageData(outData,0,0);}
+  document.getElementById('applyBtn').addEventListener('click',()=>{if(!previewImageData)return;applyRecolor(previewImageData,canvas);downloadBtn.style.display='inline-flex';});
+  document.getElementById('resetBtn').addEventListener('click',()=>{if(!previewImageData)return;ctx.putImageData(previewImageData,0,0);downloadBtn.style.display='none';});
+  downloadBtn.addEventListener('click',()=>{if(!fullResImageData||!origImgEl)return;const nw=origImgEl.naturalWidth,nh=origImgEl.naturalHeight,pal=getPalette().map(hexToRgb).filter(Boolean);if(!pal.length)return;const fogEl=document.getElementById('progress-fog'),fogBar=document.getElementById('fog-bar'),fogPct=document.getElementById('fog-pct'),fogTitle=document.getElementById('fog-title'),fogSub=document.getElementById('fog-sub');fogTitle.textContent='Recoloring at full resolution…';fogSub.textContent=`${nw} × ${nh} px`;fogBar.style.width='0%';fogPct.textContent='0%';fogEl.classList.add('glowing');downloadBtn.disabled=true;const strength=parseFloat(strengthVal.textContent),smoothFactor=parseFloat(smoothVal.textContent),sigma=mode==='blocky'?1:(30+smoothFactor*150),invSigma2=sigma>0.1?1/(sigma*sigma):10000;const src=fullResImageData.data,outData=new ImageData(nw,nh),dst=outData.data,totalPx=nw*nh,CHUNK=80000;let idx=0;function processChunk(){const end=Math.min(idx+CHUNK,totalPx);for(let pi=idx;pi<end;pi++){const i=pi*4,a=src[i+3];if(a===0){dst[i]=src[i];dst[i+1]=src[i+1];dst[i+2]=src[i+2];dst[i+3]=0;continue;}const r=src[i],g=src[i+1],b=src[i+2];if(mode==='blocky'){let best=pal[0],minD=Infinity;for(const p of pal){const d=(r-p[0])**2+(g-p[1])**2+(b-p[2])**2;if(d<minD){minD=d;best=p;}}dst[i]=Math.round(r+(best[0]-r)*strength);dst[i+1]=Math.round(g+(best[1]-g)*strength);dst[i+2]=Math.round(b+(best[2]-b)*strength);dst[i+3]=a;}else{let wSum=0,cR=0,cG=0,cB=0;for(const p of pal){const d2=(r-p[0])**2+(g-p[1])**2+(b-p[2])**2,wt=Math.exp(-d2*invSigma2);wSum+=wt;cR+=p[0]*wt;cG+=p[1]*wt;cB+=p[2]*wt;}if(wSum>0){cR/=wSum;cG/=wSum;cB/=wSum;}dst[i]=Math.round(r+(cR-r)*strength);dst[i+1]=Math.round(g+(cG-g)*strength);dst[i+2]=Math.round(b+(cB-b)*strength);dst[i+3]=a;}}idx=end;const pct=Math.round(idx/totalPx*85);fogBar.style.width=pct+'%';fogPct.textContent=pct+'%';if(idx<totalPx)setTimeout(processChunk,0);else{fogTitle.textContent='Encoding PNG…';fogSub.textContent='Almost done!';fogBar.style.width='90%';fogPct.textContent='90%';setTimeout(()=>{const exportCanvas=document.createElement('canvas');exportCanvas.width=nw;exportCanvas.height=nh;exportCanvas.getContext('2d').putImageData(outData,0,0);exportCanvas.toBlob(blob=>{fogBar.style.width='100%';fogPct.textContent='100%';const url=URL.createObjectURL(blob);const a=document.createElement('a');a.download='chroma-recolored.png';a.href=url;a.click();URL.revokeObjectURL(url);downloadBtn.disabled=false;setTimeout(()=>fogEl.classList.remove('glowing'),700);});},30);}};setTimeout(processChunk,60);});
+  document.getElementById('removeImgBtn').addEventListener('click',()=>{origImgEl=null;previewImageData=null;fullResImageData=null;ctx.clearRect(0,0,canvas.width,canvas.height);canvas.width=0;canvas.height=0;canvasPanel.style.display='none';uploadZone.style.display='';downloadBtn.style.display='none';fileInput.value='';});
+  renderSwatches();
+})();
+</script>
+</body>
+</html>
