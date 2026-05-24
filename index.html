@@ -31,21 +31,31 @@
 @keyframes scrollBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
 /* Tool cards grid */
 .tools-grid{position:relative;z-index:1;padding:80px 80px 100px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;}
-.tool-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:36px 32px;text-decoration:none;color:var(--text);display:flex;flex-direction:column;gap:16px;transition:all .3s cubic-bezier(.25,.46,.45,.94);position:relative;overflow:hidden;}
-.tool-card::before{content:'';position:absolute;inset:-2px;border-radius:calc(var(--radius-lg)+2px);padding:2px;background:conic-gradient(from var(--spin-angle,0deg),var(--accent),var(--accent2),var(--accent3),var(--accent));z-index:-1;opacity:0;transition:opacity .4s;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;}
-.tool-card:hover{transform:translateY(-4px);box-shadow:0 24px 60px rgba(0,0,0,.25);}
-.tool-card:hover::before{opacity:1;animation:spinBorder 3s linear infinite;}
 @property --spin-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
 @keyframes spinBorder{to{--spin-angle:360deg}}
-.tc-num{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);}
-.tc-name{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;letter-spacing:-1px;line-height:1.1;}
-.tc-name em{font-style:italic;color:var(--accent);}
-.tc-desc{font-size:13px;color:var(--muted);line-height:1.8;font-weight:400;}
-.tc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
-.tc-tag{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:3px 8px;border:1px solid var(--border);border-radius:var(--radius-xl);}
-.tc-tag.h{border-color:rgba(168,196,144,.3);color:var(--accent);}
-.tc-arrow{margin-top:auto;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);display:flex;align-items:center;gap:6px;transition:color .2s,gap .2s;}
-.tool-card:hover .tc-arrow{color:var(--accent);gap:10px;}
+.tool-card{background:linear-gradient(145deg,var(--surface) 55%,color-mix(in srgb,var(--tc-clr,#a8c490) 5%,var(--surface)));border:1px solid color-mix(in srgb,var(--tc-clr,#a8c490) 18%,var(--border));border-radius:var(--radius-lg);padding:0;text-decoration:none;color:var(--text);display:flex;flex-direction:column;transition:transform .35s cubic-bezier(.25,.46,.45,.94),box-shadow .35s ease,border-color .3s;position:relative;overflow:hidden;}
+.tool-card::before{content:'';position:absolute;inset:-2px;border-radius:calc(var(--radius-lg)+2px);padding:2px;background:conic-gradient(from var(--spin-angle,0deg),var(--tc-clr,#a8c490),transparent 40%,var(--tc-clr,#a8c490));z-index:0;opacity:0;transition:opacity .4s;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;}
+.tool-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--tc-clr,#a8c490),transparent);opacity:0;transition:opacity .35s;}
+.tool-card:hover{transform:translateY(-7px) scale(1.01);box-shadow:0 30px 70px rgba(0,0,0,.32),0 0 40px color-mix(in srgb,var(--tc-clr,#a8c490) 10%,transparent);}
+.tool-card:hover::before{opacity:1;animation:spinBorder 3s linear infinite;}
+.tool-card:hover::after{opacity:1;}
+.tc-topbar{height:3px;background:linear-gradient(90deg,var(--tc-clr,#a8c490),transparent);opacity:.5;position:relative;z-index:1;}
+.tc-body{padding:26px 26px 20px;display:flex;flex-direction:column;gap:13px;flex:1;position:relative;z-index:1;}
+.tc-glyph{font-family:'Playfair Display',serif;font-size:72px;font-weight:900;line-height:1;color:var(--tc-clr,#a8c490);opacity:.07;position:absolute;right:16px;top:10px;pointer-events:none;transition:opacity .3s;}
+.tool-card:hover .tc-glyph{opacity:.15;}
+.tc-num{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:4px;text-transform:uppercase;color:color-mix(in srgb,var(--tc-clr,#a8c490) 70%,var(--muted));}
+.tc-name{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1.1;}
+.tc-name em{font-style:italic;color:var(--tc-clr,#a8c490);}
+.tc-desc{font-size:12px;color:var(--muted);line-height:1.8;font-weight:400;}
+.tc-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.tc-tag{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:3px 8px;border:1px solid var(--border);border-radius:var(--radius-xl);}
+.tc-tag.h{border-color:color-mix(in srgb,var(--tc-clr,#a8c490) 45%,transparent);color:var(--tc-clr,#a8c490);}
+.tc-footer{padding:12px 26px 18px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid color-mix(in srgb,var(--tc-clr,#a8c490) 10%,var(--border));position:relative;z-index:1;margin-top:auto;}
+.tc-arrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);display:flex;align-items:center;gap:8px;transition:color .2s,gap .2s;}
+.tc-arrow-icon{width:28px;height:28px;border-radius:50%;border:1px solid color-mix(in srgb,var(--tc-clr,#a8c490) 30%,var(--border));display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .25s cubic-bezier(.34,1.56,.64,1);color:var(--tc-clr,#a8c490);}
+.tool-card:hover .tc-arrow{color:var(--tc-clr,#a8c490);gap:12px;}
+.tool-card:hover .tc-arrow-icon{background:var(--tc-clr,#a8c490);color:#0d0f0e;transform:scale(1.15) rotate(45deg);border-color:var(--tc-clr,#a8c490);}
+[data-theme="light"] .tool-card:hover .tc-arrow-icon{color:#fff;}
 /* Tape divider already in shared */
 @media(max-width:900px){
   #cozy-landing{padding:100px 24px 60px;}
@@ -111,56 +121,96 @@
 <div class="tape-divider"><div class="tape-roll" id="tape-track-1"></div></div>
 
 <section class="tools-grid">
-  <a href="colordrop.html" class="tool-card poppy-reveal">
-    <div class="tc-num">✦ 01</div>
-    <div class="tc-name">Color<em>Drop</em></div>
-    <div class="tc-desc">A precision color picker with full HSV control, alpha transparency, live HEX/RGBA output and one-click clipboard copy.</div>
-    <div class="tc-tags">
-      <span class="tc-tag h">HSV Canvas</span><span class="tc-tag h">Alpha Control</span>
-      <span class="tc-tag">HEX</span><span class="tc-tag">RGBA</span><span class="tc-tag h">OKLCH Output</span>
+
+  <a href="colordrop.html" class="tool-card poppy-reveal" style="--tc-clr:#a8c490">
+    <div class="tc-topbar"></div>
+    <div class="tc-body">
+      <div class="tc-glyph">01</div>
+      <div class="tc-num">✦ 01 — Color Picker</div>
+      <div class="tc-name">Color<em>Drop</em></div>
+      <div class="tc-desc">A precision color picker with full HSV canvas, alpha transparency, and live HEX/RGBA/HSL/OKLCH output.</div>
+      <div class="tc-tags">
+        <span class="tc-tag h">HSV Canvas</span><span class="tc-tag h">Alpha</span>
+        <span class="tc-tag">HEX</span><span class="tc-tag">RGBA</span><span class="tc-tag h">OKLCH</span>
+        <span class="tc-tag">History</span>
+      </div>
     </div>
-    <div class="tc-arrow">Open tool <span>→</span></div>
-  </a>
-  <a href="hue.html" class="tool-card poppy-reveal delay-sprout-1">
-    <div class="tc-num">◈ 02</div>
-    <div class="tc-name"><em>HUE</em> Editor</div>
-    <div class="tc-desc">Drop any image and sculpt it with hue rotation, saturation, brightness, contrast, sepia and invert — plus cinematic presets.</div>
-    <div class="tc-tags">
-      <span class="tc-tag h">Hue Rotate</span><span class="tc-tag h">Saturation</span>
-      <span class="tc-tag">Brightness</span><span class="tc-tag h">6 Presets</span><span class="tc-tag">PNG/JPG/WEBP</span>
+    <div class="tc-footer">
+      <div class="tc-arrow"><span>Open tool</span><div class="tc-arrow-icon">→</div></div>
     </div>
-    <div class="tc-arrow">Open tool <span>→</span></div>
   </a>
-  <a href="chroma.html" class="tool-card poppy-reveal delay-sprout-2">
-    <div class="tc-num">✦ 03</div>
-    <div class="tc-name"><em>Chroma</em> Recolor</div>
-    <div class="tc-desc">Map any image's colors to a custom palette. Choose smooth, blocky, or detail mode. Load palettes from JSON.</div>
-    <div class="tc-tags">
-      <span class="tc-tag h">Palette Mapping</span><span class="tc-tag h">Smooth/Blocky/Detail</span>
-      <span class="tc-tag">JSON Import</span><span class="tc-tag">Full-Res Export</span>
+
+  <a href="hue.html" class="tool-card poppy-reveal delay-sprout-1" style="--tc-clr:#c9a0a0">
+    <div class="tc-topbar"></div>
+    <div class="tc-body">
+      <div class="tc-glyph">02</div>
+      <div class="tc-num">◈ 02 — Image Editor</div>
+      <div class="tc-name"><em>HUE</em> Editor</div>
+      <div class="tc-desc">Sculpt any image with hue rotation, saturation, brightness, contrast, sepia and invert — plus cinematic presets.</div>
+      <div class="tc-tags">
+        <span class="tc-tag h">Hue Rotate</span><span class="tc-tag h">Saturation</span>
+        <span class="tc-tag">Brightness</span><span class="tc-tag h">6 Presets</span>
+        <span class="tc-tag">PNG/JPG/WEBP</span>
+      </div>
     </div>
-    <div class="tc-arrow">Open tool <span>→</span></div>
-  </a>
-  <a href="upscale.html" class="tool-card poppy-reveal delay-sprout-3">
-    <div class="tc-num">↑ 04</div>
-    <div class="tc-name">Up<em>Scale</em></div>
-    <div class="tc-desc">Lanczos-3 resampling with float-domain unsharp masking — ~0% sharpness loss at any scale. From HD to 8K.</div>
-    <div class="tc-tags">
-      <span class="tc-tag h">Lanczos-3</span><span class="tc-tag h">Float USM</span>
-      <span class="tc-tag">8K Support</span><span class="tc-tag">Crop Tool</span><span class="tc-tag h">Sharpness Presets</span>
+    <div class="tc-footer">
+      <div class="tc-arrow"><span>Open tool</span><div class="tc-arrow-icon">→</div></div>
     </div>
-    <div class="tc-arrow">Open tool <span>→</span></div>
   </a>
-  <a href="urlclean.html" class="tool-card poppy-reveal delay-sprout-4">
-    <div class="tc-num">✦ 05</div>
-    <div class="tc-name">URL<em>Clean</em></div>
-    <div class="tc-desc">Remove tracking parameters, UTM tags, affiliate tokens and URL junk in one click. Paste one URL or a whole list.</div>
-    <div class="tc-tags">
-      <span class="tc-tag h">UTM Removal</span><span class="tc-tag h">Tracker Strip</span>
-      <span class="tc-tag">Batch Mode</span><span class="tc-tag h">Custom Params</span><span class="tc-tag">Diff Stats</span>
+
+  <a href="chroma.html" class="tool-card poppy-reveal delay-sprout-2" style="--tc-clr:#8fc9b8">
+    <div class="tc-topbar"></div>
+    <div class="tc-body">
+      <div class="tc-glyph">03</div>
+      <div class="tc-num">✦ 03 — Recolor</div>
+      <div class="tc-name"><em>Chroma</em> Recolor</div>
+      <div class="tc-desc">Map any image's colors to a custom palette. Smooth, blocky, or detail mode. Load palettes from JSON.</div>
+      <div class="tc-tags">
+        <span class="tc-tag h">Palette Mapping</span><span class="tc-tag h">Smooth/Blocky</span>
+        <span class="tc-tag">JSON Import</span><span class="tc-tag h">Full-Res Export</span>
+      </div>
     </div>
-    <div class="tc-arrow">Open tool <span>→</span></div>
+    <div class="tc-footer">
+      <div class="tc-arrow"><span>Open tool</span><div class="tc-arrow-icon">→</div></div>
+    </div>
   </a>
+
+  <a href="upscale.html" class="tool-card poppy-reveal delay-sprout-3" style="--tc-clr:#c8b060">
+    <div class="tc-topbar"></div>
+    <div class="tc-body">
+      <div class="tc-glyph">04</div>
+      <div class="tc-num">↑ 04 — Upscaler</div>
+      <div class="tc-name">Up<em>Scale</em></div>
+      <div class="tc-desc">Lanczos-3 resampling with float-domain unsharp masking — near-zero sharpness loss from HD to 8K.</div>
+      <div class="tc-tags">
+        <span class="tc-tag h">Lanczos-3</span><span class="tc-tag h">Float USM</span>
+        <span class="tc-tag">8K Support</span><span class="tc-tag">Crop Tool</span>
+        <span class="tc-tag h">Sharp Presets</span>
+      </div>
+    </div>
+    <div class="tc-footer">
+      <div class="tc-arrow"><span>Open tool</span><div class="tc-arrow-icon">→</div></div>
+    </div>
+  </a>
+
+  <a href="urlclean.html" class="tool-card poppy-reveal delay-sprout-4" style="--tc-clr:#b0a8d0">
+    <div class="tc-topbar"></div>
+    <div class="tc-body">
+      <div class="tc-glyph">05</div>
+      <div class="tc-num">✦ 05 — URL Cleaner</div>
+      <div class="tc-name">URL<em>Clean</em></div>
+      <div class="tc-desc">Strip UTM tags, tracking pixels, affiliate tokens and URL noise in one click. One URL or a full batch.</div>
+      <div class="tc-tags">
+        <span class="tc-tag h">UTM Removal</span><span class="tc-tag h">Tracker Strip</span>
+        <span class="tc-tag">Batch Mode</span><span class="tc-tag h">Custom Params</span>
+        <span class="tc-tag">Diff Stats</span>
+      </div>
+    </div>
+    <div class="tc-footer">
+      <div class="tc-arrow"><span>Open tool</span><div class="tc-arrow-icon">→</div></div>
+    </div>
+  </a>
+
 </section>
 
 <footer class="footer-meadow">
