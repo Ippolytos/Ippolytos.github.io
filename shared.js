@@ -52,7 +52,6 @@ function showToast(msg){const t=document.getElementById('toasty-pop');t.textCont
   function loop(){if(_stop)return;ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.step();p.paint();});ctx.globalAlpha=1;requestAnimationFrame(loop);}loop();
 })();
 
-/* ── Background Enso (replaces yin-yang) ─────────────────── */
 (function(){
   const canvas = document.getElementById('bg-yinyang');
   if(!canvas) return;
@@ -68,129 +67,31 @@ function showToast(msg){const t=document.getElementById('toasty-pop');t.textCont
   canvas.style.width = SIZE + 'px'; canvas.style.height = SIZE + 'px';
   canvas.style.marginLeft = (-SIZE/2) + 'px'; canvas.style.marginTop = (-SIZE/2) + 'px';
   const ctx = canvas.getContext('2d');
-  const cx = SIZE/2, cy = SIZE/2;
-  let _buf=null, _bufTheme=null;
-
-  function drawEnso(){
+  const r = SIZE * 0.46, cx = SIZE / 2, cy = SIZE / 2;
+  let _buf=null,_bufTheme=null;
+  function drawSymbol() {
     const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    ctx.clearRect(0,0,SIZE,SIZE);
-    const themeKey = isLight?'l':'d';
-    if(_buf && _bufTheme===themeKey){
-      ctx.save();ctx.globalAlpha=isLight?0.14:0.10;ctx.drawImage(_buf,0,0);ctx.restore();return;
-    }
-    _bufTheme = themeKey;
-    const buf = document.createElement('canvas');_buf=buf;
-    buf.width=SIZE;buf.height=SIZE;
-    const bx=buf.getContext('2d');
-
-    // Colour palette per theme
-    const stroke1 = isLight ? 'rgba(164,93,60,0.82)'  : 'rgba(168,196,144,0.75)';  // main arc
-    const stroke2 = isLight ? 'rgba(176,100,132,0.40)' : 'rgba(201,160,160,0.35)'; // inner ring
-    const stroke3 = isLight ? 'rgba(164,93,60,0.18)'  : 'rgba(168,196,144,0.12)';  // ghost track
-    const dotFill = isLight ? 'rgba(164,93,60,0.65)'  : 'rgba(168,196,144,0.55)';  // gap dot
-
-    bx.translate(cx,cy);
-
-    // Ghost track (full circle, very faint)
-    const R = SIZE*0.40;
-    bx.beginPath();bx.arc(0,0,R,0,Math.PI*2);
-    bx.strokeStyle=stroke3;bx.lineWidth=3;bx.stroke();
-
-    // Inner ring (harmony ring, slightly offset)
-    const Ri = SIZE*0.28;
-    bx.beginPath();bx.arc(0,0,Ri,-Math.PI*0.1,Math.PI*1.85);
-    bx.strokeStyle=stroke2;bx.lineWidth=2.5;bx.lineCap='round';bx.stroke();
-
-    // Main Enso arc (~330° open circle, brushstroke feel)
-    bx.beginPath();
-    bx.arc(0,0,R, Math.PI*0.08, Math.PI*1.96);
-    bx.strokeStyle=stroke1;
-    bx.lineWidth=10;bx.lineCap='round';bx.stroke();
-
-    // Taper effect: second stroke slightly thinner, slightly inset
-    bx.beginPath();
-    bx.arc(0,0,R-1, Math.PI*0.08, Math.PI*0.9);
-    const grad=bx.createLinearGradient(-R,0,R,0);
-    grad.addColorStop(0,stroke1);grad.addColorStop(1,'rgba(0,0,0,0)');
-    bx.strokeStyle=grad;bx.lineWidth=4;bx.stroke();
-
-    // Small dot in the gap — the "imperfection" that makes Enso alive
-    const gapAngle = Math.PI*0.02;
-    bx.beginPath();bx.arc(Math.cos(gapAngle)*R, Math.sin(gapAngle)*R, 7,0,Math.PI*2);
-    bx.fillStyle=dotFill;bx.fill();
-
-    // Centre micro dot
-    bx.beginPath();bx.arc(0,0,4,0,Math.PI*2);
-    bx.fillStyle=isLight?'rgba(164,93,60,0.3)':'rgba(168,196,144,0.25)';bx.fill();
-
-    ctx.save();ctx.globalAlpha=isLight?0.14:0.10;ctx.drawImage(_buf,0,0);ctx.restore();
+    ctx.clearRect(0, 0, SIZE, SIZE);
+    const themeKey=isLight?'l':'d';
+    if(_buf&&_bufTheme===themeKey){ctx.save();ctx.globalAlpha=isLight?0.13:0.09;ctx.drawImage(_buf,0,0);ctx.restore();return;}
+    _bufTheme=themeKey;
+    const buf=document.createElement('canvas');_buf=buf;
+    buf.width = SIZE; buf.height = SIZE;
+    const bx = buf.getContext('2d');
+    bx.translate(cx, cy);
+    bx.beginPath();bx.arc(0,0,r,-Math.PI/2,Math.PI/2,false);bx.arc(0,r/2,r/2,Math.PI/2,-Math.PI/2,true);bx.arc(0,-r/2,r/2,Math.PI/2,-Math.PI/2,false);bx.closePath();bx.fillStyle=isLight?'#1a1a1a':'#ffffff';bx.fill();
+    bx.beginPath();bx.arc(0,0,r,Math.PI/2,-Math.PI/2,false);bx.arc(0,-r/2,r/2,-Math.PI/2,Math.PI/2,true);bx.arc(0,r/2,r/2,-Math.PI/2,Math.PI/2,false);bx.closePath();bx.fillStyle=isLight?'#d0ccc4':'#000000';bx.fill();
+    const dotR=r/6.5;
+    bx.beginPath();bx.arc(0,-r/2,dotR,0,Math.PI*2);bx.fillStyle=isLight?'#f0ece4':'#000000';bx.fill();
+    bx.beginPath();bx.arc(0,r/2,dotR,0,Math.PI*2);bx.fillStyle=isLight?'#2a1a0e':'#ffffff';bx.fill();
+    bx.beginPath();bx.arc(0,0,r,0,Math.PI*2);bx.strokeStyle=isLight?'rgba(164,93,60,0.9)':'rgba(168,196,144,0.7)';bx.lineWidth=1.5;bx.stroke();
+    ctx.save();ctx.globalAlpha=isLight?0.13:0.09;ctx.drawImage(_buf,0,0);ctx.restore();
   }
-
-  drawEnso();
-  new MutationObserver(drawEnso).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
-
+  drawSymbol();
+  new MutationObserver(drawSymbol).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
   let currentAngle=0,targetAngle=0,rafId=null;
   function loop(){const diff=targetAngle-currentAngle;if(Math.abs(diff)<0.01){currentAngle=targetAngle;canvas.style.transform='rotate('+currentAngle.toFixed(3)+'deg)';rafId=null;return;}currentAngle+=diff*0.08;canvas.style.transform='rotate('+currentAngle.toFixed(3)+'deg)';rafId=requestAnimationFrame(loop);}
   window.addEventListener('scroll',function(){const maxScroll=document.body.scrollHeight-window.innerHeight;const pct=maxScroll>0?window.scrollY/maxScroll:0;targetAngle=pct*1080;if(!rafId)rafId=requestAnimationFrame(loop);},{passive:true});
-})();
-
-/* ── Splash Screen ────────────────────────────────────────── */
-(function(){
-  const splash = document.getElementById('site-splash');
-  if(!splash) return;
-
-  // Read saved theme immediately so splash starts in the right colours
-  const saved = localStorage.getItem('hrop-theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', saved);
-
-  // Build the SVG Enso inside the splash
-  const ensoWrap = splash.querySelector('.splash-symbol-wrap');
-  if(ensoWrap){
-    ensoWrap.innerHTML = `
-      <svg id="splash-enso" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-        <!-- Ghost track -->
-        <circle class="splash-enso-track" cx="60" cy="60" r="47"/>
-        <!-- Inner harmony ring -->
-        <path class="splash-enso-inner"
-          d="M 60,30 A 30,30 0 1,1 59.9,30"/>
-        <!-- Main Enso arc (~330°) -->
-        <path class="splash-enso-arc"
-          d="M 60,13 A 47,47 0 1,1 56,107"/>
-        <!-- Gap dot -->
-        <circle class="splash-enso-dot" cx="63" cy="13.5" r="4.5"/>
-        <!-- Centre dot -->
-        <circle cx="60" cy="60" r="3" class="splash-enso-dot" opacity="0.5"/>
-      </svg>`;
-  }
-
-  const bar = splash.querySelector('.splash-bar');
-  let prog = 0, interval;
-
-  function advanceBar(){
-    // Accelerate toward 90%, then stall until we force-finish
-    const step = prog < 70 ? 1.8 : prog < 88 ? 0.4 : 0.05;
-    prog = Math.min(prog + step, 90);
-    if(bar) bar.style.width = prog + '%';
-  }
-
-  interval = setInterval(advanceBar, 40);
-
-  function dismiss(){
-    clearInterval(interval);
-    if(bar) bar.style.width = '100%';
-    setTimeout(()=>{
-      splash.classList.add('splash-out');
-      setTimeout(()=>{ splash.style.display='none'; }, 600);
-    }, 280);
-  }
-
-  // Dismiss once page is fully loaded, minimum 1.4s for brand presence
-  const minWait = new Promise(r=>setTimeout(r, 1400));
-  const pageLoad = new Promise(r=>{
-    if(document.readyState==='complete') r();
-    else window.addEventListener('load', r, {once:true});
-  });
-  Promise.all([minWait, pageLoad]).then(dismiss);
 })();
 
 (function(){
