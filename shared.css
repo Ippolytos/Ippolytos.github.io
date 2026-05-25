@@ -148,68 +148,6 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.4)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 ::selection{background:rgba(168,196,144,.22);color:var(--text)}
 [data-theme="light"] .soundbar{background:#A45D3C;opacity:.9}
-/* ── Splash Screen ─────────────────────────────────────────── */
-#site-splash{
-  position:fixed;inset:0;z-index:99999;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;
-  background:var(--bg);
-  transition:opacity .55s ease, visibility .55s ease;
-  pointer-events:all;
-}
-#site-splash.splash-out{opacity:0;visibility:hidden;pointer-events:none;}
-.splash-symbol-wrap{
-  position:relative;width:120px;height:120px;
-  display:flex;align-items:center;justify-content:center;
-}
-#splash-enso{
-  width:120px;height:120px;
-  filter:drop-shadow(0 0 18px var(--splash-glow));
-  animation:ensoSpin 18s linear infinite;
-}
-:root{--splash-glow:rgba(168,196,144,.45);}
-[data-theme="light"]{--splash-glow:rgba(164,93,60,.35);}
-@keyframes ensoSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.splash-enso-track{
-  fill:none;
-  stroke:var(--border);
-  stroke-width:2;
-}
-.splash-enso-arc{
-  fill:none;
-  stroke:var(--accent);
-  stroke-width:5;
-  stroke-linecap:round;
-  stroke-dasharray:295;
-  stroke-dashoffset:48;
-  opacity:.92;
-}
-.splash-enso-inner{
-  fill:none;
-  stroke:var(--accent3);
-  stroke-width:1.5;
-  stroke-linecap:round;
-  stroke-dasharray:188;
-  stroke-dashoffset:32;
-  opacity:.45;
-}
-.splash-enso-dot{
-  fill:var(--accent2);
-  opacity:.85;
-}
-.splash-wordmark{
-  font-family:'Playfair Display',serif;font-style:italic;font-weight:700;
-  font-size:28px;letter-spacing:-.4px;color:var(--accent);
-  opacity:.9;
-}
-.splash-sub{
-  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;
-  text-transform:uppercase;color:var(--muted);margin-top:-18px;
-}
-.splash-bar-wrap{width:120px;height:2px;background:var(--border);border-radius:2px;overflow:hidden;}
-.splash-bar{
-  height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));
-  border-radius:2px;transition:width .05s linear;
-}
 /* Responsive */
 @media(max-width:900px){
   header{padding:0 20px}
