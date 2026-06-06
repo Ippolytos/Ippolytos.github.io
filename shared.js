@@ -1,7 +1,3 @@
-/* ============================================================
-   HROPIBERHTAZ — Shared JavaScript (included on every page)
-   ============================================================ */
-
 /* INITIAL PAGE LOAD SCREEN — original harmony animation */
 (function(){
   // CSS for intro screen
