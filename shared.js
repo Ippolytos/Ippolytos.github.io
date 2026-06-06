@@ -1,11 +1,9 @@
 /* INITIAL PAGE LOAD SCREEN — original harmony animation */
 (function(){
-  // Read theme BEFORE anything renders
   const _L=(localStorage.getItem('hrop-theme')||'dark')==='light';
 
-  // Inject CSS — theme-aware via inline style on #yinyang-intro
-  const style = document.createElement('style');
-  style.textContent = `
+  const style=document.createElement('style');
+  style.textContent=`
     @import url('https://fonts.googleapis.com/css2?family=Licorice&display=swap');
     #yinyang-intro{position:fixed;inset:0;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1);}
     #yinyang-intro.fade-out{opacity:0;transform:scale(1.04);pointer-events:none;}
@@ -19,44 +17,60 @@
   `;
   document.head.appendChild(style);
 
-  // HTML
-  const intro = document.createElement('div');
-  intro.id = 'yinyang-intro';
-  // Apply theme-correct styles immediately via inline
-  intro.style.background = _L ? '#f0e8d8' : '#0d0f0e';
-  intro.innerHTML = `
-    <div class="yy-canvas-wrap"><canvas id="yy-canvas" width="480" height="480"></canvas></div>
-    <div class="yy-brand" style="color:${_L?'rgba(30,80,10,0.95)':'rgba(168,196,144,0.92)'}">Hropiberhtaz</div>
-    <div class="yy-tagline" style="color:${_L?'rgba(40,70,20,0.75)':'rgba(226,232,222,0.6)'}">Harmony in every pixel</div>
-    <div class="yy-sub" style="color:${_L?'rgba(30,80,10,0.65)':'rgba(168,196,144,0.45)'}">Loading</div>`;
-  document.body.insertBefore(intro, document.body.firstChild);
+  // Light palette: warm terracotta + deep indigo + muted teal on cream — easy on eyes, clearly visible
+  // Dark palette: original soft greens
+  const C = _L ? {
+    bg:    '#f0e8d8',
+    brand: 'rgba(110,55,25,0.92)',   // warm brown
+    tag:   'rgba(70,50,35,0.72)',
+    sub:   'rgba(140,80,40,0.65)',
+    glow:  'drop-shadow(0 0 40px rgba(160,90,40,0.3)) drop-shadow(0 0 80px rgba(100,60,120,0.18))',
+    // drawing colors
+    A: 'rgba(160,80,40,',    // terracotta — main ring, spokes
+    B: 'rgba(80,60,140,',    // indigo — flower, teal loops
+    C_: 'rgba(140,45,70,',   // burgundy — rose loops
+    D: 'rgba(120,85,20,',    // amber — gold spokes
+    E: 'rgba(40,30,20,',     // near-black — white star layer
+  } : {
+    bg:    '#0d0f0e',
+    brand: 'rgba(168,196,144,0.92)',
+    tag:   'rgba(226,232,222,0.6)',
+    sub:   'rgba(168,196,144,0.45)',
+    glow:  'drop-shadow(0 0 40px rgba(168,196,144,0.18)) drop-shadow(0 0 80px rgba(143,201,184,0.1))',
+    A: 'rgba(168,196,144,',  // green
+    B: 'rgba(143,201,184,',  // teal
+    C_:'rgba(201,160,160,',  // rose
+    D: 'rgba(200,176,96,',   // gold
+    E: 'rgba(226,232,222,',  // white
+  };
 
-  // Update canvas glow
-  const wrap = intro.querySelector('.yy-canvas-wrap');
-  wrap.style.filter = _L
-    ? 'drop-shadow(0 0 40px rgba(30,100,20,0.35)) drop-shadow(0 0 80px rgba(10,120,80,0.2))'
-    : 'drop-shadow(0 0 40px rgba(168,196,144,0.18)) drop-shadow(0 0 80px rgba(143,201,184,0.1))';
+  // Alpha scale — light needs much higher opacity to show on cream
+  const AS = _L ? 1.0 : 1.0; // alphas are already tuned per-mode below
 
-  const canvas = document.getElementById('yy-canvas');
-  const ctx = canvas.getContext('2d');
-  const W = 480, H = 480, cx = W/2, cy = H/2;
-  const TOTAL_DURATION = 3200;
-  let startTime = null;
+  const intro=document.createElement('div');
+  intro.id='yinyang-intro';
+  intro.style.background=C.bg;
+  intro.innerHTML=`
+    <div class="yy-canvas-wrap" style="filter:${C.glow}"><canvas id="yy-canvas" width="480" height="480"></canvas></div>
+    <div class="yy-brand" style="color:${C.brand}">Hropiberhtaz</div>
+    <div class="yy-tagline" style="color:${C.tag}">Harmony in every pixel</div>
+    <div class="yy-sub" style="color:${C.sub}">Loading</div>`;
+  document.body.insertBefore(intro,document.body.firstChild);
+
+  const canvas=document.getElementById('yy-canvas');
+  const ctx=canvas.getContext('2d');
+  const W=480,H=480,cx=W/2,cy=H/2;
+  const TOTAL_DURATION=3200;
+  let startTime=null;
 
   function ease(t){return t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
   function easeOut(t){return 1-Math.pow(1-t,3);}
+  function cl(v){return Math.min(v,1);}
 
-  // Dark mode: subtle, soft. Light mode: rich, saturated, high contrast.
-  const GREEN = _L ? 'rgba(28,90,14,'  : 'rgba(168,196,144,';
-  const TEAL  = _L ? 'rgba(8,110,75,'  : 'rgba(143,201,184,';
-  const ROSE  = _L ? 'rgba(160,30,55,' : 'rgba(201,160,160,';
-  const GOLD  = _L ? 'rgba(150,85,0,'  : 'rgba(200,176,96,';
-  const WHITE = _L ? 'rgba(15,10,5,'   : 'rgba(226,232,222,';
-
-  // Light mode alpha multiplier — boost everything so lines are clearly visible
-  const AM = _L ? 2.8 : 1.0;
-
-  function clamp(v){return Math.min(v,1);}
+  // Shorthands
+  const A=C.A,B=C.B,R=C.C_,D=C.D,E=C.E;
+  // Light mode base alphas are higher; dark stays subtle
+  const lm=_L;
 
   function drawHarmony(t){
     ctx.clearRect(0,0,W,H);
@@ -64,51 +78,117 @@
     const pulse=0.5+0.5*Math.sin(t*Math.PI*8);
 
     // Outer glow rings
-    for(let i=3;i>=1;i--){ctx.beginPath();ctx.arc(cx,cy,185+i*12,0,Math.PI*2);ctx.strokeStyle=GREEN+clamp(ringAlpha*0.04*(4-i)*(1+pulse*0.3)*AM)+')';ctx.lineWidth=8;ctx.stroke();}
+    for(let i=3;i>=1;i--){
+      ctx.beginPath();ctx.arc(cx,cy,185+i*12,0,Math.PI*2);
+      ctx.strokeStyle=A+cl(ringAlpha*(lm?0.12:0.04)*(4-i)*(1+pulse*0.3))+')';
+      ctx.lineWidth=8;ctx.stroke();
+    }
 
-    // Main outer ring + tick marks
+    // Main outer ring
     const ringEnd=ringAlpha*Math.PI*2;
     ctx.save();ctx.translate(cx,cy);ctx.rotate(-Math.PI/2);
-    ctx.beginPath();ctx.arc(0,0,185,0,ringEnd);ctx.strokeStyle=GREEN+clamp(Math.min(ringAlpha*1.4,1)*AM)+')';ctx.lineWidth=_L?2:1.5;ctx.stroke();
-    for(let i=0;i<12;i++){const angle=(i/12)*Math.PI*2,tickT=i/12;if(ringAlpha<tickT)continue;const ta=easeOut(Math.max(0,(ringAlpha-tickT)/(1/12)));const isMain=i%3===0,len=isMain?14:8,r=185;ctx.save();ctx.rotate(angle);ctx.beginPath();ctx.moveTo(r-len,0);ctx.lineTo(r,0);ctx.strokeStyle=isMain?GREEN+clamp(ta*0.9*AM)+')':TEAL+clamp(ta*0.5*AM)+')';ctx.lineWidth=isMain?1.8:1;ctx.stroke();ctx.restore();}
+    ctx.beginPath();ctx.arc(0,0,185,0,ringEnd);
+    ctx.strokeStyle=A+cl(ringAlpha*(lm?0.85:1.0))+')';
+    ctx.lineWidth=lm?2:1.5;ctx.stroke();
+
+    // Tick marks
+    for(let i=0;i<12;i++){
+      const angle=(i/12)*Math.PI*2,tickT=i/12;
+      if(ringAlpha<tickT)continue;
+      const ta=easeOut(Math.max(0,(ringAlpha-tickT)/(1/12)));
+      const isMain=i%3===0,len=isMain?14:8,r=185;
+      ctx.save();ctx.rotate(angle);ctx.beginPath();ctx.moveTo(r-len,0);ctx.lineTo(r,0);
+      ctx.strokeStyle=isMain?A+cl(ta*(lm?0.9:0.9))+')':B+cl(ta*(lm?0.7:0.45))+')';
+      ctx.lineWidth=isMain?2:1;ctx.stroke();ctx.restore();
+    }
     ctx.restore();
 
-    // Flower of life petals
+    // Flower of life
     const flowerP=Math.min(Math.max((t-0.18)/0.37,0),1),flowerAlpha=easeOut(flowerP),petalR=58;
     ctx.save();ctx.translate(cx,cy);
-    for(let i=0;i<6;i++){const angle=(i/6)*Math.PI*2-Math.PI/6,petalT=i/6;if(flowerP<petalT)continue;const pa=easeOut(Math.min((flowerP-petalT)/(1/6),1));const px=Math.cos(angle)*petalR,py=Math.sin(angle)*petalR;ctx.beginPath();ctx.arc(px,py,petalR,0,Math.PI*2);ctx.strokeStyle=TEAL+clamp(pa*0.28*AM)+')';ctx.lineWidth=_L?1.4:1;ctx.stroke();}
-    if(flowerAlpha>0){ctx.beginPath();ctx.arc(0,0,petalR,0,Math.PI*2);ctx.strokeStyle=TEAL+clamp(flowerAlpha*0.35*AM)+')';ctx.lineWidth=_L?1.4:1;ctx.stroke();}
+    for(let i=0;i<6;i++){
+      const angle=(i/6)*Math.PI*2-Math.PI/6,petalT=i/6;
+      if(flowerP<petalT)continue;
+      const pa=easeOut(Math.min((flowerP-petalT)/(1/6),1));
+      const px=Math.cos(angle)*petalR,py=Math.sin(angle)*petalR;
+      ctx.beginPath();ctx.arc(px,py,petalR,0,Math.PI*2);
+      ctx.strokeStyle=B+cl(pa*(lm?0.65:0.22))+')';
+      ctx.lineWidth=lm?1.5:1;ctx.stroke();
+    }
+    if(flowerAlpha>0){
+      ctx.beginPath();ctx.arc(0,0,petalR,0,Math.PI*2);
+      ctx.strokeStyle=B+cl(flowerAlpha*(lm?0.7:0.28))+')';
+      ctx.lineWidth=lm?1.5:1;ctx.stroke();
+    }
     ctx.restore();
 
     // Triple interlocking loops
-    const symP=Math.min(Math.max((t-0.35)/0.4,0),1),symAlpha=easeOut(symP),loopR=42;
+    const symP=Math.min(Math.max((t-0.35)/0.4,0),1),loopR=42;
     ctx.save();ctx.translate(cx,cy);
-    const triColors=[GREEN,ROSE,TEAL];
-    for(let i=0;i<3;i++){const angle=(i/3)*Math.PI*2-Math.PI/2,bx=Math.cos(angle)*(loopR*0.72),by=Math.sin(angle)*(loopR*0.72),ringProgress=Math.min(Math.max((symP-i*0.15)/0.55,0),1),ra=easeOut(ringProgress);
-      ctx.beginPath();ctx.arc(bx,by,loopR,0,Math.PI*2*ra);ctx.strokeStyle=triColors[i]+clamp(ra*(_L?0.95:0.85))+')';ctx.lineWidth=_L?2.8:2.5;ctx.lineCap='round';ctx.stroke();
-      ctx.beginPath();ctx.arc(bx,by,loopR*0.65,0,Math.PI*2*ra);ctx.strokeStyle=triColors[i]+clamp(ra*0.22*AM)+')';ctx.lineWidth=8;ctx.stroke();}
+    const triC=[A,R,B];
+    for(let i=0;i<3;i++){
+      const angle=(i/3)*Math.PI*2-Math.PI/2,bx=Math.cos(angle)*(loopR*0.72),by=Math.sin(angle)*(loopR*0.72);
+      const rp=Math.min(Math.max((symP-i*0.15)/0.55,0),1),ra=easeOut(rp);
+      ctx.beginPath();ctx.arc(bx,by,loopR,0,Math.PI*2*ra);
+      ctx.strokeStyle=triC[i]+cl(ra*(lm?0.95:0.85))+')';
+      ctx.lineWidth=lm?3:2.5;ctx.lineCap='round';ctx.stroke();
+      ctx.beginPath();ctx.arc(bx,by,loopR*0.65,0,Math.PI*2*ra);
+      ctx.strokeStyle=triC[i]+cl(ra*(lm?0.25:0.18))+')';
+      ctx.lineWidth=8;ctx.stroke();
+    }
     ctx.restore();
 
     // Spokes
     const spokeP=Math.min(Math.max((t-0.5)/0.32,0),1);
     ctx.save();ctx.translate(cx,cy);
-    for(let i=0;i<24;i++){const angle=(i/24)*Math.PI*2,sT=i/24;if(spokeP<sT*0.6)continue;const sa=easeOut(Math.min((spokeP-sT*0.6)/0.4,1)),innerR=115,outerR=148;ctx.beginPath();ctx.moveTo(Math.cos(angle)*innerR,Math.sin(angle)*innerR);ctx.lineTo(Math.cos(angle)*(innerR+(outerR-innerR)*sa),Math.sin(angle)*(innerR+(outerR-innerR)*sa));ctx.strokeStyle=i%6===0?GOLD+clamp(sa*0.75*AM)+')':GREEN+clamp(sa*0.28*AM)+')';ctx.lineWidth=i%6===0?1.4:0.8;ctx.stroke();}
+    for(let i=0;i<24;i++){
+      const angle=(i/24)*Math.PI*2,sT=i/24;
+      if(spokeP<sT*0.6)continue;
+      const sa=easeOut(Math.min((spokeP-sT*0.6)/0.4,1)),innerR=115,outerR=148;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(angle)*innerR,Math.sin(angle)*innerR);
+      ctx.lineTo(Math.cos(angle)*(innerR+(outerR-innerR)*sa),Math.sin(angle)*(innerR+(outerR-innerR)*sa));
+      ctx.strokeStyle=i%6===0?D+cl(sa*(lm?0.85:0.6))+')':A+cl(sa*(lm?0.45:0.2))+')';
+      ctx.lineWidth=i%6===0?1.5:0.8;ctx.stroke();
+    }
     ctx.restore();
 
-    // Star of David / hexagram
+    // Star
     const starP=Math.min(Math.max((t-0.62)/0.28,0),1),starAlpha=easeOut(starP),starScale=easeOut(starP);
-    if(starAlpha>0){ctx.save();ctx.translate(cx,cy);ctx.scale(starScale,starScale);
-      const drawStar=(r1,r2,pts,rot,color,alpha,lw)=>{ctx.beginPath();for(let i=0;i<=pts*2;i++){const a=(i/(pts*2))*Math.PI*2+rot,r=i%2===0?r1:r2;i===0?ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r):ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);}ctx.closePath();ctx.strokeStyle=color+clamp(alpha)+')';ctx.lineWidth=lw;ctx.stroke();};
-      drawStar(30,14,6,-Math.PI/2,GREEN,starAlpha*0.95,_L?2:1.5);
-      drawStar(21,10,6,-Math.PI/6,TEAL,starAlpha*(_L?0.85:0.55),1.2);
-      drawStar(11,5,6,-Math.PI/2,WHITE,starAlpha*(_L?0.9:0.7),1);
-      ctx.beginPath();ctx.arc(0,0,4*starScale,0,Math.PI*2);ctx.fillStyle=GREEN+clamp(starAlpha)+')';ctx.fill();
-      ctx.beginPath();ctx.arc(0,0,10,0,Math.PI*2);ctx.strokeStyle=GREEN+clamp(starAlpha*0.45*AM)+')';ctx.lineWidth=4;ctx.stroke();
-      ctx.restore();}
+    if(starAlpha>0){
+      ctx.save();ctx.translate(cx,cy);ctx.scale(starScale,starScale);
+      const drawStar=(r1,r2,pts,rot,col,alpha,lw)=>{
+        ctx.beginPath();
+        for(let i=0;i<=pts*2;i++){const a=(i/(pts*2))*Math.PI*2+rot,r=i%2===0?r1:r2;i===0?ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r):ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);}
+        ctx.closePath();ctx.strokeStyle=col+cl(alpha)+')';ctx.lineWidth=lw;ctx.stroke();
+      };
+      drawStar(30,14,6,-Math.PI/2,A,starAlpha*(lm?0.95:0.9),lm?2:1.5);
+      drawStar(21,10,6,-Math.PI/6,B,starAlpha*(lm?0.8:0.55),1.2);
+      drawStar(11,5,6,-Math.PI/2,E,starAlpha*(lm?0.85:0.7),1);
+      ctx.beginPath();ctx.arc(0,0,4*starScale,0,Math.PI*2);
+      ctx.fillStyle=A+cl(starAlpha)+')';ctx.fill();
+      ctx.beginPath();ctx.arc(0,0,10,0,Math.PI*2);
+      ctx.strokeStyle=A+cl(starAlpha*(lm?0.5:0.35))+')';ctx.lineWidth=4;ctx.stroke();
+      ctx.restore();
+    }
 
     // Bloom dots
     const bloomP=Math.min(Math.max((t-0.75)/0.25,0),1);
-    if(bloomP>0){ctx.save();ctx.translate(cx,cy);for(let i=0;i<18;i++){const baseAngle=(i/18)*Math.PI*2,orbitAngle=baseAngle+bloomP*Math.PI*0.5*(i%2===0?1:-1),orbitR=130+Math.sin(baseAngle*3)*13,px=Math.cos(orbitAngle)*orbitR,py=Math.sin(orbitAngle)*orbitR,pa=easeOut(Math.min((bloomP-(i/18)*0.3)/0.7,1));if(pa<=0)continue;const dotR=i%3===0?2.5:1.5;ctx.beginPath();ctx.arc(px,py,dotR,0,Math.PI*2);const colors=[GREEN,TEAL,ROSE,GOLD];ctx.fillStyle=colors[i%4]+clamp(pa*(_L?0.95:0.85))+')';ctx.fill();}ctx.restore();}
+    if(bloomP>0){
+      ctx.save();ctx.translate(cx,cy);
+      const dotColors=[A,B,R,D];
+      for(let i=0;i<18;i++){
+        const baseAngle=(i/18)*Math.PI*2,orbitAngle=baseAngle+bloomP*Math.PI*0.5*(i%2===0?1:-1);
+        const orbitR=130+Math.sin(baseAngle*3)*13;
+        const px=Math.cos(orbitAngle)*orbitR,py=Math.sin(orbitAngle)*orbitR;
+        const pa=easeOut(Math.min((bloomP-(i/18)*0.3)/0.7,1));
+        if(pa<=0)continue;
+        const dotR=i%3===0?2.5:1.5;
+        ctx.beginPath();ctx.arc(px,py,dotR,0,Math.PI*2);
+        ctx.fillStyle=dotColors[i%4]+cl(pa*(lm?0.9:0.85))+')';ctx.fill();
+      }
+      ctx.restore();
+    }
   }
 
   function animate(ts){
