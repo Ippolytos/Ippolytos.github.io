@@ -4,22 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chroma — Hropiberhtaz</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
 <style>
 .recolor-shell{position:relative;z-index:1;padding:0 80px 100px;display:flex;flex-direction:column;gap:24px;}
 .wibble-row{display:flex;flex-wrap:wrap;gap:18px 28px;align-items:center;margin-bottom:18px}
 .wibble-row:last-child{margin-bottom:0}
 .wibble-group{display:flex;flex-direction:column;gap:8px}
-.wibble-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;font-family:'JetBrains Mono',monospace}
+.wibble-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;font-family:'Outfit',sans-serif}
 .toggle-cluster{display:flex;gap:3px;background:var(--card);padding:3px;border:1px solid var(--border);border-radius:var(--radius-xl);}
-.toggle-pebble{background:transparent;border:none;color:var(--muted);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:5px 14px;cursor:pointer;transition:all .16s cubic-bezier(.34,1.56,.64,1);font-family:'JetBrains Mono',monospace;font-weight:600;border-radius:var(--radius-xl);}
+.toggle-pebble{background:transparent;border:none;color:var(--muted);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:5px 14px;cursor:pointer;transition:all .16s cubic-bezier(.34,1.56,.64,1);font-family:'Outfit',sans-serif;font-weight:600;border-radius:var(--radius-xl);}
 .toggle-pebble.lit{background:var(--accent);color:#0d0f0e}
 [data-theme="light"] .toggle-pebble.lit{color:#fff}
 .toggle-pebble:hover{transform:scale(1.06)}
 .glide-container{display:flex;align-items:center;gap:12px;min-width:200px}
 .glide-container input[type="range"]{width:150px;height:2px}
-.glide-badge{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--text);background:var(--card);padding:3px 9px;border:1px solid var(--border);border-radius:var(--radius-md);min-width:50px;text-align:center;}
+.glide-badge{font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;color:var(--text);background:var(--card);padding:3px 9px;border:1px solid var(--border);border-radius:var(--radius-md);min-width:50px;text-align:center;}
 .palette-strip{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .swatch-pebble{width:42px;height:42px;border-radius:var(--radius-md);cursor:pointer;border:2px solid var(--border);box-shadow:0 4px 10px rgba(0,0,0,.5);transition:transform .3s cubic-bezier(.34,1.56,.64,1),border-color .2s,box-shadow .3s;position:relative;flex-shrink:0;}
 .swatch-pebble:hover{transform:scale(1.12) rotate(3deg);border-color:var(--muted);box-shadow:0 6px 20px rgba(0,0,0,.3)}
@@ -39,7 +39,7 @@
 #progress-fog{position:fixed;inset:0;z-index:19999;background:var(--dl-bg);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;opacity:0;pointer-events:none;transition:opacity .3s;}
 #progress-fog.glowing{opacity:1;pointer-events:all}
 #fog-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px;font-style:italic}
-#fog-sub{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600}
+#fog-sub{font-family:'Outfit',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600}
 #fog-track{width:min(360px,80vw);height:2px;background:var(--border);border-radius:3px;overflow:hidden}
 #fog-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .12s ease}
 #fog-pct{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:var(--accent);letter-spacing:-1px}
@@ -49,9 +49,9 @@
 <body>
 <div id="scroll-prog"></div>
 <div id="scan-line"></div>
-<canvas id="wobbly-bg-thingy" aria-hidden="true"></canvas>
-<canvas id="floaty-dot-world" aria-hidden="true"></canvas>
-<canvas id="bg-yinyang" aria-hidden="true"></canvas>
+<canvas id="wobbly-bg-thingy"></canvas>
+<canvas id="floaty-dot-world"></canvas>
+<canvas id="bg-yinyang"></canvas>
 <div id="live-clock"></div>
 <div id="keyboard-whisper"></div>
 <div id="toasty-pop" class="toasty"></div>
@@ -59,7 +59,7 @@
 <div id="progress-fog"><div id="fog-title">Working…</div><div id="fog-sub">Please wait</div><div id="fog-track"><div id="fog-bar"></div></div><div id="fog-pct">0%</div></div>
 
 <div id="mobile-nav">
-  <button id="mobile-nav-close" aria-label="Close navigation menu">✕</button>
+  <button id="mobile-nav-close">✕</button>
   <a href="index.html">Home</a>
   <a href="colordrop.html">ColorDrop</a>
   <a href="hue.html">HUE</a>
@@ -76,9 +76,9 @@
     <a href="chroma.html" class="nav-pill lit">Chroma</a>
     <a href="upscale.html" class="nav-pill">UpScale</a>
     <a href="urlclean.html" class="nav-pill">URLClean</a>
-    <button id="moonbeam-toggle" aria-label="Toggle light/dark theme" title="Toggle theme"><span id="moonbeam-icon" aria-hidden="true">☀</span></button>
+    <button id="moonbeam-toggle" title="Toggle theme"><span id="moonbeam-icon">☀</span></button>
   </div>
-  <button id="ham-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav">☰</button>
+  <button id="ham-toggle">☰</button>
 </header>
 
 <div class="page-hero">
@@ -95,8 +95,8 @@
   <div class="lumpy-card poppy-reveal delay-sprout-1">
     <div class="lumpy-card-label">Controls</div>
     <div class="wibble-row">
-      <div class="wibble-group"><div class="wibble-label">Quality</div><div class="toggle-cluster" id="qualityGroup" role="group" aria-label="Preview quality"><button class="toggle-pebble lit" data-quality="high">HIGH</button><button class="toggle-pebble" data-quality="med">MED</button><button class="toggle-pebble" data-quality="low">LOW</button></div></div>
-      <div class="wibble-group"><div class="wibble-label">Mode</div><div class="toggle-cluster" id="modeGroup" role="group" aria-label="Recolor mode"><button class="toggle-pebble lit" data-mode="smooth">SMOOTH</button><button class="toggle-pebble" data-mode="blocky">BLOCKY</button><button class="toggle-pebble" data-mode="detail">DETAIL</button></div></div>
+      <div class="wibble-group"><div class="wibble-label">Quality</div><div class="toggle-cluster" id="qualityGroup"><button class="toggle-pebble lit" data-quality="high">HIGH</button><button class="toggle-pebble" data-quality="med">MED</button><button class="toggle-pebble" data-quality="low">LOW</button></div></div>
+      <div class="wibble-group"><div class="wibble-label">Mode</div><div class="toggle-cluster" id="modeGroup"><button class="toggle-pebble lit" data-mode="smooth">SMOOTH</button><button class="toggle-pebble" data-mode="blocky">BLOCKY</button><button class="toggle-pebble" data-mode="detail">DETAIL</button></div></div>
     </div>
     <div class="wibble-row">
       <div class="wibble-group"><div class="wibble-label">Strength</div><div class="glide-container"><input type="range" id="strengthSlider" min="0" max="100" value="80"><div class="glide-badge" id="strengthVal">0.80</div></div></div>
@@ -107,9 +107,9 @@
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <div class="lumpy-card-label" style="margin-bottom:0">Palette</div>
       <div style="display:flex;gap:7px">
-        <button class="cozy-btn squish-btn" id="addColorBtn" aria-label="Add a new palette color" style="padding:5px 12px;font-size:10px">+ Add</button>
-        <button class="cozy-btn squish-btn" id="removeColorBtn" aria-label="Remove last palette color" style="padding:5px 12px;font-size:10px">− Remove</button>
-        <button class="cozy-btn squish-btn" id="loadJsonBtn" aria-label="Load palette from JSON file" style="padding:5px 12px;font-size:10px">Load JSON</button>
+        <button class="cozy-btn squish-btn" id="addColorBtn" style="padding:5px 12px;font-size:10px">+ Add</button>
+        <button class="cozy-btn squish-btn" id="removeColorBtn" style="padding:5px 12px;font-size:10px">− Remove</button>
+        <button class="cozy-btn squish-btn" id="loadJsonBtn" style="padding:5px 12px;font-size:10px">Load JSON</button>
         <input type="file" id="jsonInput" accept=".json" style="display:none">
       </div>
     </div>
@@ -117,16 +117,16 @@
   </div>
   <div class="dropper-zone poppy-reveal delay-sprout-3" id="recolorUpload">
     <p>Drag & drop an image here or click to browse</p>
-    <button class="cozy-btn cozy-btn-filled squish-btn" id="recolorSelectBtn" aria-label="Select an image to recolor">Select Image</button>
+    <button class="cozy-btn cozy-btn-filled squish-btn" id="recolorSelectBtn">Select Image</button>
     <input type="file" id="recolorFileInput" accept="image/*" style="display:none">
   </div>
   <div class="canvas-result-box" id="canvasPanel">
     <canvas id="recolorCanvas"></canvas>
     <div class="action-pile">
-      <button class="cozy-btn cozy-btn-filled squish-btn" id="applyBtn" aria-label="Apply recolor to preview">Apply Recolor</button>
-      <button class="cozy-btn squish-btn" id="resetBtn" aria-label="Reset image to original">Reset</button>
-      <button class="cozy-btn squish-btn" id="downloadBtn" aria-label="Download full resolution recolored image" style="display:none">↓ Download</button>
-      <button class="cozy-btn btn-rude-remove squish-btn" id="removeImgBtn" aria-label="Remove current image">✕ Remove</button>
+      <button class="cozy-btn cozy-btn-filled squish-btn" id="applyBtn">Apply Recolor</button>
+      <button class="cozy-btn squish-btn" id="resetBtn">Reset</button>
+      <button class="cozy-btn squish-btn" id="downloadBtn" style="display:none">↓ Download</button>
+      <button class="cozy-btn btn-rude-remove squish-btn" id="removeImgBtn">✕ Remove</button>
     </div>
   </div>
 </div>
@@ -145,7 +145,7 @@
   </div>
 </footer>
 
-<button id="lofi-leaf" aria-label="Toggle lo-fi background music" aria-pressed="false">
+<button id="lofi-leaf">
   <div class="soundbars"><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div></div>
   <span id="audio-label">lo-fi</span>
 </button>
