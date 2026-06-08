@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HUE Editor — Hropiberhtaz</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
 <style>
 .hue-editor-shell{position:relative;z-index:1;margin:0 80px 80px;display:grid;grid-template-columns:1fr 300px;gap:0;border:1px solid var(--border);border-radius:var(--radius-lg);min-height:520px;overflow:hidden;}
@@ -14,7 +14,7 @@
 .splat-zone.loaded{border-style:solid;border-color:var(--border)}
 .splat-icon{font-size:40px;margin-bottom:14px;opacity:.25;color:var(--accent)}
 .splat-text{font-family:'Playfair Display',serif;font-style:italic;font-size:16px;font-weight:600;color:var(--muted);margin-bottom:6px}
-.splat-tiny{font-size:9px;color:var(--muted);opacity:.5;letter-spacing:2px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.splat-tiny{font-size:9px;color:var(--muted);opacity:.5;letter-spacing:2px;text-transform:uppercase;font-family:'Outfit',sans-serif}
 #editorCanvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:none}
 .editor-float-btns{position:absolute;bottom:12px;right:12px;display:none;gap:7px}
 .editor-float-btns.peeking{display:flex}
@@ -26,7 +26,7 @@
 .knob-row{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
 .knob-header{display:flex;justify-content:space-between;align-items:center}
 .knob-name{font-size:11px;color:var(--text);letter-spacing:.2px;font-weight:500}
-.knob-val{font-size:11px;color:var(--accent);min-width:40px;text-align:right;font-family:'JetBrains Mono',monospace}
+.knob-val{font-size:11px;color:var(--accent);min-width:40px;text-align:right;font-family:'Outfit',sans-serif}
 #e-hue-slider{background:linear-gradient(to right,#ff0000,#ffff00,#00ff00,#00ffff,#0000ff,#ff00ff,#ff0000)}
 #e-sat-slider{background:linear-gradient(to right,var(--sat-left),var(--accent))}
 #e-bright-slider{background:linear-gradient(to right,#000,#fff)}
@@ -42,14 +42,14 @@
 .export-big-btn{width:100%;padding:12px;font-size:11px;letter-spacing:1.2px;margin-bottom:8px;text-align:center;display:block;border-radius:var(--radius-xl)}
 .export-smalls{display:flex;gap:5px}
 .export-smalls .cozy-btn{flex:1;text-align:center;font-size:10px;padding:7px 4px;justify-content:center;border-radius:var(--radius-xl)}
-.undo-nudge{font-size:9px;color:var(--muted);background:none;border:none;cursor:pointer;letter-spacing:1px;text-transform:uppercase;padding:3px 0;transition:color .2s;font-family:'JetBrains Mono',monospace;font-weight:600;}
+.undo-nudge{font-size:9px;color:var(--muted);background:none;border:none;cursor:pointer;letter-spacing:1px;text-transform:uppercase;padding:3px 0;transition:color .2s;font-family:'Outfit',sans-serif;font-weight:600;}
 .undo-nudge:hover{color:var(--accent2)}
 .empty-zone-msg{padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;opacity:.28;}
 .empty-zone-msg p{font-size:12px;color:var(--muted);line-height:1.7}
 #progress-fog{position:fixed;inset:0;z-index:19999;background:var(--dl-bg);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;opacity:0;pointer-events:none;transition:opacity .3s;}
 #progress-fog.glowing{opacity:1;pointer-events:all}
 #fog-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px;font-style:italic}
-#fog-sub{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600}
+#fog-sub{font-family:'Outfit',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600}
 #fog-track{width:min(360px,80vw);height:2px;background:var(--border);border-radius:3px;overflow:hidden}
 #fog-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .12s ease}
 #fog-pct{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:var(--accent);letter-spacing:-1px}
@@ -59,9 +59,9 @@
 <body>
 <div id="scroll-prog"></div>
 <div id="scan-line"></div>
-<canvas id="wobbly-bg-thingy" aria-hidden="true"></canvas>
-<canvas id="floaty-dot-world" aria-hidden="true"></canvas>
-<canvas id="bg-yinyang" aria-hidden="true"></canvas>
+<canvas id="wobbly-bg-thingy"></canvas>
+<canvas id="floaty-dot-world"></canvas>
+<canvas id="bg-yinyang"></canvas>
 <div id="live-clock"></div>
 <div id="keyboard-whisper"></div>
 <div id="toasty-pop" class="toasty"></div>
@@ -69,7 +69,7 @@
 <div id="progress-fog"><div id="fog-title">Working…</div><div id="fog-sub">Please wait</div><div id="fog-track"><div id="fog-bar"></div></div><div id="fog-pct">0%</div></div>
 
 <div id="mobile-nav">
-  <button id="mobile-nav-close" aria-label="Close navigation menu">✕</button>
+  <button id="mobile-nav-close">✕</button>
   <a href="index.html">Home</a>
   <a href="colordrop.html">ColorDrop</a>
   <a href="hue.html">HUE</a>
@@ -86,9 +86,9 @@
     <a href="chroma.html" class="nav-pill">Chroma</a>
     <a href="upscale.html" class="nav-pill">UpScale</a>
     <a href="urlclean.html" class="nav-pill">URLClean</a>
-    <button id="moonbeam-toggle" aria-label="Toggle light/dark theme" title="Toggle theme"><span id="moonbeam-icon" aria-hidden="true">☀</span></button>
+    <button id="moonbeam-toggle" title="Toggle theme"><span id="moonbeam-icon">☀</span></button>
   </div>
-  <button id="ham-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav">☰</button>
+  <button id="ham-toggle">☰</button>
 </header>
 
 <div class="page-hero">
@@ -112,8 +112,8 @@
       <canvas id="editorCanvas"></canvas>
     </div>
     <div class="editor-float-btns" id="editorOverlay">
-      <button class="cozy-btn squish-btn" id="editorReset" aria-label="Reset image and clear all edits">Reset</button>
-      <button class="cozy-btn squish-btn" id="editorNewImg" aria-label="Load a new image">New Image</button>
+      <button class="cozy-btn squish-btn" id="editorReset">Reset</button>
+      <button class="cozy-btn squish-btn" id="editorNewImg">New Image</button>
     </div>
   </div>
   <div class="edit-panel-side" id="editorPanel">
@@ -130,14 +130,14 @@
         <div class="knob-row"><div class="knob-header"><span class="knob-name">Contrast</span><span class="knob-val" id="e-contrast-val">100%</span></div><input type="range" id="e-contrast-slider" min="0" max="300" value="100"></div>
         <div class="knob-row"><div class="knob-header"><span class="knob-name">Sepia</span><span class="knob-val" id="e-sepia-val">0%</span></div><input type="range" id="e-sepia-slider" min="0" max="100" value="0"></div>
         <div class="knob-row"><div class="knob-header"><span class="knob-name">Invert</span><span class="knob-val" id="e-invert-val">0%</span></div><input type="range" id="e-invert-slider" min="0" max="100" value="0"></div>
-        <button class="undo-nudge" id="editorResetSliders" aria-label="Reset all adjustment sliders to default">↺ Reset adjustments</button>
+        <button class="undo-nudge" id="editorResetSliders">↺ Reset adjustments</button>
       </div>
       <div class="panel-pocket"><div class="pocket-label">Presets</div><div class="presets-lumpy" id="presetsGrid"></div></div>
       <div class="panel-export-footer">
-        <button class="cozy-btn cozy-btn-filled export-big-btn squish-btn" id="exportPng" aria-label="Download image as PNG">↓ Download PNG</button>
+        <button class="cozy-btn cozy-btn-filled export-big-btn squish-btn" id="exportPng">↓ Download PNG</button>
         <div class="export-smalls">
-          <button class="cozy-btn squish-btn" id="exportJpg" aria-label="Download image as JPG">JPG</button>
-          <button class="cozy-btn squish-btn" id="exportWebp" aria-label="Download image as WebP">WEBP</button>
+          <button class="cozy-btn squish-btn" id="exportJpg">JPG</button>
+          <button class="cozy-btn squish-btn" id="exportWebp">WEBP</button>
         </div>
       </div>
     </div>
@@ -159,7 +159,7 @@
   </div>
 </footer>
 
-<button id="lofi-leaf" aria-label="Toggle lo-fi background music" aria-pressed="false">
+<button id="lofi-leaf">
   <div class="soundbars"><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div></div>
   <span id="audio-label">lo-fi</span>
 </button>
