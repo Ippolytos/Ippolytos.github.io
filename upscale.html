@@ -4,34 +4,34 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UpScale — Hropiberhtaz</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
 <style>
 .us-wrap{position:relative;z-index:1;padding:0 80px 100px;}
 #us-dropzone{border:2px dashed var(--border);border-radius:var(--radius-lg);padding:3rem 1.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;}
 #us-dropzone:hover,#us-dropzone.over{border-color:var(--accent);background:rgba(168,196,144,.04);}
 #us-dropzone h3{font-size:14px;margin:.7rem 0 .35rem;font-family:'Playfair Display',serif;font-style:italic}
-#us-dropzone p{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px}
+#us-dropzone p{font-family:'Outfit',sans-serif;font-size:10px;color:var(--muted);letter-spacing:1px}
 .us-upicon{width:44px;height:44px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .7rem;transition:border-color .2s}
 #us-dropzone:hover .us-upicon,#us-dropzone.over .us-upicon{border-color:var(--accent)}
 #us-thumbrow{display:none;align-items:center;gap:12px;margin-top:.9rem;background:var(--card);border-radius:var(--radius-md);padding:.8rem;border:1px solid var(--border)}
 #us-thumbrow img{width:50px;height:50px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid var(--border)}
 .us-tinfo{flex:1}
 .us-tname{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
-.us-tdim{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px}
+.us-tdim{font-family:'Outfit',sans-serif;font-size:10px;color:var(--muted);margin-top:3px}
 .us-changebtn{font-family:'DM Sans',sans-serif;font-size:10px;background:none;border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:var(--radius-xl);cursor:pointer;font-weight:600}
 .us-changebtn:hover{color:var(--text);border-color:var(--muted)}
 .us-sizerow{display:flex;align-items:flex-end;gap:9px;flex-wrap:wrap}
 .us-field{display:flex;flex-direction:column;gap:4px}
-.us-field label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:700}
-.us-field input[type=number]{width:120px;background:var(--card);border:1px solid var(--border);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;padding:8px 11px;border-radius:var(--radius-md);outline:none;transition:border-color .2s;font-weight:600}
+.us-field label{font-family:'Outfit',sans-serif;font-size:9px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+.us-field input[type=number]{width:120px;background:var(--card);border:1px solid var(--border);color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;padding:8px 11px;border-radius:var(--radius-md);outline:none;transition:border-color .2s;font-weight:600}
 .us-field input:focus{border-color:var(--accent)}
 .us-xsep{font-size:18px;color:var(--muted);padding-bottom:9px;font-family:'Playfair Display',serif}
 .us-lockrow{display:flex;align-items:center;gap:6px;padding-bottom:9px;cursor:pointer;user-select:none}
 .us-lockrow input{accent-color:var(--accent);width:13px;height:13px;cursor:pointer}
 .us-lockrow span{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--muted);font-weight:500}
 .us-presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:.9rem}
-.us-pbtn{font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 13px;border-radius:var(--radius-xl);cursor:pointer;transition:all .16s;font-weight:700}
+.us-pbtn{font-family:'Outfit',sans-serif;font-size:10px;background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 13px;border-radius:var(--radius-xl);cursor:pointer;transition:all .16s;font-weight:700}
 .us-pbtn:hover{color:var(--text);border-color:var(--accent)}
 .us-badge{display:none;font-family:'DM Sans',sans-serif;font-size:10px;padding:4px 12px;border-radius:var(--radius-xl);margin-top:9px;font-weight:600}
 .us-badge.ok{background:rgba(168,196,144,.1);color:var(--accent);border:1px solid rgba(168,196,144,.25)}
@@ -47,7 +47,7 @@
 .us-ch.tr{top:-5px;right:-5px;cursor:ne-resize}
 .us-ch.bl{bottom:-5px;left:-5px;cursor:sw-resize}
 .us-ch.br{bottom:-5px;right:-5px;cursor:se-resize}
-#us-cropinfo{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-top:7px;min-height:16px}
+#us-cropinfo{font-family:'Outfit',sans-serif;font-size:11px;color:var(--muted);margin-top:7px;min-height:16px}
 .us-cropbtns{display:flex;gap:7px;margin-top:7px}
 .us-sbtn{font-family:'DM Sans',sans-serif;font-size:10px;background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:var(--radius-xl);cursor:pointer;font-weight:600}
 .us-sbtn:hover{color:var(--text);border-color:var(--muted)}
@@ -58,37 +58,37 @@
 #us-upscalebtn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(168,196,144,.22)}
 #us-upscalebtn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
 .us-fmtrow{display:flex;gap:6px;margin-top:.9rem;flex-wrap:wrap}
-.us-fmtbtn{font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:var(--radius-xl);cursor:pointer;transition:all .16s;font-weight:700}
+.us-fmtbtn{font-family:'Outfit',sans-serif;font-size:10px;background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:var(--radius-xl);cursor:pointer;transition:all .16s;font-weight:700}
 .us-fmtbtn.on{background:var(--accent);color:#0d0f0e;border-color:var(--accent)}
 [data-theme="light"] .us-fmtbtn.on{color:#fff}
 #us-progwrap{display:none;margin-top:.9rem}
 .us-progtrack{height:2px;background:var(--border);border-radius:4px;overflow:hidden}
 .us-progfill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;width:0;transition:width .2s}
-#us-proglabel{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:6px;font-weight:600}
+#us-proglabel{font-family:'Outfit',sans-serif;font-size:10px;color:var(--muted);margin-top:6px;font-weight:600}
 #us-resultcard{display:none}
 #us-statsbar{display:flex;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:.9rem;flex-wrap:wrap}
 .us-sc{flex:1;min-width:78px;padding:12px 14px;background:var(--card)}
 .us-sc.hi{background:rgba(168,196,144,.08)}
-.us-sl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;font-weight:700}
+.us-sl{font-family:'Outfit',sans-serif;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;font-weight:700}
 .us-sv{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--text)}
 .us-sc.hi .us-sv{color:var(--accent);font-size:15px}
 .us-sarr{display:flex;align-items:center;padding:0 6px;background:var(--card);color:var(--muted);font-size:14px}
 #us-resultimg{max-width:100%;border-radius:var(--radius-md);display:block}
 .us-rmeta{display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:9px}
-.us-rdims{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);font-weight:600}
+.us-rdims{font-family:'Outfit',sans-serif;font-size:11px;color:var(--muted);font-weight:600}
 .us-rdims b{color:var(--text)}
 #us-dlbtn{display:flex;align-items:center;gap:7px;background:transparent;border:1px solid var(--accent);color:var(--accent);font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:13px;padding:9px 22px;border-radius:var(--radius-xl);cursor:pointer;transition:background .15s}
 #us-dlbtn:hover{background:rgba(168,196,144,.1)}
 .us-sharprow{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;align-items:center}
-.us-sharpbtn{padding:5px 12px;border-radius:var(--radius-xl);border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:border-color .18s,color .18s,background .18s;}
+.us-sharpbtn{padding:5px 12px;border-radius:var(--radius-xl);border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:border-color .18s,color .18s,background .18s;}
 .us-sharpbtn:hover{border-color:var(--accent);color:var(--text)}
 .us-sharpbtn.on{border-color:var(--accent);color:var(--accent);background:rgba(168,196,144,.1)}
 .us-sharpcustom{display:flex;align-items:center;gap:4px;border:1px solid var(--border);border-radius:var(--radius-xl);padding:3px 9px;transition:border-color .18s;background:transparent;}
 .us-sharpcustom:focus-within{border-color:var(--accent)}
-.us-sharpcustom-x{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);pointer-events:none;line-height:1}
-.us-sharpinput{width:48px;background:transparent;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--text);-moz-appearance:textfield;text-align:center;}
+.us-sharpcustom-x{font-family:'Outfit',sans-serif;font-size:10px;color:var(--muted);pointer-events:none;line-height:1}
+.us-sharpinput{width:48px;background:transparent;border:none;outline:none;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;color:var(--text);-moz-appearance:textfield;text-align:center;}
 .us-sharpinput::-webkit-inner-spin-button,.us-sharpinput::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-.us-sharpinfo{margin-top:5px;font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;letter-spacing:.04em;opacity:.8}
+.us-sharpinfo{margin-top:5px;font-size:9px;color:var(--muted);font-family:'Outfit',sans-serif;letter-spacing:.04em;opacity:.8}
 [data-theme="light"] #us-upscalebtn{color:#fff}
 [data-theme="light"] .us-fmtbtn.on{color:#fff}
 [data-theme="light"] .us-sharpbtn.on{background:rgba(164,93,60,.09)}
@@ -96,20 +96,20 @@
 #us-progress-overlay{position:fixed;inset:0;z-index:19999;background:var(--dl-bg);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;opacity:0;pointer-events:none;transition:opacity .3s;}
 #us-progress-overlay.active{opacity:1;pointer-events:all}
 #us-ov-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px;font-style:italic}
-#us-ov-sub{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600}
+#us-ov-sub{font-family:'Outfit',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600}
 #us-ov-track{width:min(360px,80vw);height:2px;background:var(--border);border-radius:3px;overflow:hidden}
 #us-ov-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .15s ease}
 #us-ov-pct{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:var(--accent);letter-spacing:-1px}
-#us-ov-eta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.06em;font-weight:600}
+#us-ov-eta{font-family:'Outfit',sans-serif;font-size:10px;color:var(--muted);letter-spacing:.06em;font-weight:600}
 @media(max-width:900px){.us-wrap{padding:0 24px 80px}}
 </style>
 </head>
 <body>
 <div id="scroll-prog"></div>
 <div id="scan-line"></div>
-<canvas id="wobbly-bg-thingy" aria-hidden="true"></canvas>
-<canvas id="floaty-dot-world" aria-hidden="true"></canvas>
-<canvas id="bg-yinyang" aria-hidden="true"></canvas>
+<canvas id="wobbly-bg-thingy"></canvas>
+<canvas id="floaty-dot-world"></canvas>
+<canvas id="bg-yinyang"></canvas>
 <div id="live-clock"></div>
 <div id="keyboard-whisper"></div>
 <div id="toasty-pop" class="toasty"></div>
@@ -121,7 +121,7 @@
 </div>
 
 <div id="mobile-nav">
-  <button id="mobile-nav-close" aria-label="Close navigation menu">✕</button>
+  <button id="mobile-nav-close">✕</button>
   <a href="index.html">Home</a>
   <a href="colordrop.html">ColorDrop</a>
   <a href="hue.html">HUE</a>
@@ -138,9 +138,9 @@
     <a href="chroma.html" class="nav-pill">Chroma</a>
     <a href="upscale.html" class="nav-pill lit">UpScale</a>
     <a href="urlclean.html" class="nav-pill">URLClean</a>
-    <button id="moonbeam-toggle" aria-label="Toggle light/dark theme" title="Toggle theme"><span id="moonbeam-icon" aria-hidden="true">☀</span></button>
+    <button id="moonbeam-toggle" title="Toggle theme"><span id="moonbeam-icon">☀</span></button>
   </div>
-  <button id="ham-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav">☰</button>
+  <button id="ham-toggle">☰</button>
 </header>
 
 <div class="page-hero">
@@ -166,9 +166,9 @@
     </div>
     <input type="file" id="us-fileinput" accept="image/*" style="display:none">
     <div id="us-thumbrow">
-      <img id="us-thumbimg" alt="Source image thumbnail">
+      <img id="us-thumbimg" alt="">
       <div class="us-tinfo"><div class="us-tname" id="us-tname">—</div><div class="us-tdim" id="us-tdim">—</div></div>
-      <button class="us-changebtn" id="us-changebtn" aria-label="Change source image">Change</button>
+      <button class="us-changebtn" id="us-changebtn">Change</button>
     </div>
   </div>
   <div class="lumpy-card" id="us-sizecard" style="display:none;margin-bottom:1rem">
@@ -183,22 +183,22 @@
     <div id="us-ratiowarn" class="us-badge warn"></div>
     <div class="pocket-label" style="margin-top:1.2rem">Presets</div>
     <div class="us-presets">
-      <button class="us-pbtn" data-w="7680" data-h="4320" aria-label="Set output to 8K resolution">8K</button>
-      <button class="us-pbtn" data-w="3840" data-h="2160" aria-label="Set output to 4K UHD resolution">4K UHD</button>
-      <button class="us-pbtn" data-w="2560" data-h="1440" aria-label="Set output to 2K QHD resolution">2K QHD</button>
-      <button class="us-pbtn" data-w="1920" data-h="1080" aria-label="Set output to 1920×1080 Full HD">Full HD</button>
-      <button class="us-pbtn" data-w="1280" data-h="720" aria-label="Set output to 1280×720 HD">HD 720p</button>
+      <button class="us-pbtn" data-w="7680" data-h="4320">8K</button>
+      <button class="us-pbtn" data-w="3840" data-h="2160">4K UHD</button>
+      <button class="us-pbtn" data-w="2560" data-h="1440">2K QHD</button>
+      <button class="us-pbtn" data-w="1920" data-h="1080">Full HD</button>
+      <button class="us-pbtn" data-w="1280" data-h="720">HD 720p</button>
       <button class="us-pbtn" data-w="2048" data-h="2048">2048²</button>
       <button class="us-pbtn" data-w="1080" data-h="1080">1080² IG</button>
       <button class="us-pbtn" data-w="1080" data-h="1920">9:16 Story</button>
-      <button class="us-pbtn" id="us-btn2x" aria-label="Scale to 2× current size">2×</button>
-      <button class="us-pbtn" id="us-btn4x" aria-label="Scale to 4× current size">4×</button>
+      <button class="us-pbtn" id="us-btn2x">2×</button>
+      <button class="us-pbtn" id="us-btn4x">4×</button>
     </div>
   </div>
   <div class="lumpy-card" id="us-cropcard" style="margin-bottom:1rem">
     <div class="pocket-label">03 — Crop to Target Ratio (drag to select)</div>
     <div id="us-cropwrap">
-      <img id="us-previewimg" alt="Upscaled image preview">
+      <img id="us-previewimg" alt="">
       <div class="us-cmask" id="us-mt"></div><div class="us-cmask" id="us-mb"></div>
       <div class="us-cmask" id="us-ml"></div><div class="us-cmask" id="us-mr"></div>
       <div id="us-cropbox">
@@ -208,15 +208,15 @@
     </div>
     <div id="us-cropinfo">Drag on the image to select crop area</div>
     <div class="us-cropbtns">
-      <button class="us-sbtn" id="us-autofitbtn" aria-label="Auto-fit image centered in canvas">Auto-fit centered</button>
-      <button class="us-sbtn" id="us-clearbtn" aria-label="Clear canvas crop area">Clear</button>
+      <button class="us-sbtn" id="us-autofitbtn">Auto-fit centered</button>
+      <button class="us-sbtn" id="us-clearbtn">Clear</button>
     </div>
   </div>
   <div class="lumpy-card" id="us-actioncard" style="display:none;margin-bottom:1rem">
     <div class="pocket-label">04 — Upscale</div>
     <div class="us-arow">
       <div class="us-asummary" id="us-asummary">Set a target size above ↑</div>
-      <button id="us-upscalebtn" aria-label="Start upscaling the image">Upscale ↑</button>
+      <button id="us-upscalebtn">Upscale ↑</button>
     </div>
     <div class="pocket-label" style="margin-top:1.2rem">Sharpness</div>
     <div class="us-sharprow" id="us-sharprow">
@@ -272,7 +272,7 @@
   </div>
 </footer>
 
-<button id="lofi-leaf" aria-label="Toggle lo-fi background music" aria-pressed="false">
+<button id="lofi-leaf">
   <div class="soundbars"><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div></div>
   <span id="audio-label">lo-fi</span>
 </button>
