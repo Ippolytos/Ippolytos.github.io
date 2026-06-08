@@ -12,7 +12,7 @@
     #yy-canvas{width:240px;height:240px;}
     .yy-brand{font-family:'Licorice',cursive;font-size:38px;font-weight:400;letter-spacing:1px;opacity:0;animation:yyFadeUp 1s cubic-bezier(.22,1,.36,1) 0.4s forwards;}
     .yy-tagline{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;letter-spacing:3px;opacity:0;animation:yyFadeUp 1s cubic-bezier(.22,1,.36,1) 0.7s forwards;}
-    .yy-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:5px;text-transform:uppercase;opacity:0;animation:yyFadeUp 1s cubic-bezier(.22,1,.36,1) 1.05s forwards;}
+    .yy-sub{font-family:'Outfit',sans-serif;font-size:9px;letter-spacing:5px;text-transform:uppercase;opacity:0;animation:yyFadeUp 1s cubic-bezier(.22,1,.36,1) 1.05s forwards;}
     @keyframes yyFadeUp{from{opacity:0;transform:translateY(12px) scale(.98);}to{opacity:1;transform:translateY(0) scale(1);}}
   `;
   document.head.appendChild(style);
