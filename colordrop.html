@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ColorDrop — Hropiberhtaz</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
 <style>
 #cp-brush-canvas{position:absolute;inset:0;pointer-events:none;z-index:0;width:100%;height:100%;}
@@ -12,7 +12,7 @@
 .picker-blurb{padding-top:8px;}
 .goober-list{display:flex;flex-direction:column;gap:0;}
 .goober-item{padding:13px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--muted);line-height:1.6;font-weight:400;display:flex;align-items:flex-start;gap:10px;opacity:0;transform:translateX(-12px);transition:opacity .5s ease,transform .5s cubic-bezier(.25,.46,.45,.94);}
-.goober-item::before{content:'→';color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0;margin-top:2px;}
+.goober-item::before{content:'→';color:var(--accent);font-family:'Outfit',sans-serif;font-size:11px;flex-shrink:0;margin-top:2px;}
 .goober-item:first-child{border-top:1px solid var(--border)}
 .goober-list.staggery .goober-item{opacity:1;transform:none}
 .goober-list.staggery .goober-item:nth-child(1){transition-delay:.04s}
@@ -27,21 +27,21 @@
 .fat-swatch .checker-bg{position:absolute;inset:0;background-image:linear-gradient(45deg,var(--checker-dark) 25%,transparent 25%),linear-gradient(-45deg,var(--checker-dark) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,var(--checker-dark) 75%),linear-gradient(-45deg,transparent 75%,var(--checker-dark) 75%);background-size:10px 10px;background-position:0 0,0 5px,5px -5px,-5px 0;}
 .fat-swatch .color-fill{position:absolute;inset:0}
 .color-info-block{flex:1;min-width:0;}
-.hex-bignum{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;color:var(--text);cursor:text;transition:color .2s;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.rgba-subtitle{font-size:9px;letter-spacing:.8px;color:var(--muted);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-family:'JetBrains Mono',monospace;}
+.hex-bignum{font-family:'DM Mono','Courier New',monospace;font-size:18px;font-weight:600;color:var(--text);cursor:text;transition:color .2s;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rgba-subtitle{font-size:9px;letter-spacing:.8px;color:var(--muted);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-family:'Outfit',sans-serif;}
 .color-formats-panel{margin-top:11px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;}
 .cfp-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer;}
 .cfp-row:last-child{border-bottom:none}
 .cfp-row:hover{background:rgba(168,196,144,.04)}
-.cfp-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);min-width:48px}
-.cfp-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cfp-copy{font-size:9px;color:var(--muted);padding:3px 8px;border:1px solid var(--border);border-radius:20px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;transition:all .2s;flex-shrink:0;background:none;cursor:pointer;}
+.cfp-label{font-family:'Outfit',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);min-width:48px}
+.cfp-val{font-family:'DM Mono','Courier New',monospace;font-size:11px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cfp-copy{font-size:9px;color:var(--muted);padding:3px 8px;border:1px solid var(--border);border-radius:20px;font-family:'Outfit',sans-serif;letter-spacing:1px;transition:all .2s;flex-shrink:0;background:none;cursor:pointer;}
 .cfp-copy:hover{border-color:var(--accent);color:var(--accent)}
 .color-history-strip{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
-.hist-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'JetBrains Mono',monospace;width:100%;margin-bottom:3px}
+.hist-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'Outfit',sans-serif;width:100%;margin-bottom:3px}
 .hist-swatch{width:22px;height:22px;border-radius:5px;border:1px solid var(--border);cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1);flex-shrink:0;position:relative;}
 .hist-swatch:hover{transform:scale(1.28) rotate(6deg)}
-.hist-swatch::after{content:attr(data-hex);position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--hint-bg);border:1px solid var(--border);padding:3px 8px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text);white-space:nowrap;pointer-events:none;z-index:100;opacity:0;transition:opacity .15s;}
+.hist-swatch::after{content:attr(data-hex);position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--hint-bg);border:1px solid var(--border);padding:3px 8px;border-radius:6px;font-family:'Outfit',sans-serif;font-size:9px;color:var(--text);white-space:nowrap;pointer-events:none;z-index:100;opacity:0;transition:opacity .15s;}
 .hist-swatch:hover::after{opacity:1}
 .nudge-btn{background:none;border:none;cursor:pointer;padding:7px;color:var(--muted);transition:color .2s;flex-shrink:0;}
 .nudge-btn:hover{color:var(--accent)}
@@ -55,8 +55,8 @@
 .alpha-needle{position:absolute;left:50%;top:0;width:100%;height:3px;background:rgba(50,50,50,.9);transform:translate(-50%,-50%);pointer-events:none;}
 .rgba-inputzy{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px}
 .rgba-input-box{display:flex;flex-direction:column;gap:4px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 5px;text-align:center;}
-.rgba-input-box label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'JetBrains Mono',monospace}
-.rgba-input-box input[type=number]{width:100%;background:none;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--text);text-align:center;-moz-appearance:textfield;cursor:text!important;}
+.rgba-input-box label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'Outfit',sans-serif}
+.rgba-input-box input[type=number]{width:100%;background:none;border:none;outline:none;font-family:'DM Mono','Courier New',monospace;font-size:13px;font-weight:600;color:var(--text);text-align:center;-moz-appearance:textfield;cursor:text!important;}
 .rgba-input-box input[type=number]::-webkit-inner-spin-button,.rgba-input-box input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 .rgba-input-box:focus-within{border-color:var(--accent)}
 .copy-rgba-btn{margin-top:10px;width:100%;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:9px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;}
@@ -69,16 +69,16 @@
 <body>
 <div id="scroll-prog"></div>
 <div id="scan-line"></div>
-<canvas id="wobbly-bg-thingy" aria-hidden="true"></canvas>
-<canvas id="floaty-dot-world" aria-hidden="true"></canvas>
-<canvas id="bg-yinyang" aria-hidden="true"></canvas>
+<canvas id="wobbly-bg-thingy"></canvas>
+<canvas id="floaty-dot-world"></canvas>
+<canvas id="bg-yinyang"></canvas>
 <div id="live-clock"></div>
 <div id="keyboard-whisper"></div>
 <div id="toasty-pop" class="toasty"></div>
 <div id="file-loading-veil"><div class="veil-spinner"></div><div class="veil-msg" id="veil-msg-text">Opening…</div></div>
 
 <div id="mobile-nav">
-  <button id="mobile-nav-close" aria-label="Close navigation menu">✕</button>
+  <button id="mobile-nav-close">✕</button>
   <a href="index.html">Home</a>
   <a href="colordrop.html">ColorDrop</a>
   <a href="hue.html">HUE</a>
@@ -95,9 +95,9 @@
     <a href="chroma.html" class="nav-pill">Chroma</a>
     <a href="upscale.html" class="nav-pill">UpScale</a>
     <a href="urlclean.html" class="nav-pill">URLClean</a>
-    <button id="moonbeam-toggle" aria-label="Toggle light/dark theme" title="Toggle theme"><span id="moonbeam-icon" aria-hidden="true">☀</span></button>
+    <button id="moonbeam-toggle" title="Toggle theme"><span id="moonbeam-icon">☀</span></button>
   </div>
-  <button id="ham-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav">☰</button>
+  <button id="ham-toggle">☰</button>
 </header>
 
 <div class="page-hero" style="position:relative">
@@ -131,7 +131,7 @@
         <div class="hex-bignum" id="hexDisplay" title="Click to edit">#FF6633</div>
         <div class="rgba-subtitle" id="rgbaDisplay">rgba(255,102,51,1.00)</div>
       </div>
-      <button class="nudge-btn" id="copyBtn" aria-label="Copy HEX color value" title="Copy HEX">
+      <button class="nudge-btn" id="copyBtn" title="Copy HEX">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
       </button>
     </div>
@@ -156,12 +156,12 @@
       <div class="rgba-input-box"><label style="color:#c084fc">A</label><input type="number" id="inA" min="0" max="100" value="100"></div>
     </div>
     <div class="color-formats-panel" id="color-formats-panel">
-      <div class="cfp-row" onclick="copyColorFmt('hex')"><span class="cfp-label">HEX</span><span class="cfp-val" id="cfp-hex">#FF6633</span><button class="cfp-copy" aria-label="Copy this color format">copy</button></div>
-      <div class="cfp-row" onclick="copyColorFmt('rgba')"><span class="cfp-label">RGBA</span><span class="cfp-val" id="cfp-rgba">rgba(255,102,51,1)</span><button class="cfp-copy" aria-label="Copy this color format">copy</button></div>
-      <div class="cfp-row" onclick="copyColorFmt('hsl')"><span class="cfp-label">HSL</span><span class="cfp-val" id="cfp-hsl">hsl(15,100%,60%)</span><button class="cfp-copy" aria-label="Copy this color format">copy</button></div>
-      <div class="cfp-row" onclick="copyColorFmt('oklch')"><span class="cfp-label">OKLCH</span><span class="cfp-val" id="cfp-oklch">oklch(0.68 0.2 45)</span><button class="cfp-copy" aria-label="Copy this color format">copy</button></div>
+      <div class="cfp-row" onclick="copyColorFmt('hex')"><span class="cfp-label">HEX</span><span class="cfp-val" id="cfp-hex">#FF6633</span><button class="cfp-copy">copy</button></div>
+      <div class="cfp-row" onclick="copyColorFmt('rgba')"><span class="cfp-label">RGBA</span><span class="cfp-val" id="cfp-rgba">rgba(255,102,51,1)</span><button class="cfp-copy">copy</button></div>
+      <div class="cfp-row" onclick="copyColorFmt('hsl')"><span class="cfp-label">HSL</span><span class="cfp-val" id="cfp-hsl">hsl(15,100%,60%)</span><button class="cfp-copy">copy</button></div>
+      <div class="cfp-row" onclick="copyColorFmt('oklch')"><span class="cfp-label">OKLCH</span><span class="cfp-val" id="cfp-oklch">oklch(0.68 0.2 45)</span><button class="cfp-copy">copy</button></div>
     </div>
-    <button class="copy-rgba-btn" id="rgbaCopyBtn" aria-label="Copy RGBA color value">
+    <button class="copy-rgba-btn" id="rgbaCopyBtn">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
       Copy rgba(…)
     </button>
@@ -186,7 +186,7 @@
   </div>
 </footer>
 
-<button id="lofi-leaf" aria-label="Toggle lo-fi background music" aria-pressed="false">
+<button id="lofi-leaf">
   <div class="soundbars"><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div></div>
   <span id="audio-label">lo-fi</span>
 </button>
@@ -241,7 +241,7 @@
   svWrap.addEventListener('touchmove',e=>touchToMouse(e,e2=>document.dispatchEvent(new MouseEvent('mousemove',e2))),{passive:false});
   hueWrap.addEventListener('touchstart',e=>touchToMouse(e,e2=>hueWrap.dispatchEvent(new MouseEvent('mousedown',e2))),{passive:false});
   hueWrap.addEventListener('touchmove',e=>touchToMouse(e,e2=>document.dispatchEvent(new MouseEvent('mousemove',e2))),{passive:false});
-  hexDisplay.addEventListener('click',()=>{const rgb=hsvToRgb(hue,sat,val),currentHex=rgbToHex(rgb.r,rgb.g,rgb.b);const input=document.createElement('input');input.type='text';input.value=currentHex.toUpperCase();Object.assign(input.style,{fontFamily:'JetBrains Mono,monospace',fontSize:'16px',fontWeight:'600',color:'var(--text)',background:'var(--card)',border:'1px solid var(--accent)',borderRadius:'8px',padding:'2px 8px',outline:'none',width:'140px',letterSpacing:'1px'});hexDisplay.replaceWith(input);input.select();function commit(){const hex=input.value.trim(),rgb=hexToRgb(hex);if(rgb){const hsv=rgbToHsv(rgb.r,rgb.g,rgb.b);hue=hsv.h;sat=hsv.s;val=hsv.v;drawSV();}input.replaceWith(hexDisplay);updateUI();}input.addEventListener('blur',commit);input.addEventListener('keydown',e=>{if(e.key==='Enter')commit();if(e.key==='Escape')input.replaceWith(hexDisplay);});});
+  hexDisplay.addEventListener('click',()=>{const rgb=hsvToRgb(hue,sat,val),currentHex=rgbToHex(rgb.r,rgb.g,rgb.b);const input=document.createElement('input');input.type='text';input.value=currentHex.toUpperCase();Object.assign(input.style,{fontFamily:'Outfit',sans-serif,fontSize:'16px',fontWeight:'600',color:'var(--text)',background:'var(--card)',border:'1px solid var(--accent)',borderRadius:'8px',padding:'2px 8px',outline:'none',width:'140px',letterSpacing:'1px'});hexDisplay.replaceWith(input);input.select();function commit(){const hex=input.value.trim(),rgb=hexToRgb(hex);if(rgb){const hsv=rgbToHsv(rgb.r,rgb.g,rgb.b);hue=hsv.h;sat=hsv.s;val=hsv.v;drawSV();}input.replaceWith(hexDisplay);updateUI();}input.addEventListener('blur',commit);input.addEventListener('keydown',e=>{if(e.key==='Enter')commit();if(e.key==='Escape')input.replaceWith(hexDisplay);});});
   copyBtn.addEventListener('click',()=>{const rgb=hsvToRgb(hue,sat,val),text=rgbToHex(rgb.r,rgb.g,rgb.b).toUpperCase();navigator.clipboard.writeText(text).then(()=>{addToHistory(text);copyBtn.classList.add('done-copying');showToast('Copied '+text);setTimeout(()=>copyBtn.classList.remove('done-copying'),2000);});});
   function applyRgbaInputs(){const r=Math.max(0,Math.min(255,parseInt(document.getElementById('inR').value)||0)),g=Math.max(0,Math.min(255,parseInt(document.getElementById('inG').value)||0)),b=Math.max(0,Math.min(255,parseInt(document.getElementById('inB').value)||0)),a=Math.max(0,Math.min(100,parseInt(document.getElementById('inA').value)||0));const hsv=rgbToHsv(r,g,b);hue=hsv.h;sat=hsv.s;val=hsv.v;alpha=a/100;drawSV();updateUI();}
   ['inR','inG','inB','inA'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.addEventListener('input',applyRgbaInputs);el.addEventListener('change',applyRgbaInputs);});
