@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>URLClean — Hropiberhtaz</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
 <style>
 .uc-shell{position:relative;z-index:1;padding:0 80px 100px;display:flex;flex-direction:column;gap:20px;max-width:860px;margin:0 auto;}
 .uc-input-wrap{position:relative;}
-.uc-textarea{width:100%;min-height:120px;padding:18px 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;resize:vertical;outline:none;transition:border-color .2s,box-shadow .2s;caret-color:var(--accent);}
+.uc-textarea{width:100%;min-height:120px;padding:18px 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text);font-family:'DM Mono','Courier New',monospace;font-size:13px;line-height:1.7;resize:vertical;outline:none;transition:border-color .2s,box-shadow .2s;caret-color:var(--accent);}
 .uc-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(168,196,144,.08);}
 .uc-textarea::placeholder{color:var(--muted);opacity:.6;}
 .uc-options-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
-.uc-toggle{display:flex;align-items:center;gap:8px;padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius-xl);background:var(--card);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);transition:all .2s;user-select:none;}
+.uc-toggle{display:flex;align-items:center;gap:8px;padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius-xl);background:var(--card);cursor:pointer;font-family:'Outfit',sans-serif;font-weight:600;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);transition:all .2s;user-select:none;}
 .uc-toggle input{display:none;}
 .uc-toggle.on{border-color:rgba(168,196,144,.35);background:rgba(168,196,144,.07);color:var(--accent);}
 .uc-toggle-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background .2s,box-shadow .2s;flex-shrink:0;}
@@ -22,21 +22,21 @@
 .uc-out-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;display:none;}
 .uc-out-box.has-result{display:block;}
 .uc-out-header{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--panel);}
-.uc-out-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:600;}
+.uc-out-label{font-family:'Outfit',sans-serif;font-weight:600;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:600;}
 .uc-out-actions{display:flex;gap:8px;}
-.uc-out-textarea{width:100%;min-height:120px;padding:18px 20px;background:transparent;border:none;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;resize:vertical;outline:none;}
+.uc-out-textarea{width:100%;min-height:120px;padding:18px 20px;background:transparent;border:none;color:var(--text);font-family:'DM Mono','Courier New',monospace;font-size:13px;line-height:1.7;resize:vertical;outline:none;}
 .uc-stats-row{display:flex;gap:20px;flex-wrap:wrap;padding:12px 20px;border-top:1px solid var(--border);background:var(--panel);}
 .uc-stat{display:flex;flex-direction:column;gap:3px;}
 .uc-stat-num{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--accent);letter-spacing:-1px;line-height:1;}
-.uc-stat-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.uc-stat-lbl{font-family:'Outfit',sans-serif;font-weight:600;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
 .uc-diff-row{display:flex;gap:8px;padding:0 20px 14px;background:var(--panel);align-items:center;flex-wrap:wrap;}
-.uc-diff-chip{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 10px;border-radius:var(--radius-xl);letter-spacing:1px;}
+.uc-diff-chip{font-family:'Outfit',sans-serif;font-weight:600;font-size:9px;padding:3px 10px;border-radius:var(--radius-xl);letter-spacing:1px;}
 .uc-diff-chip.saved{background:rgba(168,196,144,.12);color:var(--accent);border:1px solid rgba(168,196,144,.25);}
 .uc-diff-chip.same{background:rgba(106,138,114,.07);color:var(--muted);border:1px solid var(--border);}
 .uc-preset-row{display:flex;gap:8px;flex-wrap:wrap;}
-.uc-preset{padding:5px 13px;border:1px solid var(--border);border-radius:var(--radius-xl);background:var(--card);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.uc-preset{padding:5px 13px;border:1px solid var(--border);border-radius:var(--radius-xl);background:var(--card);color:var(--muted);font-family:'Outfit',sans-serif;font-weight:600;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
 .uc-preset:hover{border-color:var(--accent2);color:var(--accent2);}
-.uc-section-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:600;}
+.uc-section-label{font-family:'Outfit',sans-serif;font-weight:600;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:600;}
 @media(max-width:900px){.uc-shell{padding:0 24px 80px}}
 </style>
 </head>
@@ -102,7 +102,7 @@
   </div>
   <div>
     <div class="uc-section-label">Custom Params to Remove (comma-separated)</div>
-    <input type="text" id="uc-custom" placeholder="e.g. source, campaign, promo_id" style="width:100%;padding:10px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+    <input type="text" id="uc-custom" placeholder="e.g. source, campaign, promo_id" style="width:100%;padding:10px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text);font-family:'DM Mono','Courier New',monospace;font-size:12px;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
   </div>
   <div>
     <div class="uc-section-label">Quick Presets</div>
