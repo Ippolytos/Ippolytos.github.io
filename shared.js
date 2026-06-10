@@ -17,35 +17,31 @@
   `;
   document.head.appendChild(style);
 
-  // Light palette: warm terracotta + deep indigo + muted teal on cream — easy on eyes, clearly visible
-  // Dark palette: original soft greens
+  // Writing this code is annoying :(
   const C = _L ? {
-    bg:    '#f0e8d8',
-    brand: 'rgba(110,55,25,0.92)',   // warm brown
-    tag:   'rgba(70,50,35,0.72)',
-    sub:   'rgba(140,80,40,0.65)',
-    glow:  'drop-shadow(0 0 40px rgba(160,90,40,0.3)) drop-shadow(0 0 80px rgba(100,60,120,0.18))',
-    // drawing colors
-    A: 'rgba(160,80,40,',    // terracotta — main ring, spokes
-    B: 'rgba(80,60,140,',    // indigo — flower, teal loops
-    C_: 'rgba(140,45,70,',   // burgundy — rose loops
-    D: 'rgba(120,85,20,',    // amber — gold spokes
-    E: 'rgba(40,30,20,',     // near-black — white star layer
+    bg:    '#fffbee',
+    brand: 'rgba(160,100,0,0.95)',   // golden
+    tag:   'rgba(100,70,0,0.75)',
+    sub:   'rgba(180,120,0,0.7)',
+    glow:  'drop-shadow(0 0 40px rgba(232,168,0,0.35)) drop-shadow(0 0 80px rgba(212,119,10,0.2))',
+    A: 'rgba(200,130,0,',    // deep golden — main ring, spokes
+    B: 'rgba(180,80,20,',    // amber-orange — flower
+    C_: 'rgba(210,60,20,',   // warm red-orange — rose loops
+    D: 'rgba(160,100,0,',    // golden-brown spokes
+    E: 'rgba(30,20,0,',      // near-black
   } : {
-    bg:    '#0d0f0e',
-    brand: 'rgba(168,196,144,0.92)',
-    tag:   'rgba(226,232,222,0.6)',
-    sub:   'rgba(168,196,144,0.45)',
-    glow:  'drop-shadow(0 0 40px rgba(168,196,144,0.18)) drop-shadow(0 0 80px rgba(143,201,184,0.1))',
-    A: 'rgba(168,196,144,',  // green
-    B: 'rgba(143,201,184,',  // teal
-    C_:'rgba(201,160,160,',  // rose
-    D: 'rgba(200,176,96,',   // gold
-    E: 'rgba(226,232,222,',  // white
+    bg:    '#0a0f14',
+    brand: 'rgba(180,220,240,0.95)',
+    tag:   'rgba(200,228,245,0.65)',
+    sub:   'rgba(126,200,227,0.55)',
+    glow:  'drop-shadow(0 0 40px rgba(126,200,227,0.22)) drop-shadow(0 0 80px rgba(168,210,230,0.12))',
+    A: 'rgba(126,200,227,',  // arctic blue
+    B: 'rgba(168,210,235,',  // pale ice blue
+    C_:'rgba(100,170,210,',  // steel blue
+    D: 'rgba(200,228,245,',  // silver-white
+    E: 'rgba(220,238,250,',  // bright ice white
   };
-
-  // Alpha scale — light needs much higher opacity to show on cream
-  const AS = _L ? 1.0 : 1.0; // alphas are already tuned per-mode below
+  const AS = _L ? 1.0 : 1.0; 
 
   const intro=document.createElement('div');
   intro.id='yinyang-intro';
@@ -215,12 +211,12 @@
   ctx2.beginPath();ctx2.arc(0,0,r2,Math.PI/2,-Math.PI/2,false);ctx2.arc(0,-r2/2,r2/2,-Math.PI/2,Math.PI/2,true);ctx2.arc(0,r2/2,r2/2,-Math.PI/2,Math.PI/2,false);ctx2.closePath();ctx2.fillStyle='#000';ctx2.fill();
   ctx2.beginPath();ctx2.arc(0,-r2/2,r2/6.5,0,Math.PI*2);ctx2.fillStyle='#000';ctx2.fill();
   ctx2.beginPath();ctx2.arc(0,r2/2,r2/6.5,0,Math.PI*2);ctx2.fillStyle='#fff';ctx2.fill();
-  ctx2.beginPath();ctx2.arc(0,0,r2,0,Math.PI*2);ctx2.strokeStyle='rgba(168,196,144,0.7)';ctx2.lineWidth=1.5;ctx2.stroke();
+  ctx2.beginPath();ctx2.arc(0,0,r2,0,Math.PI*2);ctx2.strokeStyle='rgba(126,200,227,0.7)';ctx2.lineWidth=1.5;ctx2.stroke();
   ctx2.restore();
   let angle=0,spinning=false;
   function spin(){if(!spinning)return;angle+=5;cv.style.transform='rotate('+angle+'deg)';requestAnimationFrame(spin);}
-  const toolMeta={'colordrop.html':{label:'ColorDrop',sub:'Loading color picker…',color:'#a8c490'},'hue.html':{label:'HUE Editor',sub:'Loading image editor…',color:'#c9a0a0'},'chroma.html':{label:'Chroma',sub:'Loading recolor engine…',color:'#8fc9b8'},'upscale.html':{label:'UpScale',sub:'Loading Lanczos engine…',color:'#c8b060'},'urlclean.html':{label:'URLClean',sub:'Loading URL stripper…',color:'#b0a8d0'},'index.html':{label:'Hropiberhtaz',sub:'Going home…',color:'#a8c490'}};
-  function showTransition(href,done){const key=href.split('/').pop().split('?')[0];const meta=toolMeta[key]||{label:key,sub:'Loading…',color:'#a8c490'};document.getElementById('pto-label').textContent=meta.label;document.getElementById('pto-sub').textContent=meta.sub;cv.style.filter='drop-shadow(0 0 16px '+meta.color+')';overlay.style.setProperty('--pto-accent',meta.color);overlay.classList.add('active');spinning=true;spin();setTimeout(done,700);}
+  const toolMeta={'colordrop.html':{label:'ColorDrop',sub:'Loading color picker…',color:'#7ec8e3'},'hue.html':{label:'HUE Editor',sub:'Loading image editor…',color:'#b8d4e8'},'chroma.html':{label:'Chroma',sub:'Loading recolor engine…',color:'#a8c8d8'},'upscale.html':{label:'UpScale',sub:'Loading Lanczos engine…',color:'#88c0d8'},'urlclean.html':{label:'URLClean',sub:'Loading URL stripper…',color:'#c8e4f0'},'index.html':{label:'Hropiberhtaz',sub:'Going home…',color:'#7ec8e3'}};
+  function showTransition(href,done){const key=href.split('/').pop().split('?')[0];const meta=toolMeta[key]||{label:key,sub:'Loading…',color:'#7ec8e3'};document.getElementById('pto-label').textContent=meta.label;document.getElementById('pto-sub').textContent=meta.sub;cv.style.filter='drop-shadow(0 0 16px '+meta.color+')';overlay.style.setProperty('--pto-accent',meta.color);overlay.classList.add('active');spinning=true;spin();setTimeout(done,700);}
   document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href');if(!href||href.startsWith('http')||href.startsWith('#')||href.startsWith('mailto'))return;e.preventDefault();showTransition(href,()=>{window.location.href=href;});});
   window.addEventListener('pageshow',()=>{overlay.classList.remove('active');spinning=false;});
 })();
@@ -259,13 +255,13 @@ function showToast(msg){const t=document.getElementById('toasty-pop');t.textCont
   let mx=-9999,my=-9999,t=0,_mm=false;
   document.addEventListener('mousemove',e=>{if(_mm)return;_mm=true;requestAnimationFrame(()=>{mx=e.clientX;my=e.clientY;_mm=false;});},{passive:true});
   let _stop=false;document.addEventListener('visibilitychange',()=>{_stop=document.hidden;if(!_stop)requestAnimationFrame(loop);});
-  function loop(){if(_stop)return;ctx.clearRect(0,0,W,H);t+=0.007;const isLight=document.documentElement.getAttribute('data-theme')==='light';const a1=isLight?'rgba(164,93,60,0.03)':'rgba(168,196,144,0.025)';const a2=isLight?'rgba(176,96,96,0.025)':'rgba(201,160,160,0.02)';if(mx>0){const grd=ctx.createRadialGradient(mx,my,0,mx,my,280);grd.addColorStop(0,isLight?'rgba(164,93,60,.04)':'rgba(168,196,144,.035)');grd.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);}for(let i=0;i<3;i++){const bx=W*(0.2+i*0.3)+Math.sin(t+i)*70,by=H*(0.3+i*0.2)+Math.cos(t*.7+i)*55,br=260+Math.sin(t+i*2)*45;const g=ctx.createRadialGradient(bx,by,0,bx,by,br);g.addColorStop(0,i===1?a2:a1);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);}requestAnimationFrame(loop);}loop();
+  function loop(){if(_stop)return;ctx.clearRect(0,0,W,H);t+=0.007;const isLight=document.documentElement.getAttribute('data-theme')==='light';const a1=isLight?'rgba(200,130,0,0.03)':'rgba(126,200,227,0.025)';const a2=isLight?'rgba(210,80,20,0.025)':'rgba(168,210,235,0.02)';if(mx>0){const grd=ctx.createRadialGradient(mx,my,0,mx,my,280);grd.addColorStop(0,isLight?'rgba(200,130,0,.04)':'rgba(126,200,227,.035)');grd.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);}for(let i=0;i<3;i++){const bx=W*(0.2+i*0.3)+Math.sin(t+i)*70,by=H*(0.3+i*0.2)+Math.cos(t*.7+i)*55,br=260+Math.sin(t+i*2)*45;const g=ctx.createRadialGradient(bx,by,0,bx,by,br);g.addColorStop(0,i===1?a2:a1);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);}requestAnimationFrame(loop);}loop();
 })();
 
 (function(){
   const canvas=document.getElementById('floaty-dot-world'),ctx=canvas.getContext('2d');let W,H;
   const isDark=()=>document.documentElement.getAttribute('data-theme')!=='light';
-  const CDARK=['#a8c490','#7a9870','rgba(184,208,170,.5)','#c9a0a0'],CLIGHT=['#A45D3C','#CC7722','#B86484','#9B525D'];
+  const CDARK=['#7ec8e3','#4a9ab8','rgba(168,210,235,.5)','#b8d4e8'],CLIGHT=['#e8a800','#d4770a','#e05c2a','#c49000'];
   const gc=()=>isDark()?CDARK:CLIGHT;
   function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}resize();window.addEventListener('resize',resize,{passive:true});
   function P(){this.boot(true);}
@@ -309,7 +305,7 @@ function showToast(msg){const t=document.getElementById('toasty-pop');t.textCont
     const dotR=r/6.5;
     bx.beginPath();bx.arc(0,-r/2,dotR,0,Math.PI*2);bx.fillStyle=isLight?'#f0ece4':'#000000';bx.fill();
     bx.beginPath();bx.arc(0,r/2,dotR,0,Math.PI*2);bx.fillStyle=isLight?'#2a1a0e':'#ffffff';bx.fill();
-    bx.beginPath();bx.arc(0,0,r,0,Math.PI*2);bx.strokeStyle=isLight?'rgba(164,93,60,0.9)':'rgba(168,196,144,0.7)';bx.lineWidth=1.5;bx.stroke();
+    bx.beginPath();bx.arc(0,0,r,0,Math.PI*2);bx.strokeStyle=isLight?'rgba(200,130,0,0.9)':'rgba(126,200,227,0.7)';bx.lineWidth=1.5;bx.stroke();
     ctx.save();ctx.globalAlpha=isLight?0.13:0.09;ctx.drawImage(_buf,0,0);ctx.restore();
   }
   drawSymbol();
