@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UpScale — Hropiberhtaz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.us-wrap{position:relative;z-index:1;padding:0 80px 100px;}
+#us-dropzone{border:2px dashed var(--border);border-radius:var(--radius-lg);padding:3rem 1.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;}
+#us-dropzone:hover,#us-dropzone.over{border-color:var(--accent);background:rgba(168,196,144,.04);}
+#us-dropzone h3{font-size:14px;margin:.7rem 0 .35rem;font-family:'Playfair Display',serif;font-style:italic}
+#us-dropzone p{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px}
+.us-upicon{width:44px;height:44px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .7rem;transition:border-color .2s}
+#us-dropzone:hover .us-upicon,#us-dropzone.over .us-upicon{border-color:var(--accent)}
+#us-thumbrow{display:none;align-items:center;gap:12px;margin-top:.9rem;background:var(--card);border-radius:var(--radius-md);padding:.8rem;border:1px solid var(--border)}
+#us-thumbrow img{width:50px;height:50px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid var(--border)}
+.us-tinfo{flex:1}
+.us-tname{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.us-tdim{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px}
+.us-changebtn{font-family:'DM Sans',sans-serif;font-size:10px;background:none;border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:var(--radius-xl);cursor:pointer;font-weight:600}
+.us-changebtn:hover{color:var(--text);border-color:var(--muted)}
+.us-sizerow{display:flex;align-items:flex-end;gap:9px;flex-wrap:wrap}
+.us-field{display:flex;flex-direction:column;gap:4px}
+.us-field label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+.us-field input[type=number]{width:120px;background:var(--card);border:1px solid var(--border);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;padding:8px 11px;border-radius:var(--radius-md);outline:none;transition:border-color .2s;font-weight:600}
+.us-field input:focus{border-color:var(--accent)}
+.us-xsep{font-size:18px;color:var(--muted);padding-bottom:9px;font-family:'Playfair Display',serif}
+.us-lockrow{display:flex;align-items:center;gap:6px;padding-bottom:9px;cursor:pointer;user-select:none}
+.us-lockrow input{accent-color:var(--accent);width:13px;height:13px;cursor:pointer}
+.us-lockrow span{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--muted);font-weight:500}
+.us-presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:.9rem}
+.us-pbtn{font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 13px;border-radius:var(--radius-xl);cursor:pointer;transition:all .16s;font-weight:700}
+.us-pbtn:hover{color:var(--text);border-color:var(--accent)}
+.us-badge{display:none;font-family:'DM Sans',sans-serif;font-size:10px;padding:4px 12px;border-radius:var(--radius-xl);margin-top:9px;font-weight:600}
+.us-badge.ok{background:rgba(168,196,144,.1);color:var(--accent);border:1px solid rgba(168,196,144,.25)}
+.us-badge.warn{background:rgba(255,107,107,.09);color:#ff8080;border:1px solid rgba(255,107,107,.2)}
+#us-cropcard{display:none}
+#us-cropwrap{position:relative;display:inline-block;cursor:crosshair;line-height:0;max-width:100%}
+#us-cropwrap img{display:block;max-width:100%;max-height:360px;border-radius:var(--radius-sm)}
+#us-cropbox{position:absolute;border:2px solid var(--accent);box-sizing:border-box;pointer-events:none;display:none;border-radius:4px}
+#us-cropbox::after{content:'';position:absolute;inset:0;background:rgba(168,196,144,.08)}
+.us-cmask{position:absolute;background:rgba(0,0,0,.5);pointer-events:none}
+.us-ch{position:absolute;width:11px;height:11px;background:var(--accent);border-radius:3px;pointer-events:all;z-index:5}
+.us-ch.tl{top:-5px;left:-5px;cursor:nw-resize}
+.us-ch.tr{top:-5px;right:-5px;cursor:ne-resize}
+.us-ch.bl{bottom:-5px;left:-5px;cursor:sw-resize}
+.us-ch.br{bottom:-5px;right:-5px;cursor:se-resize}
+#us-cropinfo{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-top:7px;min-height:16px}
+.us-cropbtns{display:flex;gap:7px;margin-top:7px}
+.us-sbtn{font-family:'DM Sans',sans-serif;font-size:10px;background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:var(--radius-xl);cursor:pointer;font-weight:600}
+.us-sbtn:hover{color:var(--text);border-color:var(--muted)}
+.us-arow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.us-asummary{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--muted);line-height:1.7;font-weight:500}
+.us-asummary b{color:var(--text)}
+#us-upscalebtn{background:var(--accent);color:#0d0f0e;border:none;font-family:'Playfair Display',serif;font-style:italic;font-size:14px;font-weight:700;padding:11px 26px;border-radius:var(--radius-xl);cursor:pointer;transition:transform .15s,box-shadow .15s;white-space:nowrap}
+#us-upscalebtn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(168,196,144,.22)}
+#us-upscalebtn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.us-fmtrow{display:flex;gap:6px;margin-top:.9rem;flex-wrap:wrap}
+.us-fmtbtn{font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:var(--radius-xl);cursor:pointer;transition:all .16s;font-weight:700}
+.us-fmtbtn.on{background:var(--accent);color:#0d0f0e;border-color:var(--accent)}
+[data-theme="light"] .us-fmtbtn.on{color:#fff}
+#us-progwrap{display:none;margin-top:.9rem}
+.us-progtrack{height:2px;background:var(--border);border-radius:4px;overflow:hidden}
+.us-progfill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;width:0;transition:width .2s}
+#us-proglabel{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:6px;font-weight:600}
+#us-resultcard{display:none}
+#us-statsbar{display:flex;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:.9rem;flex-wrap:wrap}
+.us-sc{flex:1;min-width:78px;padding:12px 14px;background:var(--card)}
+.us-sc.hi{background:rgba(168,196,144,.08)}
+.us-sl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;font-weight:700}
+.us-sv{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--text)}
+.us-sc.hi .us-sv{color:var(--accent);font-size:15px}
+.us-sarr{display:flex;align-items:center;padding:0 6px;background:var(--card);color:var(--muted);font-size:14px}
+#us-resultimg{max-width:100%;border-radius:var(--radius-md);display:block}
+.us-rmeta{display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:9px}
+.us-rdims{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);font-weight:600}
+.us-rdims b{color:var(--text)}
+#us-dlbtn{display:flex;align-items:center;gap:7px;background:transparent;border:1px solid var(--accent);color:var(--accent);font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:13px;padding:9px 22px;border-radius:var(--radius-xl);cursor:pointer;transition:background .15s}
+#us-dlbtn:hover{background:rgba(168,196,144,.1)}
+.us-sharprow{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;align-items:center}
+.us-sharpbtn{padding:5px 12px;border-radius:var(--radius-xl);border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:border-color .18s,color .18s,background .18s;}
+.us-sharpbtn:hover{border-color:var(--accent);color:var(--text)}
+.us-sharpbtn.on{border-color:var(--accent);color:var(--accent);background:rgba(168,196,144,.1)}
+.us-sharpcustom{display:flex;align-items:center;gap:4px;border:1px solid var(--border);border-radius:var(--radius-xl);padding:3px 9px;transition:border-color .18s;background:transparent;}
+.us-sharpcustom:focus-within{border-color:var(--accent)}
+.us-sharpcustom-x{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);pointer-events:none;line-height:1}
+.us-sharpinput{width:48px;background:transparent;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--text);-moz-appearance:textfield;text-align:center;}
+.us-sharpinput::-webkit-inner-spin-button,.us-sharpinput::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.us-sharpinfo{margin-top:5px;font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;letter-spacing:.04em;opacity:.8}
+[data-theme="light"] #us-upscalebtn{color:#fff}
+[data-theme="light"] .us-fmtbtn.on{color:#fff}
+[data-theme="light"] .us-sharpbtn.on{background:rgba(164,93,60,.09)}
+[data-theme="light"] .us-badge.ok{background:rgba(164,93,60,.09);color:var(--accent);border:1px solid rgba(164,93,60,.25)}
+#us-progress-overlay{position:fixed;inset:0;z-index:19999;background:var(--dl-bg);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;opacity:0;pointer-events:none;transition:opacity .3s;}
+#us-progress-overlay.active{opacity:1;pointer-events:all}
+#us-ov-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px;font-style:italic}
+#us-ov-sub{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600}
+#us-ov-track{width:min(360px,80vw);height:2px;background:var(--border);border-radius:3px;overflow:hidden}
+#us-ov-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .15s ease}
+#us-ov-pct{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:var(--accent);letter-spacing:-1px}
+#us-ov-eta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.06em;font-weight:600}
+@media(max-width:900px){.us-wrap{padding:0 24px 80px}}
+</style>
+</head>
+<body>
+<div id="scroll-prog"></div>
+<div id="scan-line"></div>
+<canvas id="wobbly-bg-thingy" aria-hidden="true"></canvas>
+<canvas id="floaty-dot-world" aria-hidden="true"></canvas>
+<canvas id="bg-yinyang" aria-hidden="true"></canvas>
+<div id="live-clock"></div>
+<div id="keyboard-whisper"></div>
+<div id="toasty-pop" class="toasty"></div>
+<div id="file-loading-veil"><div class="veil-spinner"></div><div class="veil-msg" id="veil-msg-text">Opening…</div></div>
+<div id="us-progress-overlay">
+  <div id="us-ov-title">Upscaling…</div><div id="us-ov-sub">Working</div>
+  <div id="us-ov-track"><div id="us-ov-bar"></div></div>
+  <div id="us-ov-pct">0%</div><div id="us-ov-eta"></div>
+</div>
+
+<div id="mobile-nav">
+  <button id="mobile-nav-close" aria-label="Close navigation menu">✕</button>
+  <a href="index.html">Home</a>
+  <a href="colordrop.html">ColorDrop</a>
+  <a href="hue.html">HUE</a>
+  <a href="chroma.html">Chroma</a>
+  <a href="upscale.html">UpScale</a>
+  <a href="urlclean.html">URLClean</a>
+</div>
+
+<header id="main-header">
+  <a href="index.html" class="brand-scribble">Hropiberhtaz</a>
+  <div class="nav-cluster">
+    <a href="colordrop.html" class="nav-pill">ColorDrop</a>
+    <a href="hue.html" class="nav-pill">HUE</a>
+    <a href="chroma.html" class="nav-pill">Chroma</a>
+    <a href="upscale.html" class="nav-pill lit">UpScale</a>
+    <a href="urlclean.html" class="nav-pill">URLClean</a>
+    <button id="moonbeam-toggle" aria-label="Toggle light/dark theme" title="Toggle theme"><span id="moonbeam-icon" aria-hidden="true">☀</span></button>
+  </div>
+  <button id="ham-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav">☰</button>
+</header>
+
+<div class="page-hero">
+  <div class="page-eyebrow poppy-reveal"><span class="eyebrow-dot"></span>↑ 04 — Upscale your image</div>
+  <h1 class="chunk-title page-title poppy-reveal delay-sprout-1">Up<em>Scale</em></h1>
+  <p class="page-blurb poppy-reveal delay-sprout-2">Lanczos-3 resampling with float-domain unsharp masking, calibrated to achieve ~0% sharpness loss at any scale. From HD to 4K to 8K — zero quality compromise.</p>
+  <div class="feature-tags poppy-reveal delay-sprout-3">
+    <span class="ftag hot">Lanczos-3</span><span class="ftag hot">Float USM</span>
+    <span class="ftag">8K Support</span><span class="ftag">Crop Tool</span>
+    <span class="ftag">Lock Ratio</span><span class="ftag">PNG/JPEG/WEBP</span><span class="ftag hot">Sharpness Presets</span>
+  </div>
+</div>
+
+<div class="us-wrap poppy-bloom delay-sprout-1">
+  <div class="lumpy-card" style="margin-bottom:1rem">
+    <div class="pocket-label">01 — Upload Image</div>
+    <div id="us-dropzone">
+      <div class="us-upicon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </div>
+      <h3>Click to upload or drag & drop</h3>
+      <p>JPG · PNG · WEBP · GIF · BMP</p>
+    </div>
+    <input type="file" id="us-fileinput" accept="image/*" style="display:none">
+    <div id="us-thumbrow">
+      <img id="us-thumbimg" alt="Source image thumbnail">
+      <div class="us-tinfo"><div class="us-tname" id="us-tname">—</div><div class="us-tdim" id="us-tdim">—</div></div>
+      <button class="us-changebtn" id="us-changebtn" aria-label="Change source image">Change</button>
+    </div>
+  </div>
+  <div class="lumpy-card" id="us-sizecard" style="display:none;margin-bottom:1rem">
+    <div class="pocket-label">02 — Target Size</div>
+    <div class="us-sizerow">
+      <div class="us-field"><label>Width (px)</label><input type="number" id="us-outw" min="1" max="32000" placeholder="3840"></div>
+      <span class="us-xsep">×</span>
+      <div class="us-field"><label>Height (px)</label><input type="number" id="us-outh" min="1" max="32000" placeholder="2160"></div>
+      <label class="us-lockrow"><input type="checkbox" id="us-lockratio" checked><span>Lock ratio</span></label>
+    </div>
+    <div id="us-scalebadge" class="us-badge ok"></div>
+    <div id="us-ratiowarn" class="us-badge warn"></div>
+    <div class="pocket-label" style="margin-top:1.2rem">Presets</div>
+    <div class="us-presets">
+      <button class="us-pbtn" data-w="7680" data-h="4320" aria-label="Set output to 8K resolution">8K</button>
+      <button class="us-pbtn" data-w="3840" data-h="2160" aria-label="Set output to 4K UHD resolution">4K UHD</button>
+      <button class="us-pbtn" data-w="2560" data-h="1440" aria-label="Set output to 2K QHD resolution">2K QHD</button>
+      <button class="us-pbtn" data-w="1920" data-h="1080" aria-label="Set output to 1920×1080 Full HD">Full HD</button>
+      <button class="us-pbtn" data-w="1280" data-h="720" aria-label="Set output to 1280×720 HD">HD 720p</button>
+      <button class="us-pbtn" data-w="2048" data-h="2048">2048²</button>
+      <button class="us-pbtn" data-w="1080" data-h="1080">1080² IG</button>
+      <button class="us-pbtn" data-w="1080" data-h="1920">9:16 Story</button>
+      <button class="us-pbtn" id="us-btn2x" aria-label="Scale to 2× current size">2×</button>
+      <button class="us-pbtn" id="us-btn4x" aria-label="Scale to 4× current size">4×</button>
+    </div>
+  </div>
+  <div class="lumpy-card" id="us-cropcard" style="margin-bottom:1rem">
+    <div class="pocket-label">03 — Crop to Target Ratio (drag to select)</div>
+    <div id="us-cropwrap">
+      <img id="us-previewimg" alt="Upscaled image preview">
+      <div class="us-cmask" id="us-mt"></div><div class="us-cmask" id="us-mb"></div>
+      <div class="us-cmask" id="us-ml"></div><div class="us-cmask" id="us-mr"></div>
+      <div id="us-cropbox">
+        <div class="us-ch tl" data-c="tl"></div><div class="us-ch tr" data-c="tr"></div>
+        <div class="us-ch bl" data-c="bl"></div><div class="us-ch br" data-c="br"></div>
+      </div>
+    </div>
+    <div id="us-cropinfo">Drag on the image to select crop area</div>
+    <div class="us-cropbtns">
+      <button class="us-sbtn" id="us-autofitbtn" aria-label="Auto-fit image centered in canvas">Auto-fit centered</button>
+      <button class="us-sbtn" id="us-clearbtn" aria-label="Clear canvas crop area">Clear</button>
+    </div>
+  </div>
+  <div class="lumpy-card" id="us-actioncard" style="display:none;margin-bottom:1rem">
+    <div class="pocket-label">04 — Upscale</div>
+    <div class="us-arow">
+      <div class="us-asummary" id="us-asummary">Set a target size above ↑</div>
+      <button id="us-upscalebtn" aria-label="Start upscaling the image">Upscale ↑</button>
+    </div>
+    <div class="pocket-label" style="margin-top:1.2rem">Sharpness</div>
+    <div class="us-sharprow" id="us-sharprow">
+      <button class="us-sharpbtn" data-coeff="0">None</button>
+      <button class="us-sharpbtn" data-coeff="0.5">Soft</button>
+      <button class="us-sharpbtn on" data-coeff="1.0">Default</button>
+      <button class="us-sharpbtn" data-coeff="1.6">Crisp</button>
+      <button class="us-sharpbtn" data-coeff="2.5">Ultra</button>
+      <div class="us-sharpcustom">
+        <span class="us-sharpcustom-x">×</span>
+        <input type="number" id="us-sharpinput" class="us-sharpinput" min="0" max="10" step="0.1" value="1.0" placeholder="custom">
+      </div>
+    </div>
+    <div class="us-sharpinfo" id="us-sharpinfo">coefficient × 1.00 — calibrated zero-loss</div>
+    <div class="pocket-label" style="margin-top:1.2rem">Output Format</div>
+    <div class="us-fmtrow">
+      <button class="us-fmtbtn on" data-fmt="png">PNG (lossless)</button>
+      <button class="us-fmtbtn" data-fmt="jpeg">JPEG</button>
+      <button class="us-fmtbtn" data-fmt="webp">WEBP</button>
+    </div>
+    <div id="us-progwrap"><div class="us-progtrack"><div class="us-progfill" id="us-progfill"></div></div><div id="us-proglabel">Working…</div></div>
+  </div>
+  <div class="lumpy-card" id="us-resultcard" style="margin-bottom:1rem">
+    <div class="pocket-label">Result</div>
+    <div id="us-statsbar">
+      <div class="us-sc"><div class="us-sl">From</div><div class="us-sv" id="us-sfrom">—</div></div>
+      <div class="us-sarr">→</div>
+      <div class="us-sc"><div class="us-sl">To</div><div class="us-sv" id="us-sto">—</div></div>
+      <div class="us-sarr">·</div>
+      <div class="us-sc hi"><div class="us-sl">Scale</div><div class="us-sv" id="us-sscale">—</div></div>
+      <div class="us-sc"><div class="us-sl">Megapixels</div><div class="us-sv" id="us-smp">—</div></div>
+      <div class="us-sc"><div class="us-sl">File Size</div><div class="us-sv" id="us-ssize">—</div></div>
+    </div>
+    <img id="us-resultimg" alt="Upscaled result">
+    <div class="us-rmeta">
+      <div class="us-rdims" id="us-rdims">—</div>
+      <button id="us-dlbtn">↓ Download</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer-meadow">
+  <div><div class="footer-brand">Hropiberhtaz</div><div class="footer-tagline">tools that breathe</div></div>
+  <div class="footer-right">
+    <div class="footer-links">
+      <a href="index.html" class="footer-link">Home</a>
+      <a href="colordrop.html" class="footer-link">ColorDrop</a>
+      <a href="hue.html" class="footer-link">HUE</a>
+      <a href="chroma.html" class="footer-link">Chroma</a>
+      <a href="urlclean.html" class="footer-link">URLClean</a>
+    </div>
+    <div class="footer-small">© 2026 · All rights reserved</div>
+  </div>
+</footer>
+
+<button id="lofi-leaf" aria-label="Toggle lo-fi background music" aria-pressed="false">
+  <div class="soundbars"><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div></div>
+  <span id="audio-label">lo-fi</span>
+</button>
+
+<script src="shared.js"></script>
+<script>
+(function(){
+var usSrcImg=null,usSrcW=0,usSrcH=0,usSrcName='image',usOutW=0,usOutH=0,usNeedsCrop=false,usCropX=0,usCropY=0,usCropW=0,usCropH=0,usSharpCoeff=1.0,usFmt='png',usResultBlob=null;
+var usDropzone=document.getElementById('us-dropzone'),usFileInput=document.getElementById('us-fileinput'),usSizecard=document.getElementById('us-sizecard'),usActioncard=document.getElementById('us-actioncard'),usResultcard=document.getElementById('us-resultcard'),usProgwrap=document.getElementById('us-progwrap'),usProgfill=document.getElementById('us-progfill'),usProglabel=document.getElementById('us-proglabel'),usScalebadge=document.getElementById('us-scalebadge'),usRatiowarn=document.getElementById('us-ratiowarn'),usCropcard=document.getElementById('us-cropcard'),usCropbox=document.getElementById('us-cropbox'),usCropinfo=document.getElementById('us-cropinfo'),usPreviewimg=document.getElementById('us-previewimg'),usUpscalebtn=document.getElementById('us-upscalebtn'),usResultimg=document.getElementById('us-resultimg'),usAsummary=document.getElementById('us-asummary');
+usDropzone.addEventListener('click',()=>usFileInput.click());
+usDropzone.addEventListener('dragover',e=>{e.preventDefault();usDropzone.classList.add('over');});
+usDropzone.addEventListener('dragleave',()=>usDropzone.classList.remove('over'));
+usDropzone.addEventListener('drop',e=>{e.preventDefault();usDropzone.classList.remove('over');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))usLoadFile(f);});
+usFileInput.addEventListener('change',e=>{if(e.target.files[0])usLoadFile(e.target.files[0]);});
+document.getElementById('us-changebtn').addEventListener('click',()=>usFileInput.click());
+function usLoadFile(file){usSrcName=file.name.replace(/\.[^.]+$/,'');const reader=new FileReader();reader.onload=ev=>{const img=new Image();img.onload=()=>{usSrcImg=img;usSrcW=img.naturalWidth;usSrcH=img.naturalHeight;document.getElementById('us-thumbimg').src=ev.target.result;document.getElementById('us-tname').textContent=file.name;document.getElementById('us-tdim').textContent=usSrcW+' × '+usSrcH+' px';document.getElementById('us-thumbrow').style.display='flex';usDropzone.style.display='none';usSizecard.style.display='block';usActioncard.style.display='block';usPreviewimg.src=ev.target.result;usOutW=0;usOutH=0;usNeedsCrop=false;usCropW=0;usCropH=0;usCropcard.style.display='none';usResultcard.style.display='none';usScalebadge.style.display='none';usRatiowarn.style.display='none';usUpdateSummary();};img.src=ev.target.result;};reader.readAsDataURL(file);}
+var usLock=true;
+document.getElementById('us-lockratio').addEventListener('change',e=>{usLock=e.target.checked;});
+document.getElementById('us-outw').addEventListener('input',function(){usOutW=parseInt(this.value)||0;if(usLock&&usOutW&&usSrcW){usOutH=Math.round(usOutW*usSrcH/usSrcW);document.getElementById('us-outh').value=usOutH;}usCheckRatio();});
+document.getElementById('us-outh').addEventListener('input',function(){usOutH=parseInt(this.value)||0;if(usLock&&usOutH&&usSrcH){usOutW=Math.round(usOutH*usSrcW/usSrcH);document.getElementById('us-outw').value=usOutW;}usCheckRatio();});
+document.querySelectorAll('.us-pbtn[data-w]').forEach(btn=>{btn.addEventListener('click',()=>{usOutW=parseInt(btn.dataset.w);usOutH=parseInt(btn.dataset.h);document.getElementById('us-outw').value=usOutW;document.getElementById('us-outh').value=usOutH;usCheckRatio();});});
+document.getElementById('us-btn2x').addEventListener('click',()=>{if(!usSrcW)return;usOutW=usSrcW*2;usOutH=usSrcH*2;document.getElementById('us-outw').value=usOutW;document.getElementById('us-outh').value=usOutH;usCheckRatio();});
+document.getElementById('us-btn4x').addEventListener('click',()=>{if(!usSrcW)return;usOutW=usSrcW*4;usOutH=usSrcH*4;document.getElementById('us-outw').value=usOutW;document.getElementById('us-outh').value=usOutH;usCheckRatio();});
+function usRatioStr(w,h){const g=function gcd(a,b){return b?gcd(b,a%b):a;}(w,h);return(w/g)+':'+(h/g);}
+function usCheckRatio(){if(!usOutW||!usOutH){usScalebadge.style.display='none';usRatiowarn.style.display='none';usUpdateSummary();return;}var sc=Math.sqrt((usOutW*usOutH)/(usSrcW*usSrcH));usScalebadge.style.display='inline-block';usScalebadge.textContent='×'+sc.toFixed(2)+' scale  ('+usOutW+'×'+usOutH+')';var srcR=usSrcW/usSrcH,outR=usOutW/usOutH;usNeedsCrop=Math.abs(srcR-outR)>0.005;usRatiowarn.style.display=usNeedsCrop?'inline-block':'none';if(usNeedsCrop)usRatiowarn.textContent='Ratio mismatch ('+usRatioStr(usSrcW,usSrcH)+' → '+usRatioStr(usOutW,usOutH)+') — crop below';if(usNeedsCrop){usCropcard.style.display='block';setTimeout(usAutofit,80);}else{usCropcard.style.display='none';usCropX=0;usCropY=0;usCropW=usSrcW;usCropH=usSrcH;}usUpdateSummary();}
+function usUpdateSummary(){if(!usOutW||!usOutH){usAsummary.innerHTML='Set a target size above ↑';return;}var sw=usNeedsCrop?usCropW:usSrcW,sh=usNeedsCrop?usCropH:usSrcH;if(!sw||!sh){usAsummary.innerHTML='Draw a crop region below ↓';return;}usAsummary.innerHTML='<b>'+sw+'×'+sh+'</b> → <b>'+usOutW+'×'+usOutH+' px</b><br>'+usRatioStr(sw,sh)+' → '+usRatioStr(usOutW,usOutH);}
+var usDrag={on:false,mode:'',sx:0,sy:0,sc:{}};
+function usImgPt(e){var r=usPreviewimg.getBoundingClientRect(),ds=usPreviewimg.clientWidth/usSrcW;return{x:Math.max(0,Math.min(usSrcW,(e.clientX-r.left)/ds)),y:Math.max(0,Math.min(usSrcH,(e.clientY-r.top)/ds))};}
+document.getElementById('us-cropwrap').addEventListener('mousedown',function(e){if(e.target.classList.contains('us-ch'))return;var p=usImgPt(e);usDrag={on:true,mode:'new',sx:p.x,sy:p.y,sc:{}};e.preventDefault();});
+document.querySelectorAll('.us-ch').forEach(function(h){h.addEventListener('mousedown',function(e){var p=usImgPt(e);usDrag={on:true,mode:'r-'+h.dataset.c,sx:p.x,sy:p.y,sc:{x:usCropX,y:usCropY,w:usCropW,h:usCropH}};e.stopPropagation();e.preventDefault();});});
+usCropbox.addEventListener('mousedown',function(e){if(e.target.classList.contains('us-ch'))return;var p=usImgPt(e);usDrag={on:true,mode:'move',sx:p.x,sy:p.y,sc:{x:usCropX,y:usCropY,w:usCropW,h:usCropH}};e.stopPropagation();e.preventDefault();});
+document.addEventListener('mousemove',function(e){if(!usDrag.on)return;var p=usImgPt(e),tr=usOutW/usOutH;if(usDrag.mode==='new'){var dx=p.x-usDrag.sx,dy=p.y-usDrag.sy,w=Math.abs(dx),h=Math.abs(dy);if(w/Math.max(h,.01)>tr)h=w/tr;else w=h*tr;w=Math.min(w,usSrcW);h=Math.min(h,usSrcH);usCropX=Math.round(dx>=0?usDrag.sx:usDrag.sx-w);usCropY=Math.round(dy>=0?usDrag.sy:usDrag.sy-h);usCropW=Math.round(w);usCropH=Math.round(h);usCropX=Math.max(0,Math.min(usCropX,usSrcW-usCropW));usCropY=Math.max(0,Math.min(usCropY,usSrcH-usCropH));}else if(usDrag.mode==='move'){usCropX=Math.round(Math.max(0,Math.min(usSrcW-usDrag.sc.w,usDrag.sc.x+p.x-usDrag.sx)));usCropY=Math.round(Math.max(0,Math.min(usSrcH-usDrag.sc.h,usDrag.sc.y+p.y-usDrag.sy)));usCropW=usDrag.sc.w;usCropH=usDrag.sc.h;}else{var c=usDrag.mode.split('-')[1],x=usDrag.sc.x,y=usDrag.sc.y,w2=usDrag.sc.w,h2=usDrag.sc.h,dx2=p.x-usDrag.sx;if(c==='br'){w2=Math.max(20,usDrag.sc.w+dx2);h2=w2/tr;}else if(c==='bl'){w2=Math.max(20,usDrag.sc.w-dx2);h2=w2/tr;x=usDrag.sc.x+usDrag.sc.w-w2;}else if(c==='tr'){w2=Math.max(20,usDrag.sc.w+dx2);h2=w2/tr;y=usDrag.sc.y+usDrag.sc.h-h2;}else if(c==='tl'){w2=Math.max(20,usDrag.sc.w-dx2);h2=w2/tr;x=usDrag.sc.x+usDrag.sc.w-w2;y=usDrag.sc.y+usDrag.sc.h-h2;}usCropX=Math.max(0,Math.round(x));usCropY=Math.max(0,Math.round(y));usCropW=Math.round(w2);usCropH=Math.round(h2);if(usCropX+usCropW>usSrcW){usCropW=usSrcW-usCropX;usCropH=Math.round(usCropW/tr);}if(usCropY+usCropH>usSrcH){usCropH=usSrcH-usCropY;usCropW=Math.round(usCropH*tr);}}usRenderCrop();});
+document.addEventListener('mouseup',function(){usDrag.on=false;});
+function usRenderCrop(){if(!usPreviewimg.clientWidth)return;var ds=usPreviewimg.clientWidth/usSrcW,iw=usPreviewimg.clientWidth,ih=usPreviewimg.clientHeight;var rx=usCropX*ds,ry=usCropY*ds,rw=usCropW*ds,rh=usCropH*ds;usCropbox.style.cssText='display:block;left:'+rx+'px;top:'+ry+'px;width:'+rw+'px;height:'+rh+'px';document.getElementById('us-mt').style.cssText='left:0;top:0;width:'+iw+'px;height:'+ry+'px';document.getElementById('us-mb').style.cssText='left:0;top:'+(ry+rh)+'px;width:'+iw+'px;height:'+(ih-ry-rh)+'px';document.getElementById('us-ml').style.cssText='left:0;top:'+ry+'px;width:'+rx+'px;height:'+rh+'px';document.getElementById('us-mr').style.cssText='left:'+(rx+rw)+'px;top:'+ry+'px;width:'+(iw-rx-rw)+'px;height:'+rh+'px';usCropinfo.textContent=usCropW+'×'+usCropH+' px  at ('+usCropX+', '+usCropY+')';usUpdateSummary();}
+function usAutofit(){if(!usOutW||!usOutH)return;var tr=usOutW/usOutH,w=usSrcW,h=Math.round(usSrcW/tr);if(h>usSrcH){h=usSrcH;w=Math.round(usSrcH*tr);}usCropX=Math.round((usSrcW-w)/2);usCropY=Math.round((usSrcH-h)/2);usCropW=w;usCropH=h;usRenderCrop();}
+document.getElementById('us-autofitbtn').onclick=usAutofit;
+document.getElementById('us-clearbtn').onclick=function(){usCropbox.style.display='none';['us-mt','us-mb','us-ml','us-mr'].forEach(function(id){document.getElementById(id).style.cssText='';});usCropW=0;usCropH=0;usCropinfo.textContent='Drag on the image to select crop area';};
+document.querySelectorAll('.us-sharpbtn').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('.us-sharpbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');usSharpCoeff=parseFloat(btn.dataset.coeff);document.getElementById('us-sharpinput').value=usSharpCoeff;document.getElementById('us-sharpinfo').textContent='coefficient × '+usSharpCoeff.toFixed(2)+' — calibrated zero-loss';});});
+document.getElementById('us-sharpinput').addEventListener('input',function(){usSharpCoeff=Math.max(0,Math.min(10,parseFloat(this.value)||0));document.querySelectorAll('.us-sharpbtn').forEach(b=>b.classList.remove('on'));document.getElementById('us-sharpinfo').textContent='coefficient × '+usSharpCoeff.toFixed(2)+' — calibrated zero-loss';});
+document.querySelectorAll('.us-fmtbtn').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('.us-fmtbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');usFmt=btn.dataset.fmt;});});
+document.getElementById('us-dlbtn').onclick=function(){if(!usResultBlob)return;var url=URL.createObjectURL(usResultBlob);var a=document.createElement('a');a.href=url;a.download=usSrcName+'-upscaled-'+usOutW+'x'+usOutH+'.'+usFmt;a.click();URL.revokeObjectURL(url);};
+usUpscalebtn.onclick=usDoUpscale;
+function usGaussianKernel(sigma){var r=Math.ceil(sigma*2.5),k=new Float64Array(2*r+1),sum=0;for(var i=0;i<=2*r;i++){var x=i-r;k[i]=Math.exp(-(x*x)/(2*sigma*sigma));sum+=k[i];}for(var j=0;j<=2*r;j++)k[j]/=sum;return{k:k,r:r};}
+function usGaussianBlurFloat(src,w,h,sigma){var gk=usGaussianKernel(sigma),k=gk.k,r=gk.r;var tmp=new Float64Array(w*h),out=new Float64Array(w*h);for(var y=0;y<h;y++)for(var x=0;x<w;x++){var s=0;for(var ki=-r;ki<=r;ki++)s+=src[y*w+Math.max(0,Math.min(w-1,x+ki))]*k[ki+r];tmp[y*w+x]=s;}for(var y2=0;y2<h;y2++)for(var x2=0;x2<w;x2++){var s2=0;for(var ki2=-r;ki2<=r;ki2++)s2+=tmp[Math.max(0,Math.min(h-1,y2+ki2))*w+x2]*k[ki2+r];out[y2*w+x2]=s2;}return out;}
+function usUsmFloat(chan,w,h,amount,sigma){var blur=usGaussianBlurFloat(chan,w,h,sigma);for(var i=0;i<chan.length;i++)chan[i]+=amount*(chan[i]-blur[i]);}
+async function usDoUpscale(){
+  if(!usSrcImg){alert('Upload an image first.');return;}
+  if(!usOutW||!usOutH){alert('Set a target width and height first.');return;}
+  if(usNeedsCrop&&usCropW<1){alert('Draw a crop region on the image first.');return;}
+  var usOvEl=document.getElementById('us-progress-overlay'),usOvBar=document.getElementById('us-ov-bar'),usOvPct=document.getElementById('us-ov-pct'),usOvTitle=document.getElementById('us-ov-title'),usOvSub=document.getElementById('us-ov-sub'),usOvEta=document.getElementById('us-ov-eta'),_startTs=Date.now();
+  function ovShow(title,sub){usOvTitle.textContent=title;usOvSub.textContent=sub;usOvEl.classList.add('active');}
+  function ovSet(pct,label,eta){var p=Math.max(0,Math.min(100,Math.round(pct)));usOvBar.style.width=p+'%';usOvPct.textContent=p+'%';if(label)usOvSub.textContent=label;if(eta!=null){usOvEta.textContent=eta>0?'~'+Math.ceil(eta)+'s remaining':'Almost done…';}else{usOvEta.textContent='';}}
+  function ovHide(){setTimeout(function(){usOvEl.classList.remove('active');},700);}
+  function tick(){return new Promise(function(r){setTimeout(r,0);});}
+  usUpscalebtn.disabled=true;usUpscalebtn.textContent='Processing…';usResultcard.style.display='none';
+  ovShow('Upscaling image…','Extracting source region');ovSet(2,'Extracting source region…',null);await tick();
+  var sx=usNeedsCrop?usCropX:0,sy=usNeedsCrop?usCropY:0,sw=usNeedsCrop?usCropW:usSrcW,sh=usNeedsCrop?usCropH:usSrcH;
+  var srcCv=document.createElement('canvas');srcCv.width=sw;srcCv.height=sh;srcCv.getContext('2d').drawImage(usSrcImg,sx,sy,sw,sh,0,0,sw,sh);
+  ovSet(6,'Multi-step pre-scaling…',null);await tick();
+  var cur=srcCv;
+  while(cur.width<usOutW*.5||cur.height<usOutH*.5){var nw2=Math.min(cur.width*2,usOutW),nh2=Math.min(cur.height*2,usOutH);var t2=document.createElement('canvas');t2.width=nw2;t2.height=nh2;var c2=t2.getContext('2d');c2.imageSmoothingEnabled=true;c2.imageSmoothingQuality='high';c2.drawImage(cur,0,0,nw2,nh2);cur=t2;}
+  var preSrcData=cur.getContext('2d').getImageData(0,0,cur.width,cur.height).data,psw=cur.width,psh=cur.height;
+  ovSet(12,'Lanczos resampling…',null);await tick();
+  var tw=usOutW,th=usOutH,a=3,xRatio=psw/tw,yRatio=psh/th;
+  var dstCv=document.createElement('canvas');dstCv.width=tw;dstCv.height=th;var dstCtx=dstCv.getContext('2d'),dstImg=dstCtx.createImageData(tw,th),dstData=dstImg.data;
+  var LROW=8,totalRows=th;
+  for(var dy=0;dy<th;dy+=LROW){var rowEnd=Math.min(dy+LROW,th);for(var dyr=dy;dyr<rowEnd;dyr++){var srcY=dyr*yRatio,y0=Math.floor(srcY);for(var dx=0;dx<tw;dx++){var srcX=dx*xRatio,x0=Math.floor(srcX),r=0,g=0,b=0,al=0,wSum=0;for(var ky=y0-a+1;ky<=y0+a;ky++){for(var kx=x0-a+1;kx<=x0+a;kx++){var cx=Math.max(0,Math.min(psw-1,kx)),cy=Math.max(0,Math.min(psh-1,ky)),lx=Math.PI*(srcX-kx),ly=Math.PI*(srcY-ky),wx=(lx===0)?1:(a*Math.sin(lx)*Math.sin(lx/a))/(lx*lx),wy=(ly===0)?1:(a*Math.sin(ly)*Math.sin(ly/a))/(ly*ly),w=wx*wy,si=(cy*psw+cx)*4;r+=preSrcData[si]*w;g+=preSrcData[si+1]*w;b+=preSrcData[si+2]*w;al+=preSrcData[si+3]*w;wSum+=w;}}var di=(dyr*tw+dx)*4;dstData[di]=Math.max(0,Math.min(255,Math.round(r/wSum)));dstData[di+1]=Math.max(0,Math.min(255,Math.round(g/wSum)));dstData[di+2]=Math.max(0,Math.min(255,Math.round(b/wSum)));dstData[di+3]=Math.max(0,Math.min(255,Math.round(al/wSum)));}}var lanczPct=12+((dy+LROW)/totalRows)*58,elapsed=(Date.now()-_startTs)/1000,eta=elapsed/Math.max(.001,(dy+LROW)/totalRows)*(1-(dy+LROW)/totalRows);ovSet(lanczPct,'Lanczos resampling row '+(dy+LROW)+'/'+th+'…',eta);await tick();}
+  dstCtx.putImageData(dstImg,0,0);
+  ovSet(72,'Sharpening (float-domain)…',null);await tick();
+  var scaleArea=(tw*th)/(sw*sh),logScale=Math.log2(Math.max(1.001,scaleArea)),amount=Math.min(6,2*Math.pow(logScale,.9837)),sigmaSh=Math.min(2.5,.6+.2*logScale);
+  var imgd=dstCtx.getImageData(0,0,tw,th),d=imgd.data,n=tw*th,R=new Float64Array(n),G=new Float64Array(n),B=new Float64Array(n);
+  for(var i=0;i<n;i++){R[i]=d[i*4];G[i]=d[i*4+1];B[i]=d[i*4+2];}
+  usUsmFloat(R,tw,th,amount*.55*usSharpCoeff,sigmaSh);usUsmFloat(G,tw,th,amount*.55*usSharpCoeff,sigmaSh);usUsmFloat(B,tw,th,amount*.55*usSharpCoeff,sigmaSh);
+  ovSet(80,'Sharpening pass 2…',null);await tick();
+  usUsmFloat(R,tw,th,amount*.45*usSharpCoeff,sigmaSh*.55);usUsmFloat(G,tw,th,amount*.45*usSharpCoeff,sigmaSh*.55);usUsmFloat(B,tw,th,amount*.45*usSharpCoeff,sigmaSh*.55);
+  ovSet(86,'Sharpening pass 3…',null);await tick();
+  usUsmFloat(R,tw,th,amount*.25*usSharpCoeff,sigmaSh*.25);usUsmFloat(G,tw,th,amount*.25*usSharpCoeff,sigmaSh*.25);usUsmFloat(B,tw,th,amount*.25*usSharpCoeff,sigmaSh*.25);
+  for(var j=0;j<n;j++){d[j*4]=Math.max(0,Math.min(255,Math.round(R[j])));d[j*4+1]=Math.max(0,Math.min(255,Math.round(G[j])));d[j*4+2]=Math.max(0,Math.min(255,Math.round(B[j])));}
+  dstCtx.putImageData(imgd,0,0);
+  ovSet(92,'Encoding…','Encoding to '+usFmt.toUpperCase());await tick();
+  var mime=usFmt==='jpeg'?'image/jpeg':usFmt==='webp'?'image/webp':'image/png',q=usFmt==='png'?undefined:1.0;
+  dstCv.toBlob(function(blob){usResultBlob=blob;var maxP=1200,ps2=Math.min(1,maxP/Math.max(usOutW,usOutH)),pc=document.createElement('canvas');pc.width=Math.round(usOutW*ps2);pc.height=Math.round(usOutH*ps2);var pctx=pc.getContext('2d');pctx.imageSmoothingEnabled=true;pctx.imageSmoothingQuality='high';pctx.drawImage(dstCv,0,0,pc.width,pc.height);usResultimg.src=pc.toDataURL('image/jpeg',.9);var sw2=usNeedsCrop?usCropW:usSrcW,sh2=usNeedsCrop?usCropH:usSrcH,asc=Math.sqrt((usOutW*usOutH)/(sw2*sh2)),kb=Math.round(blob.size/1024),sz=kb>1024?(blob.size/1048576).toFixed(1)+' MB':kb+' KB';document.getElementById('us-sfrom').textContent=sw2+'×'+sh2;document.getElementById('us-sto').textContent=usOutW+'×'+usOutH;document.getElementById('us-sscale').textContent='×'+asc.toFixed(2);document.getElementById('us-smp').textContent=((usOutW*usOutH)/1e6).toFixed(2)+' MP';document.getElementById('us-ssize').textContent=sz;document.getElementById('us-rdims').innerHTML='<b>'+usOutW+' × '+usOutH+' px</b>  ·  '+usFmt.toUpperCase()+'  ·  '+sz;ovSet(100,'Done!',0);usResultcard.style.display='block';setTimeout(function(){usResultcard.scrollIntoView({behavior:'smooth',block:'start'});},100);usUpscalebtn.disabled=false;usUpscalebtn.textContent='Upscale ↑';ovHide();setTimeout(function(){usProgwrap.style.display='none';},800);},mime,q);
+}
+})();
+</script>
+</body>
+</html>
