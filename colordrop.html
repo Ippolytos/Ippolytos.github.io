@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ColorDrop — Hropiberhtaz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+#cp-brush-canvas{position:absolute;inset:0;pointer-events:none;z-index:0;width:100%;height:100%;}
+.tool-layout{position:relative;z-index:1;padding:60px 80px 100px;display:grid;grid-template-columns:1fr 420px;gap:60px;align-items:start;}
+.picker-blurb{padding-top:8px;}
+.goober-list{display:flex;flex-direction:column;gap:0;}
+.goober-item{padding:13px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--muted);line-height:1.6;font-weight:400;display:flex;align-items:flex-start;gap:10px;opacity:0;transform:translateX(-12px);transition:opacity .5s ease,transform .5s cubic-bezier(.25,.46,.45,.94);}
+.goober-item::before{content:'→';color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0;margin-top:2px;}
+.goober-item:first-child{border-top:1px solid var(--border)}
+.goober-list.staggery .goober-item{opacity:1;transform:none}
+.goober-list.staggery .goober-item:nth-child(1){transition-delay:.04s}
+.goober-list.staggery .goober-item:nth-child(2){transition-delay:.10s}
+.goober-list.staggery .goober-item:nth-child(3){transition-delay:.16s}
+.goober-list.staggery .goober-item:nth-child(4){transition-delay:.22s}
+.goober-list.staggery .goober-item:nth-child(5){transition-delay:.28s}
+.goober-list.staggery .goober-item:nth-child(6){transition-delay:.34s}
+.goober-list.staggery .goober-item:nth-child(7){transition-delay:.40s}
+.preview-band{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);}
+.fat-swatch{width:60px;height:60px;border-radius:var(--radius-md);border:1px solid var(--border);flex-shrink:0;position:relative;overflow:hidden;}
+.fat-swatch .checker-bg{position:absolute;inset:0;background-image:linear-gradient(45deg,var(--checker-dark) 25%,transparent 25%),linear-gradient(-45deg,var(--checker-dark) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,var(--checker-dark) 75%),linear-gradient(-45deg,transparent 75%,var(--checker-dark) 75%);background-size:10px 10px;background-position:0 0,0 5px,5px -5px,-5px 0;}
+.fat-swatch .color-fill{position:absolute;inset:0}
+.color-info-block{flex:1;min-width:0;}
+.hex-bignum{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;color:var(--text);cursor:text;transition:color .2s;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rgba-subtitle{font-size:9px;letter-spacing:.8px;color:var(--muted);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-family:'JetBrains Mono',monospace;}
+.color-formats-panel{margin-top:11px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;}
+.cfp-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer;}
+.cfp-row:last-child{border-bottom:none}
+.cfp-row:hover{background:rgba(168,196,144,.04)}
+.cfp-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);min-width:48px}
+.cfp-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cfp-copy{font-size:9px;color:var(--muted);padding:3px 8px;border:1px solid var(--border);border-radius:20px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;transition:all .2s;flex-shrink:0;background:none;cursor:pointer;}
+.cfp-copy:hover{border-color:var(--accent);color:var(--accent)}
+.color-history-strip{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+.hist-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'JetBrains Mono',monospace;width:100%;margin-bottom:3px}
+.hist-swatch{width:22px;height:22px;border-radius:5px;border:1px solid var(--border);cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1);flex-shrink:0;position:relative;}
+.hist-swatch:hover{transform:scale(1.28) rotate(6deg)}
+.hist-swatch::after{content:attr(data-hex);position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--hint-bg);border:1px solid var(--border);padding:3px 8px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text);white-space:nowrap;pointer-events:none;z-index:100;opacity:0;transition:opacity .15s;}
+.hist-swatch:hover::after{opacity:1}
+.nudge-btn{background:none;border:none;cursor:pointer;padding:7px;color:var(--muted);transition:color .2s;flex-shrink:0;}
+.nudge-btn:hover{color:var(--accent)}
+.nudge-btn.done-copying{color:var(--accent2)}
+.hsv-wrap{position:relative;border-radius:var(--radius-sm);overflow:hidden;margin-bottom:12px;cursor:crosshair}
+#svCanvas{width:100%;height:190px;display:block}
+.sv-dot{position:absolute;width:16px;height:16px;border:2.5px solid white;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 2px 10px rgba(0,0,0,.6);pointer-events:none;}
+.hue-channel-bar{position:relative;border-radius:var(--radius-sm);overflow:hidden;cursor:pointer;flex:1;height:22px}
+#hueCanvas{width:100%;height:100%;display:block}
+.hue-needle{position:absolute;top:50%;left:0;width:3px;height:100%;background:rgba(50,50,50,.9);transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 0 4px rgba(0,0,0,.5);}
+.alpha-needle{position:absolute;left:50%;top:0;width:100%;height:3px;background:rgba(50,50,50,.9);transform:translate(-50%,-50%);pointer-events:none;}
+.rgba-inputzy{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px}
+.rgba-input-box{display:flex;flex-direction:column;gap:4px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 5px;text-align:center;}
+.rgba-input-box label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.rgba-input-box input[type=number]{width:100%;background:none;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--text);text-align:center;-moz-appearance:textfield;cursor:text!important;}
+.rgba-input-box input[type=number]::-webkit-inner-spin-button,.rgba-input-box input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+.rgba-input-box:focus-within{border-color:var(--accent)}
+.copy-rgba-btn{margin-top:10px;width:100%;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:9px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;}
+.copy-rgba-btn:hover{border-color:var(--accent);color:var(--accent)}
+.copy-rgba-btn.done-copying{border-color:var(--accent2);color:var(--accent2)}
+#e-hue-slider{background:linear-gradient(to right,#ff0000,#ffff00,#00ff00,#00ffff,#0000ff,#ff00ff,#ff0000)}
+@media(max-width:900px){.tool-layout{grid-template-columns:1fr;gap:32px}}
+</style>
+<style>
+
+#nav-dots{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:800;display:flex;flex-direction:column;gap:16px;align-items:center;padding:28px 14px;background:rgba(8,14,20,0.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-left:1px solid var(--accent-8);border-radius:14px 0 0 14px;}
+[data-theme="light"] #nav-dots{background:rgba(255,251,238,0.82);}
+.nav-dot-item{position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;}
+.nav-dot-glyph{font-size:18px;color:var(--accent-35);line-height:1;transition:color .25s,transform .25s,text-shadow .25s;display:block;}
+.nav-dot-item:hover .nav-dot-glyph,.nav-dot-item.active .nav-dot-glyph{color:var(--accent);transform:scale(1.4);text-shadow:var(--accent-glow-sm);}
+.nav-dot-item.active .nav-dot-glyph{animation:dotPulse 2.4s ease-in-out infinite;}
+@keyframes dotPulse{0%,100%{text-shadow:var(--accent-glow-sm);opacity:1;}50%{text-shadow:var(--accent-glow-xl);opacity:.75;}}
+.nav-dot-label{position:absolute;right:calc(100% + 20px);top:50%;transform:translateY(-50%) translateX(6px);font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;font-weight:400;color:var(--text);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .22s,transform .22s;letter-spacing:.02em;background:var(--card);backdrop-filter:blur(12px);padding:6px 16px;border-radius:10px;border:1px solid var(--border);box-shadow:0 4px 24px rgba(0,0,0,.28);}
+.nav-dot-item:hover .nav-dot-label{opacity:1;transform:translateY(-50%) translateX(0);}
+@media(max-width:900px){#nav-dots{display:none;}}
+</style>
+</head>
+<body>
+<div id="scroll-prog"></div>
+<div id="scan-line"></div>
+<canvas id="wobbly-bg-thingy" aria-hidden="true"></canvas>
+<canvas id="floaty-dot-world" aria-hidden="true"></canvas>
+<canvas id="bg-yinyang" aria-hidden="true"></canvas>
+<div id="live-clock"></div>
+<div id="keyboard-whisper"></div>
+<div id="toasty-pop" class="toasty"></div>
+<div id="file-loading-veil"><div class="veil-spinner"></div><div class="veil-msg" id="veil-msg-text">Opening…</div></div>
+
+<div id="mobile-nav">
+  <button id="mobile-nav-close" aria-label="Close navigation menu">✕</button>
+  <a href="index.html">Home</a>
+  <a href="colordrop.html">ColorDrop</a>
+  <a href="hue.html">HUE</a>
+  <a href="chroma.html">Chroma</a>
+  <a href="upscale.html">UpScale</a>
+  <a href="urlclean.html">URLClean</a>
+</div>
+
+<header id="main-header">
+  <a href="index.html" class="brand-scribble">Hropiberhtaz</a>
+  <div class="nav-cluster">
+    <button id="moonbeam-toggle" aria-label="Toggle light/dark theme" title="Toggle theme"><span id="moonbeam-icon" aria-hidden="true">☀</span></button>
+  </div>
+  <button id="ham-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav">☰</button>
+</header>
+
+<!-- ── Right nav dots ── -->
+<nav id="nav-dots" aria-label="Tool navigation">
+  <a href="colordrop.html" class="nav-dot-item active" aria-label="ColorDrop">
+    <span class="nav-dot-glyph">✦</span>
+    <span class="nav-dot-label">ColorDrop</span>
+  </a>
+  <a href="hue.html" class="nav-dot-item" aria-label="HUE Editor">
+    <span class="nav-dot-glyph">✦</span>
+    <span class="nav-dot-label">HUE Editor</span>
+  </a>
+  <a href="chroma.html" class="nav-dot-item" aria-label="Chroma Recolor">
+    <span class="nav-dot-glyph">✦</span>
+    <span class="nav-dot-label">Chroma Recolor</span>
+  </a>
+  <a href="upscale.html" class="nav-dot-item" aria-label="UpScale">
+    <span class="nav-dot-glyph">✦</span>
+    <span class="nav-dot-label">UpScale</span>
+  </a>
+  <a href="urlclean.html" class="nav-dot-item" aria-label="URLClean">
+    <span class="nav-dot-glyph">✦</span>
+    <span class="nav-dot-label">URLClean</span>
+  </a>
+  <a href="colorharmonizer.html" class="nav-dot-item" aria-label="Color Harmonizer">
+    <span class="nav-dot-glyph">✦</span>
+    <span class="nav-dot-label">Color Harmonizer</span>
+  </a>
+  <a href="videochroma.html" class="nav-dot-item" aria-label="VideoChroma"><span class="nav-dot-glyph">✦</span><span class="nav-dot-label">VideoChroma</span></a>
+</nav>
+
+
+<div class="page-hero" style="position:relative">
+  <canvas id="cp-brush-canvas"></canvas>
+  <div class="page-eyebrow poppy-reveal"><span class="eyebrow-dot"></span><span class="chunk-counter-inner">✦ 01 — Pick your hue</span></div>
+  <h1 class="chunk-title page-title poppy-reveal delay-sprout-1">Color<em>Drop</em></h1>
+  <p class="page-blurb poppy-reveal delay-sprout-2">A precision color picker with full HSV control, alpha transparency, live HEX/RGBA output and one-click clipboard copy. Every interaction is tactile.</p>
+  <div class="feature-tags poppy-reveal delay-sprout-3">
+    <span class="ftag hot">HSV Canvas</span><span class="ftag hot">Alpha Control</span>
+    <span class="ftag">HEX</span><span class="ftag">RGBA</span><span class="ftag hot">HSL Output</span>
+    <span class="ftag hot">OKLCH Output</span><span class="ftag hot">Color History</span>
+  </div>
+</div>
+
+<div class="tool-layout">
+  <div class="picker-blurb poppy-left">
+    <div class="goober-list" id="feature-list-1">
+      <div class="goober-item">HSV canvas with smooth gradient — drag to paint the perfect hue</div>
+      <div class="goober-item">Vertical alpha slider — full transparency control at your fingertips</div>
+      <div class="goober-item">Horizontal hue bar — sweep through the full spectrum in one gesture</div>
+      <div class="goober-item">Click the hex code to type any color directly</div>
+      <div class="goober-item">Copy HEX, RGBA, HSL or OKLCH to clipboard instantly</div>
+      <div class="goober-item">Live color history — click any past swatch to restore it</div>
+      <div class="goober-item">All modern color format outputs in one place</div>
+    </div>
+  </div>
+  <div class="squishy-card poppy-right delay-sprout-2">
+    <div class="preview-band">
+      <div class="fat-swatch"><div class="checker-bg"></div><div class="color-fill" id="swatchFill"></div></div>
+      <div class="color-info-block">
+        <div class="hex-bignum" id="hexDisplay" title="Click to edit">#FF6633</div>
+        <div class="rgba-subtitle" id="rgbaDisplay">rgba(255,102,51,1.00)</div>
+      </div>
+      <button class="nudge-btn" id="copyBtn" aria-label="Copy HEX color value" title="Copy HEX">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+    </div>
+    <div style="display:flex;gap:9px;margin-bottom:11px">
+      <div class="hsv-wrap" id="svWrap" style="flex:1;position:relative">
+        <canvas id="svCanvas" width="340" height="190"></canvas>
+        <div class="sv-dot" id="svCursor" style="left:100%;top:0%"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;position:relative;width:24px;border-radius:var(--radius-sm);overflow:hidden;cursor:pointer" id="alphaWrap">
+        <canvas id="alphaCanvas" width="24" height="190" style="width:100%;height:190px;display:block"></canvas>
+        <div class="alpha-needle" id="alphaIndicator" style="top:0%"></div>
+      </div>
+    </div>
+    <div class="hue-channel-bar" id="hueWrap" style="position:relative;height:24px;border-radius:var(--radius-sm);overflow:hidden;cursor:pointer;margin-bottom:12px">
+      <canvas id="hueCanvas" width="340" height="24" style="width:100%;height:100%;display:block"></canvas>
+      <div class="hue-needle" id="hueIndicator" style="left:0%"></div>
+    </div>
+    <div class="rgba-inputzy">
+      <div class="rgba-input-box"><label style="color:#f87171">R</label><input type="number" id="inR" min="0" max="255" value="255"></div>
+      <div class="rgba-input-box"><label style="color:#4ade80">G</label><input type="number" id="inG" min="0" max="255" value="102"></div>
+      <div class="rgba-input-box"><label style="color:#60a5fa">B</label><input type="number" id="inB" min="0" max="255" value="51"></div>
+      <div class="rgba-input-box"><label style="color:#c084fc">A</label><input type="number" id="inA" min="0" max="100" value="100"></div>
+    </div>
+    <div class="color-formats-panel" id="color-formats-panel">
+      <div class="cfp-row" onclick="copyColorFmt('hex')"><span class="cfp-label">HEX</span><span class="cfp-val" id="cfp-hex">#FF6633</span><button class="cfp-copy" aria-label="Copy this color format">copy</button></div>
+      <div class="cfp-row" onclick="copyColorFmt('rgba')"><span class="cfp-label">RGBA</span><span class="cfp-val" id="cfp-rgba">rgba(255,102,51,1)</span><button class="cfp-copy" aria-label="Copy this color format">copy</button></div>
+      <div class="cfp-row" onclick="copyColorFmt('hsl')"><span class="cfp-label">HSL</span><span class="cfp-val" id="cfp-hsl">hsl(15,100%,60%)</span><button class="cfp-copy" aria-label="Copy this color format">copy</button></div>
+      <div class="cfp-row" onclick="copyColorFmt('oklch')"><span class="cfp-label">OKLCH</span><span class="cfp-val" id="cfp-oklch">oklch(0.68 0.2 45)</span><button class="cfp-copy" aria-label="Copy this color format">copy</button></div>
+    </div>
+    <button class="copy-rgba-btn" id="rgbaCopyBtn" aria-label="Copy RGBA color value">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      Copy rgba(…)
+    </button>
+    <div class="color-history-strip" id="color-history-strip"><div class="hist-label">History</div></div>
+  </div>
+</div>
+
+<footer class="footer-meadow">
+  <div>
+    <div class="footer-brand">Hropiberhtaz</div>
+    <div class="footer-tagline">tools that breathe</div>
+  </div>
+  <div class="footer-right">
+    <div class="footer-links">
+      <a href="index.html" class="footer-link">Home</a>
+      <a href="hue.html" class="footer-link">HUE</a>
+      <a href="chroma.html" class="footer-link">Chroma</a>
+      <a href="upscale.html" class="footer-link">UpScale</a>
+      <a href="urlclean.html" class="footer-link">URLClean</a>
+    </div>
+    <div class="footer-small">© 2026 · All rights reserved</div>
+  </div>
+</footer>
+
+<button id="lofi-leaf" aria-label="Toggle lo-fi background music" aria-pressed="false">
+  <div class="soundbars"><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div></div>
+  <span id="audio-label">lo-fi</span>
+</button>
+
+<script src="shared.js"></script>
+<script>
+(function(){document.querySelectorAll('.goober-list').forEach(fl=>{const io=new IntersectionObserver(entries=>{entries.forEach(e=>{fl.classList.toggle('staggery',e.isIntersecting);});},{threshold:.2});io.observe(fl);});})();
+(function(){
+  const section=document.querySelector('.page-hero'),canvas=document.getElementById('cp-brush-canvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');const CELL=50,RADIUS=3,DECAY=0.05;
+  let W,H,cols,rows,cells=new Map();
+  function doResize(){W=canvas.width=section.offsetWidth;H=canvas.height=section.offsetHeight;cols=Math.ceil(W/CELL)+1;rows=Math.ceil(H/CELL)+1;}
+  window.addEventListener('resize',doResize);doResize();
+  let mx=-9999,my=-9999;
+  section.addEventListener('mousemove',e=>{const r=section.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top+section.scrollTop;},{passive:true});
+  section.addEventListener('mouseleave',()=>{mx=-9999;my=-9999;});
+  function glowCells(pmx,pmy){const cx=Math.floor(pmx/CELL),cy=Math.floor(pmy/CELL);for(let dy=-RADIUS;dy<=RADIUS;dy++){for(let dx=-RADIUS;dx<=RADIUS;dx++){const col=cx+dx,row=cy+dy;if(col<0||row<0||col>=cols||row>=rows)continue;const dist=Math.sqrt(dx*dx+dy*dy),b=Math.max(0,1-dist/(RADIUS+.5)),key=col+','+row;if(b>(cells.get(key)||0))cells.set(key,b);}}}
+  function drawCells(){ctx.clearRect(0,0,W,H);const isLight=document.documentElement.getAttribute('data-theme')==='light';const toDelete=[];cells.forEach((brightness,key)=>{const next=brightness-DECAY;if(next<=.005){toDelete.push(key);return;}cells.set(key,next);const [col,row]=key.split(',').map(Number),x=col*CELL,y=row*CELL;const alpha=next*(isLight?.17:.11),borderAlpha=next*(isLight?.5:.4);ctx.fillStyle=`rgba(168,196,144,${alpha})`;ctx.beginPath();ctx.roundRect(x+1,y+1,CELL-2,CELL-2,5);ctx.fill();ctx.strokeStyle=`rgba(168,196,144,${borderAlpha})`;ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(x+.5,y+.5,CELL-1,CELL-1,5);ctx.stroke();});toDelete.forEach(k=>cells.delete(k));}
+  function loopBrush(){glowCells(mx,my);drawCells();requestAnimationFrame(loopBrush);}loopBrush();
+})();
+(function(){
+  let hue=0.045,sat=0.8,val=1,alpha=1;
+  let draggingSV=false,draggingHue=false,draggingAlpha=false;
+  const svCanvas=document.getElementById('svCanvas'),svWrap=document.getElementById('svWrap'),svCursor=document.getElementById('svCursor');
+  const hueWrap=document.getElementById('hueWrap'),hueCanvas=document.getElementById('hueCanvas'),hueInd=document.getElementById('hueIndicator');
+  const alphaWrap=document.getElementById('alphaWrap'),alphaCanvas=document.getElementById('alphaCanvas'),alphaInd=document.getElementById('alphaIndicator');
+  const swatchFill=document.getElementById('swatchFill'),hexDisplay=document.getElementById('hexDisplay'),rgbaDisplay=document.getElementById('rgbaDisplay'),copyBtn=document.getElementById('copyBtn');
+  const colorHistory=[];const MAX_HIST=16;
+  function hsvToRgb(h,s,v){let r,g,b;const i=Math.floor(h*6),f=h*6-i,p=v*(1-s),q=v*(1-f*s),t=v*(1-(1-f)*s);switch(i%6){case 0:r=v;g=t;b=p;break;case 1:r=q;g=v;b=p;break;case 2:r=p;g=v;b=t;break;case 3:r=p;g=q;b=v;break;case 4:r=t;g=p;b=v;break;case 5:r=v;g=p;b=q;break;}return{r:Math.round(r*255),g:Math.round(g*255),b:Math.round(b*255)};}
+  function toHex(n){return n.toString(16).padStart(2,'0')}
+  function rgbToHex(r,g,b){return'#'+toHex(r)+toHex(g)+toHex(b)}
+  function hexToRgb(hex){const r=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);return r?{r:parseInt(r[1],16),g:parseInt(r[2],16),b:parseInt(r[3],16)}:null;}
+  function rgbToHsv(r,g,b){r/=255;g/=255;b/=255;const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;let h=0,s=max===0?0:d/max,v=max;if(d!==0){if(max===r)h=((g-b)/d+(g<b?6:0))/6;else if(max===g)h=((b-r)/d+2)/6;else h=((r-g)/d+4)/6;}return{h,s,v};}
+  function rgbToHsl(r,g,b){r/=255;g/=255;b/=255;const max=Math.max(r,g,b),min=Math.min(r,g,b);let h=0,s=0,l=(max+min)/2;if(max!==min){const d=max-min;s=l>.5?d/(2-max-min):d/(max+min);if(max===r)h=((g-b)/d+(g<b?6:0))/6;else if(max===g)h=((b-r)/d+2)/6;else h=((r-g)/d+4)/6;}return{h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};}
+  function rgbToOklch(r,g,b){r/=255;g/=255;b/=255;const R=r>0.04045?Math.pow((r+0.055)/1.055,2.4):r/12.92,G=g>0.04045?Math.pow((g+0.055)/1.055,2.4):g/12.92,B=b>0.04045?Math.pow((b+0.055)/1.055,2.4):b/12.92;const l=Math.cbrt(0.4122214*R+0.5363325*G+0.0514459*B),m=Math.cbrt(0.2119035*R+0.6806995*G+0.1073970*B),s=Math.cbrt(0.0883024*R+0.2817188*G+0.6299787*B);const L=0.2104542*l+0.7936178*m-0.0040720*s,a=1.9779985*l-2.4285922*m+0.4505937*s,bv=0.0259040*l+0.7827718*m-0.8086757*s;const C=Math.sqrt(a*a+bv*bv);let H=Math.atan2(bv,a)*180/Math.PI;if(H<0)H+=360;return{L:L.toFixed(3),C:C.toFixed(3),H:Math.round(H)};}
+  function drawSV(){const ctx=svCanvas.getContext('2d'),w=svCanvas.width,h=svCanvas.height,base=hsvToRgb(hue,1,1);const gH=ctx.createLinearGradient(0,0,w,0);gH.addColorStop(0,'white');gH.addColorStop(1,`rgb(${base.r},${base.g},${base.b})`);ctx.fillStyle=gH;ctx.fillRect(0,0,w,h);const gV=ctx.createLinearGradient(0,0,0,h);gV.addColorStop(0,'rgba(0,0,0,0)');gV.addColorStop(1,'rgba(0,0,0,1)');ctx.fillStyle=gV;ctx.fillRect(0,0,w,h);}
+  function drawHue(){const ctx=hueCanvas.getContext('2d'),w=hueCanvas.width,h=hueCanvas.height;for(let i=0;i<w;i++){const rgb=hsvToRgb(i/w,1,1);ctx.fillStyle=`rgb(${rgb.r},${rgb.g},${rgb.b})`;ctx.fillRect(i,0,1,h);}}
+  function drawAlpha(){const ctx=alphaCanvas.getContext('2d'),w=alphaCanvas.width,h=alphaCanvas.height,cs=5;for(let y=0;y<h;y+=cs)for(let x=0;x<w;x+=cs){ctx.fillStyle=((x/cs+y/cs)%2===0)?'#fff':'#ccc';ctx.fillRect(x,y,cs,cs);}const rgb=hsvToRgb(hue,sat,val);const g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,`rgba(${rgb.r},${rgb.g},${rgb.b},1)`);g.addColorStop(1,`rgba(${rgb.r},${rgb.g},${rgb.b},0)`);ctx.fillStyle=g;ctx.fillRect(0,0,w,h);}
+  function updateColorFormats(rgb){const hex=rgbToHex(rgb.r,rgb.g,rgb.b),hsl=rgbToHsl(rgb.r,rgb.g,rgb.b),oklch=rgbToOklch(rgb.r,rgb.g,rgb.b);const e1=document.getElementById('cfp-hex'),e2=document.getElementById('cfp-rgba'),e3=document.getElementById('cfp-hsl'),e4=document.getElementById('cfp-oklch');if(e1)e1.textContent=hex.toUpperCase();if(e2)e2.textContent=`rgba(${rgb.r},${rgb.g},${rgb.b},${alpha.toFixed(2)})`;if(e3)e3.textContent=`hsl(${hsl.h},${hsl.s}%,${hsl.l}%)`;if(e4)e4.textContent=`oklch(${oklch.L} ${oklch.C} ${oklch.H})`;}
+  function updateUI(){const rgb=hsvToRgb(hue,sat,val),hex=rgbToHex(rgb.r,rgb.g,rgb.b);swatchFill.style.background=`rgba(${rgb.r},${rgb.g},${rgb.b},${alpha})`;hexDisplay.textContent=alpha===1?hex.toUpperCase():`rgba(${rgb.r},${rgb.g},${rgb.b},${alpha.toFixed(2)})`;rgbaDisplay.textContent=`rgba(${rgb.r},${rgb.g},${rgb.b},${alpha.toFixed(2)})`;document.getElementById('inR').value=rgb.r;document.getElementById('inG').value=rgb.g;document.getElementById('inB').value=rgb.b;document.getElementById('inA').value=Math.round(alpha*100);svCursor.style.left=(sat*100)+'%';svCursor.style.top=((1-val)*100)+'%';hueInd.style.left=(hue*100)+'%';alphaInd.style.top=((1-alpha)*100)+'%';drawAlpha();updateColorFormats(rgb);}
+  function addToHistory(hex){if(colorHistory.includes(hex))return;colorHistory.unshift(hex);if(colorHistory.length>MAX_HIST)colorHistory.pop();renderHistory();}
+  function renderHistory(){const strip=document.getElementById('color-history-strip');if(!strip)return;strip.innerHTML='<div class="hist-label">History</div>';colorHistory.forEach(h=>{const sw=document.createElement('div');sw.className='hist-swatch';sw.style.background=h;sw.dataset.hex=h;sw.title=h;sw.addEventListener('click',()=>{const rgb=hexToRgb(h);if(rgb){const hsv=rgbToHsv(rgb.r,rgb.g,rgb.b);hue=hsv.h;sat=hsv.s;val=hsv.v;drawSV();updateUI();}});strip.appendChild(sw);});}
+  window.copyColorFmt=function(fmt){const rgb=hsvToRgb(hue,sat,val),hex=rgbToHex(rgb.r,rgb.g,rgb.b),hsl=rgbToHsl(rgb.r,rgb.g,rgb.b),oklch=rgbToOklch(rgb.r,rgb.g,rgb.b);let text='';if(fmt==='hex')text=hex.toUpperCase();else if(fmt==='rgba')text=`rgba(${rgb.r},${rgb.g},${rgb.b},${alpha.toFixed(2)})`;else if(fmt==='hsl')text=`hsl(${hsl.h},${hsl.s}%,${hsl.l}%)`;else if(fmt==='oklch')text=`oklch(${oklch.L} ${oklch.C} ${oklch.H})`;navigator.clipboard.writeText(text).then(()=>showToast('Copied '+text));};
+  function getSVPos(e,el){const r=el.getBoundingClientRect();return{x:Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),y:Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))};}
+  svWrap.addEventListener('mousedown',e=>{draggingSV=true;const{x,y}=getSVPos(e,svWrap);sat=x;val=1-y;updateUI();});
+  hueWrap.addEventListener('mousedown',e=>{draggingHue=true;const r=hueWrap.getBoundingClientRect();hue=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));drawSV();updateUI();});
+  alphaWrap.addEventListener('mousedown',e=>{draggingAlpha=true;const r=alphaWrap.getBoundingClientRect();alpha=Math.max(0,Math.min(1,1-(e.clientY-r.top)/r.height));updateUI();});
+  document.addEventListener('mousemove',e=>{if(draggingSV){const{x,y}=getSVPos(e,svWrap);sat=x;val=1-y;updateUI();}if(draggingHue){const r=hueWrap.getBoundingClientRect();hue=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));drawSV();updateUI();}if(draggingAlpha){const r=alphaWrap.getBoundingClientRect();alpha=Math.max(0,Math.min(1,1-(e.clientY-r.top)/r.height));updateUI();}});
+  document.addEventListener('mouseup',()=>{if(draggingSV||draggingHue||draggingAlpha){const rgb=hsvToRgb(hue,sat,val);addToHistory(rgbToHex(rgb.r,rgb.g,rgb.b));}draggingSV=false;draggingHue=false;draggingAlpha=false;});
+  function touchToMouse(e,handler){if(e.touches.length){const t=e.touches[0];handler({clientX:t.clientX,clientY:t.clientY});}e.preventDefault();}
+  svWrap.addEventListener('touchstart',e=>touchToMouse(e,e2=>svWrap.dispatchEvent(new MouseEvent('mousedown',e2))),{passive:false});
+  svWrap.addEventListener('touchmove',e=>touchToMouse(e,e2=>document.dispatchEvent(new MouseEvent('mousemove',e2))),{passive:false});
+  hueWrap.addEventListener('touchstart',e=>touchToMouse(e,e2=>hueWrap.dispatchEvent(new MouseEvent('mousedown',e2))),{passive:false});
+  hueWrap.addEventListener('touchmove',e=>touchToMouse(e,e2=>document.dispatchEvent(new MouseEvent('mousemove',e2))),{passive:false});
+  hexDisplay.addEventListener('click',()=>{const rgb=hsvToRgb(hue,sat,val),currentHex=rgbToHex(rgb.r,rgb.g,rgb.b);const input=document.createElement('input');input.type='text';input.value=currentHex.toUpperCase();Object.assign(input.style,{fontFamily:'JetBrains Mono,monospace',fontSize:'16px',fontWeight:'600',color:'var(--text)',background:'var(--card)',border:'1px solid var(--accent)',borderRadius:'8px',padding:'2px 8px',outline:'none',width:'140px',letterSpacing:'1px'});hexDisplay.replaceWith(input);input.select();function commit(){const hex=input.value.trim(),rgb=hexToRgb(hex);if(rgb){const hsv=rgbToHsv(rgb.r,rgb.g,rgb.b);hue=hsv.h;sat=hsv.s;val=hsv.v;drawSV();}input.replaceWith(hexDisplay);updateUI();}input.addEventListener('blur',commit);input.addEventListener('keydown',e=>{if(e.key==='Enter')commit();if(e.key==='Escape')input.replaceWith(hexDisplay);});});
+  copyBtn.addEventListener('click',()=>{const rgb=hsvToRgb(hue,sat,val),text=rgbToHex(rgb.r,rgb.g,rgb.b).toUpperCase();navigator.clipboard.writeText(text).then(()=>{addToHistory(text);copyBtn.classList.add('done-copying');showToast('Copied '+text);setTimeout(()=>copyBtn.classList.remove('done-copying'),2000);});});
+  function applyRgbaInputs(){const r=Math.max(0,Math.min(255,parseInt(document.getElementById('inR').value)||0)),g=Math.max(0,Math.min(255,parseInt(document.getElementById('inG').value)||0)),b=Math.max(0,Math.min(255,parseInt(document.getElementById('inB').value)||0)),a=Math.max(0,Math.min(100,parseInt(document.getElementById('inA').value)||0));const hsv=rgbToHsv(r,g,b);hue=hsv.h;sat=hsv.s;val=hsv.v;alpha=a/100;drawSV();updateUI();}
+  ['inR','inG','inB','inA'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.addEventListener('input',applyRgbaInputs);el.addEventListener('change',applyRgbaInputs);});
+  const rgbaCopyBtn=document.getElementById('rgbaCopyBtn');
+  if(rgbaCopyBtn){rgbaCopyBtn.addEventListener('click',()=>{const rgb=hsvToRgb(hue,sat,val),text=`rgba(${rgb.r},${rgb.g},${rgb.b},${alpha.toFixed(2)})`;navigator.clipboard.writeText(text).then(()=>{rgbaCopyBtn.textContent='✓ Copied!';rgbaCopyBtn.classList.add('done-copying');showToast('Copied '+text);setTimeout(()=>{rgbaCopyBtn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy rgba(…)';rgbaCopyBtn.classList.remove('done-copying');},2000);});});}
+  drawHue();drawSV();updateUI();
+})();
+</script>
+</body>
+</html>

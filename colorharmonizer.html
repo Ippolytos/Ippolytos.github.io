@@ -1,0 +1,2302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Hropiberhtaz Color Harmonizer — generate, explore and export precision color harmonies with theory-backed rules.">
+<title>Color Harmonizer — Hropiberhtaz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Licorice&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+
+body { font-family: 'Outfit', sans-serif; }
+
+.ch-layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 16px;
+  min-height: calc(100vh - 64px);
+  margin-top: 64px;
+  padding: 16px 72px 16px 16px;
+  box-sizing: border-box;
+  align-items: start;
+}
+
+.ch-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 22px 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+  max-height: calc(100vh - 64px - 32px - 90px);
+  position: sticky;
+  top: calc(64px + 16px);
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-25) transparent;
+}
+.ch-panel::-webkit-scrollbar { width: 4px; }
+.ch-panel::-webkit-scrollbar-track { background: transparent; }
+.ch-panel::-webkit-scrollbar-thumb { background: var(--accent-25); border-radius: 4px; }
+
+.ch-panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ch-section-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ch-wheel-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.ch-wheel-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  cursor: crosshair;
+  flex-shrink: 0;
+}
+
+#ch-wheel-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  display: block;
+  box-shadow: 0 0 0 1px var(--border), 0 8px 32px rgba(0,0,0,.4);
+}
+
+.ch-wheel-crosshair {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.5), 0 2px 6px rgba(0,0,0,.35);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.ch-brightness-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.ch-brightness-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 1px;
+  min-width: 12px;
+  text-transform: uppercase;
+}
+
+.ch-hsl-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+}
+
+.ch-hsl-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ch-hsl-field label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.ch-hsl-field input[type="number"] {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 8px;
+  width: 100%;
+  outline: none;
+  transition: border-color .2s;
+}
+
+.ch-hsl-field input[type="number"]:focus { border-color: var(--accent); }
+
+.ch-hex-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ch-hex-input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color .2s;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.ch-hex-input:focus { border-color: var(--accent); }
+
+.ch-color-preview-swatch {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s;
+}
+
+.ch-color-preview-swatch:hover { transform: scale(1.08); }
+.ch-color-preview-swatch::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,.1) 100%);
+}
+
+.ch-modes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.ch-mode-pill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  font-style: italic;
+  font-weight: 500;
+  padding: 7px 8px;
+  cursor: pointer;
+  transition: all .2s ease;
+  text-align: center;
+  letter-spacing: .02em;
+}
+
+.ch-mode-pill:hover { border-color: var(--accent); color: var(--text); }
+.ch-mode-pill.active {
+  background: rgba(126,200,227,.08);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.ch-slider-group { display: flex; flex-direction: column; gap: 14px; }
+
+.ch-slider-row { display: flex; flex-direction: column; gap: 6px; }
+
+.ch-slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ch-slider-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.ch-slider-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.ch-presets-row { display: flex; flex-wrap: wrap; gap: 5px; }
+
+.ch-preset-chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  color: var(--muted);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  font-style: italic;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.ch-preset-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+.ch-panel-actions { display: flex; flex-direction: column; gap: 7px; }
+
+.ch-action-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 500;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: all .2s cubic-bezier(.34,1.56,.64,1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: .02em;
+}
+
+.ch-action-btn:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+.ch-action-btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0a0f14;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.ch-action-btn.primary:hover {
+  box-shadow: 0 6px 24px rgba(126,200,227,.25);
+}
+
+[data-theme="light"] .ch-action-btn.primary { color: #fff; }
+
+.ch-shortcuts-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+.ch-kbd {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 3px 7px;
+}
+
+.ch-kbd + span {
+  font-family: 'Outfit', sans-serif;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: .5px;
+}
+
+.ch-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ch-toggle-label-txt {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.ch-toggle { position: relative; width: 36px; height: 20px; }
+.ch-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+
+.ch-toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.ch-toggle-slider::before {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: transform .2s, background .2s;
+}
+
+.ch-toggle input:checked + .ch-toggle-slider { background: rgba(126,200,227,.2); }
+.ch-toggle input:checked + .ch-toggle-slider::before { transform: translateX(16px); background: var(--accent); }
+
+.ch-main {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin: 0;
+  isolation: isolate;
+}
+
+.ch-hero-strip {
+  display: flex;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  flex-shrink: 0;
+}
+
+.ch-swatch-hero {
+  flex: 1;
+  position: relative;
+  transition: flex .4s cubic-bezier(.25,.46,.45,.94);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.ch-swatch-hero:hover { flex: 2; }
+
+.ch-swatch-hero-label {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+.ch-swatch-hero:hover .ch-swatch-hero-label { opacity: 1; }
+
+.ch-swatch-hero-hex {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,.92);
+  text-shadow: 0 1px 4px rgba(0,0,0,.5);
+  display: block;
+  margin-bottom: 3px;
+  letter-spacing: .06em;
+}
+
+.ch-swatch-hero-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: rgba(255,255,255,.72);
+  text-shadow: 0 1px 4px rgba(0,0,0,.4);
+  display: block;
+}
+
+.ch-swatch-copy-btn {
+  position: absolute;
+  top: 10px; right: 10px;
+  background: rgba(0,0,0,.3);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: var(--radius-xs);
+  color: rgba(255,255,255,.85);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  font-style: italic;
+  padding: 3px 10px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .2s, background .2s;
+}
+
+.ch-swatch-hero:hover .ch-swatch-copy-btn { opacity: 1; }
+.ch-swatch-copy-btn:hover { background: rgba(0,0,0,.5); }
+
+.ch-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--palette-count, 2), 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+}
+
+.ch-detail-cell {
+  background: var(--card);
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: background .2s;
+}
+
+.ch-detail-cell:hover { background: var(--surface); }
+
+.ch-detail-cell-swatch {
+  width: 100%;
+  height: 56px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1);
+  position: relative;
+  overflow: hidden;
+}
+
+.ch-detail-cell-swatch:hover { transform: scale(1.03); }
+
+.ch-detail-cell-swatch::after {
+  content: 'Copy';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.22);
+  color: rgba(255,255,255,.9);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  font-style: italic;
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+.ch-detail-cell-swatch:hover::after { opacity: 1; }
+
+.ch-detail-formats { display: flex; flex-direction: column; gap: 2px; }
+
+.ch-format-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 3px 5px;
+  border-radius: 4px;
+  transition: background .15s;
+}
+
+.ch-format-row:hover { background: rgba(126,200,227,.05); }
+
+.ch-format-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.ch-format-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text);
+  transition: color .15s;
+}
+
+.ch-format-row:hover .ch-format-val { color: var(--accent); }
+
+.ch-detail-contrast { display: flex; gap: 5px; flex-wrap: wrap; }
+
+.ch-contrast-badge {
+  font-family: 'Outfit', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .8px;
+  padding: 3px 8px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+}
+
+.ch-contrast-badge.aaa { border-color: rgba(100,200,100,.4); color: #70d080; }
+.ch-contrast-badge.aa  { border-color: rgba(180,200,80,.4); color: #b8cc50; }
+.ch-contrast-badge.fail { border-color: rgba(200,80,80,.3); color: #d06060; }
+
+.ch-panels-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+}
+
+.ch-info-panel {
+  background: var(--card);
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0; 
+}
+
+.ch-info-panel-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ch-gradient-strip {
+  height: 52px;
+  border-radius: var(--radius-sm);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.ch-gradient-strip::after {
+  content: 'Click to copy CSS';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.18);
+  color: rgba(255,255,255,.88);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  font-style: italic;
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+.ch-gradient-strip:hover::after { opacity: 1; }
+
+.ch-gradient-stops { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+
+.ch-gradient-stop {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: transform .15s;
+}
+
+.ch-gradient-stop:hover { transform: scale(1.35); }
+
+#ch-theory-canvas {
+  width: 100%;
+  height: 120px;
+  display: block;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.ch-harmony-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.ch-temp-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #4fc3f7, #fff9c4, #ff7043);
+  position: relative;
+}
+
+.ch-temp-needle {
+  position: absolute;
+  top: -4px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--text);
+  border: 2px solid var(--bg);
+  transform: translateX(-50%);
+  transition: left .4s cubic-bezier(.25,.46,.45,.94);
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+}
+
+.ch-temp-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+
+.ch-temp-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.ch-named-match { display: flex; align-items: center; gap: 10px; }
+
+.ch-named-dot {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.ch-named-text { display: flex; flex-direction: column; gap: 2px; }
+
+.ch-named-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--text);
+}
+
+.ch-named-dist {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+}
+
+.ch-lum-bar-wrap {
+  position: relative;
+  height: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ch-lum-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 3px;
+  transition: width .4s ease;
+}
+
+.ch-tints-row { display: flex; gap: 2px; border-radius: var(--radius-sm); overflow: hidden; }
+
+.ch-tint-swatch {
+  flex: 1;
+  height: 36px;
+  cursor: pointer;
+  transition: flex .22s ease;
+  position: relative;
+}
+
+.ch-tint-swatch:hover { flex: 2.2; }
+
+.ch-tint-swatch::after {
+  content: attr(data-hex);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  font-weight: 600;
+  color: rgba(255,255,255,.85);
+  opacity: 0;
+  transition: opacity .2s;
+  text-shadow: 0 1px 3px rgba(0,0,0,.5);
+}
+
+.ch-tint-swatch:hover::after { opacity: 1; }
+
+.ch-compare-section {
+  padding: 22px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ch-compare-row {
+  display: flex;
+  height: 72px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.ch-compare-half {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-style: italic;
+  transition: background .3s;
+}
+
+.ch-history-section {
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+
+.ch-history-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.ch-history-row { display: flex; gap: 5px; flex-wrap: wrap; }
+
+.ch-history-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 4px 10px 4px 5px;
+  cursor: pointer;
+  transition: border-color .2s;
+}
+
+.ch-history-chip:hover { border-color: var(--accent); }
+
+.ch-history-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+
+.ch-history-hex {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.ch-export-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 22px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+
+.ch-export-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 500;
+  padding: 11px 14px;
+  cursor: pointer;
+  transition: all .2s;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.ch-export-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+
+#ch-shades-section {
+  padding: 22px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ch-live-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+  margin-right: 5px;
+  animation: livePulse 1.6s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: .4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+@keyframes swatchPop {
+  0%   { transform: scale(.88); opacity: 0; }
+  60%  { transform: scale(1.03); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.swatch-animate { animation: swatchPop .3s cubic-bezier(.34,1.56,.64,1) forwards; }
+
+.ch-footer-section {
+  padding: 18px 22px;
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+}
+
+.ch-footer-info {
+  font-family: 'Outfit', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: .5px;
+}
+
+.ch-footer-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--muted);
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+input[type="number"] { -moz-appearance: textfield; }
+
+.ch-panel input[type="range"] {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  width: 100%;
+  height: 3px;
+  padding: 8px 0;
+  background: var(--border);
+  background-clip: content-box;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  accent-color: var(--accent);
+  display: block;
+  box-sizing: border-box;
+}
+.ch-panel input[type="range"]::-webkit-slider-container {
+  height: 3px;
+}
+.ch-panel input[type="range"]::-webkit-slider-runnable-track {
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-25), var(--border));
+  border-radius: 4px;
+}
+.ch-panel input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  width: 14px !important;
+  height: 14px !important;
+  margin-top: -5.5px !important; /* (14px thumb - 3px track) / 2 = 5.5px pull-up */
+  background: var(--accent) !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  box-shadow: 0 0 6px var(--accent-35) !important;
+  transition: transform .15s, box-shadow .15s;
+}
+.ch-panel input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.35) !important;
+  box-shadow: 0 0 12px var(--accent-55) !important;
+}
+.ch-panel input[type="range"]::-moz-range-track {
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-25), var(--border));
+  border-radius: 4px;
+}
+.ch-panel input[type="range"]::-moz-range-thumb {
+  width: 14px !important;
+  height: 14px !important;
+  background: var(--accent) !important;
+  border: none !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  box-shadow: 0 0 6px var(--accent-35) !important;
+}
+
+.ch-count-btn {
+  width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color .18s, color .18s, background .18s;
+}
+.ch-count-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-5); }
+.ch-count-btn:disabled { opacity: .3; cursor: default; pointer-events: none; }
+
+.ch-count-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  transition: background .2s, border-color .2s, transform .2s;
+  cursor: pointer;
+}
+.ch-count-dot.on {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 6px var(--accent-35);
+  transform: scale(1.2);
+}
+@media (max-width: 1200px) {
+  .ch-panels-row { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 960px) {
+  .ch-layout { grid-template-columns: 1fr; margin-top: 64px; }
+  .ch-panel { max-height: none; position: static; }
+  .ch-panels-row { grid-template-columns: 1fr; }
+  .ch-export-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .ch-detail-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+<style>
+#nav-dots{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:800;display:flex;flex-direction:column;gap:16px;align-items:center;padding:28px 14px;background:rgba(8,14,20,0.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-left:1px solid var(--accent-8);border-radius:14px 0 0 14px;}
+[data-theme="light"] #nav-dots{background:rgba(255,251,238,0.82);}
+.nav-dot-item{position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;}
+.nav-dot-glyph{font-size:18px;color:var(--accent-35);line-height:1;transition:color .25s,transform .25s,text-shadow .25s;display:block;}
+.nav-dot-item:hover .nav-dot-glyph,.nav-dot-item.active .nav-dot-glyph{color:var(--accent);transform:scale(1.4);text-shadow:var(--accent-glow-sm);}
+.nav-dot-item.active .nav-dot-glyph{animation:dotPulse 2.4s ease-in-out infinite;}
+@keyframes dotPulse{0%,100%{text-shadow:var(--accent-glow-sm);opacity:1;}50%{text-shadow:var(--accent-glow-xl);opacity:.75;}}
+.nav-dot-label{position:absolute;right:calc(100% + 20px);top:50%;transform:translateY(-50%) translateX(6px);font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;font-weight:400;color:var(--text);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .22s,transform .22s;letter-spacing:.02em;background:var(--card);backdrop-filter:blur(12px);padding:6px 16px;border-radius:10px;border:1px solid var(--border);box-shadow:0 4px 24px rgba(0,0,0,.28);}
+.nav-dot-item:hover .nav-dot-label{opacity:1;transform:translateY(-50%) translateX(0);}
+@media(max-width:900px){#nav-dots{display:none;}}
+</style>
+</head>
+<body>
+
+<!-- ── Shared background canvases ── -->
+<div id="scroll-prog"></div>
+<div id="scan-line"></div>
+<canvas id="wobbly-bg-thingy" aria-hidden="true"></canvas>
+<canvas id="floaty-dot-world" aria-hidden="true"></canvas>
+<canvas id="bg-yinyang" aria-hidden="true"></canvas>
+<div id="live-clock"></div>
+<div id="keyboard-whisper"></div>
+<div id="toasty-pop" class="toasty"></div>
+<div id="file-loading-veil"><div class="veil-spinner"></div><div class="veil-msg" id="veil-msg-text">Opening...</div></div>
+
+<!-- ── Mobile nav ── -->
+<div id="mobile-nav">
+  <button id="mobile-nav-close" aria-label="Close navigation menu">✕</button>
+  <a href="index.html">Home</a>
+  <a href="colordrop.html">ColorDrop</a>
+  <a href="hue.html">HUE</a>
+  <a href="chroma.html">Chroma</a>
+  <a href="upscale.html">UpScale</a>
+  <a href="urlclean.html">URLClean</a>
+  <a href="colorharmonizer.html">Harmonizer</a>
+</div>
+
+<!-- ── Header ── -->
+<header id="main-header">
+  <a href="index.html" class="brand-scribble">Hropiberhtaz</a>
+  <div class="nav-cluster">
+    <button id="moonbeam-toggle" aria-label="Toggle light/dark theme" title="Toggle theme"><span id="moonbeam-icon" aria-hidden="true">☀</span></button>
+  </div>
+  <button id="ham-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav">☰</button>
+</header>
+
+<!-- ── Right nav dots ── -->
+<nav id="nav-dots" aria-label="Tool navigation">
+  <a href="colordrop.html" class="nav-dot-item" aria-label="ColorDrop">
+    <span class="nav-dot-glyph">✦</span>
+    <span class="nav-dot-label">ColorDrop</span>
+  </a>
+  <a href="hue.html" class="nav-dot-item" aria-label="HUE Editor">
+    <span class="nav-dot-glyph">✦</span>
+    <span class="nav-dot-label">HUE Editor</span>
+  </a>
+  <a href="chroma.html" class="nav-dot-item" aria-label="Chroma Recolor">
+    <span class="nav-dot-glyph">✦</span>
+    <span class="nav-dot-label">Chroma Recolor</span>
+  </a>
+  <a href="upscale.html" class="nav-dot-item" aria-label="UpScale">
+    <span class="nav-dot-glyph">✦</span>
+    <span class="nav-dot-label">UpScale</span>
+  </a>
+  <a href="urlclean.html" class="nav-dot-item" aria-label="URLClean">
+    <span class="nav-dot-glyph">✦</span>
+    <span class="nav-dot-label">URLClean</span>
+  </a>
+  <a href="colorharmonizer.html" class="nav-dot-item active" aria-label="Color Harmonizer">
+    <span class="nav-dot-glyph">✦</span>
+    <span class="nav-dot-label">Color Harmonizer</span>
+  </a>
+  <a href="videochroma.html" class="nav-dot-item" aria-label="VideoChroma"><span class="nav-dot-glyph">✦</span><span class="nav-dot-label">VideoChroma</span></a>
+</nav>
+
+
+<!-- ── Main layout ── -->
+<div class="ch-layout">
+
+  <!-- ── Left Panel ── -->
+  <aside class="ch-panel poppy-left" id="ch-panel">
+
+    <!-- Color wheel -->
+    <div class="ch-panel-section">
+      <div class="ch-section-label">Base Color</div>
+      <div class="ch-wheel-wrap">
+        <div class="ch-wheel-container" id="ch-wheel-container">
+          <canvas id="ch-wheel-canvas" width="200" height="200" aria-label="Color wheel"></canvas>
+          <div class="ch-wheel-crosshair" id="ch-crosshair" style="left:110px;top:110px;"></div>
+        </div>
+        <div class="ch-brightness-row">
+          <span class="ch-brightness-label">V</span>
+          <input type="range" id="ch-brightness" min="0" max="100" value="85" aria-label="Brightness">
+          <span class="ch-slider-val" id="ch-brightness-val">85%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HSL / Hex inputs -->
+    <div class="ch-panel-section">
+      <div class="ch-hsl-inputs">
+        <div class="ch-hsl-field">
+          <label for="ch-h-in">H</label>
+          <input type="number" id="ch-h-in" min="0" max="360" value="220" aria-label="Hue 0 to 360">
+        </div>
+        <div class="ch-hsl-field">
+          <label for="ch-s-in">S</label>
+          <input type="number" id="ch-s-in" min="0" max="100" value="72" aria-label="Saturation 0 to 100">
+        </div>
+        <div class="ch-hsl-field">
+          <label for="ch-l-in">L</label>
+          <input type="number" id="ch-l-in" min="0" max="100" value="58" aria-label="Lightness 0 to 100">
+        </div>
+      </div>
+      <div class="ch-hex-row">
+        <div class="ch-color-preview-swatch" id="ch-preview-swatch" title="Click to copy HEX"></div>
+        <input class="ch-hex-input" id="ch-hex-in" type="text" value="#4A90D0" maxlength="7" aria-label="Hex color value" spellcheck="false">
+      </div>
+      <button class="ch-action-btn squish-btn" id="ch-eyedrop-btn" style="justify-content:center;">Eyedropper — pick from screen</button>
+    </div>
+
+    <!-- Harmony modes -->
+    <div class="ch-panel-section">
+      <div class="ch-section-label">Harmony Rule</div>
+      <div class="ch-modes-grid" id="ch-modes-grid">
+        <button class="ch-mode-pill active" data-mode="complementary">Complementary</button>
+        <button class="ch-mode-pill" data-mode="analogous">Analogous</button>
+        <button class="ch-mode-pill" data-mode="triadic">Triadic</button>
+        <button class="ch-mode-pill" data-mode="tetradic">Tetradic</button>
+        <button class="ch-mode-pill" data-mode="splitComp">Split Comp.</button>
+        <button class="ch-mode-pill" data-mode="square">Square</button>
+        <button class="ch-mode-pill" data-mode="doubleSplit">Double Split</button>
+        <button class="ch-mode-pill" data-mode="monochromatic">Monochromatic</button>
+      </div>
+    </div>
+
+    <!-- Advanced sliders -->
+    <div class="ch-panel-section">
+      <div class="ch-section-label">Refinement</div>
+      <div class="ch-slider-group">
+        <div class="ch-slider-row">
+          <div class="ch-slider-header">
+            <span class="ch-slider-name">Angle spread</span>
+            <span class="ch-slider-val" id="ch-spread-val">30</span>
+          </div>
+          <input type="range" id="ch-spread" min="5" max="90" value="30" aria-label="Harmony angle spread">
+        </div>
+        <div class="ch-slider-row">
+          <div class="ch-slider-header">
+            <span class="ch-slider-name">Saturation shift</span>
+            <span class="ch-slider-val" id="ch-sat-val">0</span>
+          </div>
+          <input type="range" id="ch-sat-shift" min="-50" max="50" value="0" aria-label="Saturation shift">
+        </div>
+        <div class="ch-slider-row">
+          <div class="ch-slider-header">
+            <span class="ch-slider-name">Lightness shift</span>
+            <span class="ch-slider-val" id="ch-lit-val">0</span>
+          </div>
+          <input type="range" id="ch-lit-shift" min="-40" max="40" value="0" aria-label="Lightness shift">
+        </div>
+        <!-- Harmony count stepper -->
+        <div class="ch-slider-row">
+          <div class="ch-slider-header" style="margin-bottom:4px">
+            <span class="ch-slider-name">Color count</span>
+            <span class="ch-slider-val" id="ch-count-val">auto</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button class="ch-count-btn" id="ch-count-dec" aria-label="Fewer colors" title="Fewer">−</button>
+            <div id="ch-count-dots" style="display:flex;gap:5px;flex:1;justify-content:center;"></div>
+            <button class="ch-count-btn" id="ch-count-inc" aria-label="More colors" title="More">+</button>
+          </div>
+          <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4">auto = rule default &nbsp;·&nbsp; 1–6 = custom</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toggles -->
+    <div class="ch-panel-section">
+      <div class="ch-section-label">Options</div>
+      <div class="ch-slider-group">
+        <div class="ch-toggle-row">
+          <span class="ch-toggle-label-txt">Lock saturation</span>
+          <label class="ch-toggle"><input type="checkbox" id="ch-lock-sat"><div class="ch-toggle-slider"></div></label>
+        </div>
+        <div class="ch-toggle-row">
+          <span class="ch-toggle-label-txt">Show 12-step shades</span>
+          <label class="ch-toggle"><input type="checkbox" id="ch-show-shades" checked><div class="ch-toggle-slider"></div></label>
+        </div>
+        <div class="ch-toggle-row">
+          <span class="ch-toggle-label-txt">WCAG contrast labels</span>
+          <label class="ch-toggle"><input type="checkbox" id="ch-show-contrast" checked><div class="ch-toggle-slider"></div></label>
+        </div>
+        <div class="ch-toggle-row">
+          <span class="ch-toggle-label-txt">Lock hue when randomizing</span>
+          <label class="ch-toggle"><input type="checkbox" id="ch-lock-hue"><div class="ch-toggle-slider"></div></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preset palettes -->
+    <div class="ch-panel-section">
+      <div class="ch-section-label">Palette Presets</div>
+      <div class="ch-presets-row" id="ch-presets">
+        <button class="ch-preset-chip" data-hex="#2D6A9F">Ocean</button>
+        <button class="ch-preset-chip" data-hex="#9B4DCA">Violet Dusk</button>
+        <button class="ch-preset-chip" data-hex="#C0392B">Ember</button>
+        <button class="ch-preset-chip" data-hex="#27AE60">Forest</button>
+        <button class="ch-preset-chip" data-hex="#E67E22">Amber</button>
+        <button class="ch-preset-chip" data-hex="#1ABC9C">Jade</button>
+        <button class="ch-preset-chip" data-hex="#34495E">Slate</button>
+        <button class="ch-preset-chip" data-hex="#E91E63">Rose</button>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="ch-panel-section">
+      <div class="ch-section-label">Actions</div>
+      <div class="ch-panel-actions">
+        <button class="ch-action-btn primary squish-btn" id="ch-randomize">Randomize palette</button>
+        <button class="ch-action-btn squish-btn" id="ch-save-fav">Save to favorites</button>
+        <button class="ch-action-btn squish-btn" id="ch-clear-hist">Clear history</button>
+      </div>
+    </div>
+
+    <!-- Favorites (persisted locally) -->
+    <div class="ch-panel-section">
+      <div class="ch-section-label">Favorites <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">— saved on this device</span></div>
+      <div id="ch-favorites-list" style="display:flex;flex-direction:column;gap:6px;max-height:170px;overflow-y:auto;"></div>
+    </div>
+
+    <!-- Keyboard shortcuts -->
+    <div class="ch-panel-section">
+      <div class="ch-section-label">Shortcuts</div>
+      <div class="ch-shortcuts-row">
+        <span class="ch-kbd">R</span><span style="font-size:10px;color:var(--muted)">random</span>
+        <span class="ch-kbd">C</span><span style="font-size:10px;color:var(--muted)">copy CSS</span>
+        <span class="ch-kbd">T</span><span style="font-size:10px;color:var(--muted)">theme</span>
+        <span class="ch-kbd">H</span><span style="font-size:10px;color:var(--muted)">harmony</span>
+      </div>
+    </div>
+
+    <!-- Spacer: keeps last item above the fixed lo-fi button -->
+    <div style="flex-shrink:0;min-height:90px;" aria-hidden="true"></div>
+
+  </aside>
+
+  <!-- ── Main content ── -->
+  <main class="ch-main" id="ch-main">
+
+    <!-- Hero swatch strip -->
+    <div class="ch-hero-strip poppy-reveal" id="ch-hero-strip" role="list" aria-label="Harmony color swatches">
+      <!-- Filled by JS -->
+    </div>
+
+    <!-- Detail cells -->
+    <div class="ch-detail-grid poppy-reveal delay-sprout-1" id="ch-detail-grid" aria-label="Color detail breakdown">
+      <!-- Filled by JS -->
+    </div>
+
+    <!-- Info panels row -->
+    <div class="ch-panels-row poppy-reveal delay-sprout-2">
+
+      <!-- Gradients panel -->
+      <div class="ch-info-panel">
+        <div class="ch-info-panel-title">Generated Gradients</div>
+        <div class="ch-gradient-strip" id="ch-grad-linear" title="Linear gradient"></div>
+        <div class="ch-gradient-stops" id="ch-grad-stops"></div>
+        <div class="ch-gradient-strip" id="ch-grad-radial" title="Radial gradient"></div>
+      </div>
+
+      <!-- Theory diagram -->
+      <div class="ch-info-panel">
+        <div class="ch-info-panel-title">Theory Diagram</div>
+        <canvas id="ch-theory-canvas" aria-label="Color wheel theory diagram"></canvas>
+        <div class="ch-harmony-desc" id="ch-harmony-desc">Complementary colors sit opposite each other on the wheel, creating strong visual contrast and vibrancy.</div>
+      </div>
+
+      <!-- Color science -->
+      <div class="ch-info-panel">
+        <div class="ch-info-panel-title">Color Science</div>
+
+        <div>
+          <div class="ch-slider-header" style="margin-bottom:6px">
+            <span class="ch-slider-name">Color temperature</span>
+            <span class="ch-slider-val" id="ch-temp-val">5600 K</span>
+          </div>
+          <div class="ch-temp-bar"><div class="ch-temp-needle" id="ch-temp-needle"></div></div>
+          <div class="ch-temp-labels"><span class="ch-temp-label">Cool</span><span class="ch-temp-label">Warm</span></div>
+        </div>
+
+        <div>
+          <div class="ch-slider-header" style="margin-bottom:6px">
+            <span class="ch-slider-name">Relative luminance</span>
+            <span class="ch-slider-val" id="ch-lum-val">0.00</span>
+          </div>
+          <div class="ch-lum-bar-wrap"><div class="ch-lum-fill" id="ch-lum-fill"></div></div>
+        </div>
+
+        <div>
+          <div class="ch-slider-name" style="margin-bottom:8px">Nearest named color</div>
+          <div class="ch-named-match">
+            <div class="ch-named-dot" id="ch-named-dot"></div>
+            <div class="ch-named-text">
+              <span class="ch-named-label" id="ch-named-label">Steel Blue</span>
+              <span class="ch-named-dist" id="ch-named-dist">DeltaE: 3.2</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="ch-slider-name" style="margin-bottom:8px">HSL breakdown</div>
+          <div class="ch-detail-formats" id="ch-hsl-breakdown"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shades and tints -->
+    <div class="ch-info-panel poppy-reveal delay-sprout-2" style="border-bottom:1px solid var(--border);" id="ch-shades-section">
+      <div class="ch-info-panel-title">Shades and Tints <span class="ch-live-dot"></span></div>
+      <div class="ch-tints-row" id="ch-tints-row"></div>
+    </div>
+
+    <!-- Color blindness preview -->
+    <div class="ch-info-panel poppy-reveal delay-sprout-2" style="border-bottom:1px solid var(--border);" id="ch-cvd-section">
+      <div class="ch-info-panel-title">Color Blindness Preview</div>
+      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:var(--muted);margin:-6px 0 4px;">Approximate simulation — for a rough accessibility check, not a clinical reference.</p>
+      <div id="ch-cvd-rows" style="display:flex;flex-direction:column;gap:12px;"></div>
+    </div>
+
+    <!-- Compare section -->
+    <div class="ch-compare-section poppy-reveal delay-sprout-3">
+      <div class="ch-history-label">Text Contrast Preview</div>
+      <div class="ch-compare-row" id="ch-compare-dark">
+        <div class="ch-compare-half" id="ch-cmp-bg-d">Harmony text on dark background</div>
+        <div class="ch-compare-half" id="ch-cmp-bg-l">Harmony text on light background</div>
+      </div>
+      <div class="ch-compare-row" id="ch-compare-text">
+        <div class="ch-compare-half" id="ch-cmp-txt-w" style="background:#fff;color:#0a0f14">White canvas</div>
+        <div class="ch-compare-half" id="ch-cmp-txt-b" style="background:#0a0f14;color:#fff">Dark canvas</div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="ch-history-section poppy-reveal delay-sprout-3">
+      <div class="ch-history-label">Color history</div>
+      <div class="ch-history-row" id="ch-history-row">
+        <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--muted)">No history yet.</span>
+      </div>
+    </div>
+
+    <!-- Export options -->
+    <div class="ch-export-grid poppy-reveal delay-sprout-4">
+      <button class="ch-export-btn squish-btn" id="ch-export-css">Copy CSS vars</button>
+      <button class="ch-export-btn squish-btn" id="ch-export-json">Copy JSON</button>
+      <button class="ch-export-btn squish-btn" id="ch-export-tailwind">Copy Tailwind</button>
+      <button class="ch-export-btn squish-btn" id="ch-export-figma">Copy Figma tokens</button>
+      <button class="ch-export-btn squish-btn" id="ch-export-scss">Copy SCSS vars</button>
+      <button class="ch-export-btn squish-btn" id="ch-export-swift">Copy Swift colors</button>
+      <button class="ch-export-btn squish-btn" id="ch-export-svg">Download SVG swatch</button>
+      <button class="ch-export-btn squish-btn" id="ch-export-png">Download PNG swatch</button>
+    </div>
+
+
+    <div class="ch-footer-section">
+      <div class="ch-footer-info"><span class="ch-live-dot"></span>Live generation — all calculations client-side</div>
+      <div class="ch-footer-brand">Color Harmonizer &mdash; Hropiberhtaz</div>
+    </div>
+
+  </main>
+</div>
+
+<button id="lofi-leaf" aria-label="Toggle lo-fi background music" aria-pressed="false">
+  <div class="soundbars"><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div><div class="soundbar"></div></div>
+  <span id="audio-label">lo-fi</span>
+</button>
+
+<script src="shared.js"></script>
+<script>
+
+(function () {
+  'use strict';
+
+
+  const state = {
+    h: 220, s: 72, l: 58,  
+    mode: 'complementary',
+    spread: 30,
+    satShift: 0,
+    litShift: 0,
+    lockSat: false,
+    lockHue: false,
+    showShades: true,
+    showContrast: true,
+    history: [],
+    palette: [],
+    colorCount: 0,  
+  };
+
+  const FAV_KEY = 'hropiberhtaz_harmonizer_favorites_v1';
+
+  function loadFavorites() {
+    try {
+      const raw = localStorage.getItem(FAV_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  }
+
+  function saveFavoritesToStorage(favs) {
+    try { localStorage.setItem(FAV_KEY, JSON.stringify(favs)); } catch { /* storage unavailable, ignore */ }
+  }
+
+  function renderFavorites() {
+    const list = document.getElementById('ch-favorites-list');
+    if (!list) return;
+    const favs = loadFavorites();
+    if (!favs.length) {
+      list.innerHTML = '<span style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:13px;color:var(--muted)">No favorites saved yet.</span>';
+      return;
+    }
+    list.innerHTML = favs.map((f, i) => `
+      <div style="display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xs);padding:6px 8px;">
+        <div style="width:22px;height:22px;border-radius:5px;background:${f.hex};flex-shrink:0;border:1px solid var(--border);cursor:pointer;" data-load="${i}" title="Load ${f.hex}"></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);flex:1;cursor:pointer;" data-load="${i}">${f.hex} · ${f.mode}</span>
+        <button style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:2px 4px;" data-del="${i}" title="Remove" aria-label="Remove favorite">&times;</button>
+      </div>
+    `).join('');
+
+    list.querySelectorAll('[data-load]').forEach(el => {
+      el.addEventListener('click', () => {
+        const idx = +el.dataset.load;
+        const f = loadFavorites()[idx];
+        if (!f) return;
+        state.h = f.h; state.s = f.s; state.l = f.l;
+        state.mode = f.mode;
+        document.querySelectorAll('.ch-mode-pill').forEach(b => b.classList.toggle('active', b.dataset.mode === f.mode));
+        pushHistory();
+        syncFromHSL();
+        showToast('Loaded favorite');
+      });
+    });
+    list.querySelectorAll('[data-del]').forEach(el => {
+      el.addEventListener('click', e => {
+        e.stopPropagation();
+        const idx = +el.dataset.del;
+        const updated = loadFavorites();
+        updated.splice(idx, 1);
+        saveFavoritesToStorage(updated);
+        renderFavorites();
+      });
+    });
+  }
+
+  const NAMED_COLORS = [
+    ['AliceBlue','#F0F8FF'],['Amethyst','#9966CC'],['AquaMarine','#7FFFD4'],
+    ['Azure','#F0FFFF'],['Beige','#F5F5DC'],['Bisque','#FFE4C4'],
+    ['BlanchedAlmond','#FFEBCD'],['Blue','#0000FF'],['BlueViolet','#8A2BE2'],
+    ['Brown','#A52A2A'],['BurlyWood','#DEB887'],['CadetBlue','#5F9EA0'],
+    ['Chartreuse','#7FFF00'],['Chocolate','#D2691E'],['Coral','#FF7F50'],
+    ['CornflowerBlue','#6495ED'],['Crimson','#DC143C'],['Cyan','#00FFFF'],
+    ['DarkBlue','#00008B'],['DarkCyan','#008B8B'],['DarkGoldenrod','#B8860B'],
+    ['DarkGray','#A9A9A9'],['DarkGreen','#006400'],['DarkMagenta','#8B008B'],
+    ['DarkOliveGreen','#556B2F'],['DarkOrange','#FF8C00'],['DarkOrchid','#9932CC'],
+    ['DarkRed','#8B0000'],['DarkSalmon','#E9967A'],['DarkSeaGreen','#8FBC8F'],
+    ['DarkSlateBlue','#483D8B'],['DarkSlateGray','#2F4F4F'],['DarkTurquoise','#00CED1'],
+    ['DarkViolet','#9400D3'],['DeepPink','#FF1493'],['DeepSkyBlue','#00BFFF'],
+    ['DimGray','#696969'],['DodgerBlue','#1E90FF'],['FireBrick','#B22222'],
+    ['ForestGreen','#228B22'],['Fuchsia','#FF00FF'],['Gainsboro','#DCDCDC'],
+    ['Gold','#FFD700'],['Goldenrod','#DAA520'],['Gray','#808080'],
+    ['Green','#008000'],['GreenYellow','#ADFF2F'],['HotPink','#FF69B4'],
+    ['IndianRed','#CD5C5C'],['Indigo','#4B0082'],['Ivory','#FFFFF0'],
+    ['Khaki','#F0E68C'],['Lavender','#E6E6FA'],['LawnGreen','#7CFC00'],
+    ['LightBlue','#ADD8E6'],['LightCoral','#F08080'],['LightCyan','#E0FFFF'],
+    ['LightGray','#D3D3D3'],['LightGreen','#90EE90'],['LightPink','#FFB6C1'],
+    ['LightSalmon','#FFA07A'],['LightSeaGreen','#20B2AA'],['LightSkyBlue','#87CEFA'],
+    ['LightSlateGray','#778899'],['LightSteelBlue','#B0C4DE'],['LightYellow','#FFFFE0'],
+    ['Lime','#00FF00'],['LimeGreen','#32CD32'],['Linen','#FAF0E6'],
+    ['Magenta','#FF00FF'],['Maroon','#800000'],['MediumAquaMarine','#66CDAA'],
+    ['MediumBlue','#0000CD'],['MediumOrchid','#BA55D3'],['MediumPurple','#9370DB'],
+    ['MediumSeaGreen','#3CB371'],['MediumSlateBlue','#7B68EE'],['MediumSpringGreen','#00FA9A'],
+    ['MediumTurquoise','#48D1CC'],['MediumVioletRed','#C71585'],['MidnightBlue','#191970'],
+    ['MintCream','#F5FFFA'],['MistyRose','#FFE4E1'],['Moccasin','#FFE4B5'],
+    ['Navy','#000080'],['OldLace','#FDF5E6'],['Olive','#808000'],
+    ['OliveDrab','#6B8E23'],['Orange','#FFA500'],['OrangeRed','#FF4500'],
+    ['Orchid','#DA70D6'],['PaleGoldenrod','#EEE8AA'],['PaleGreen','#98FB98'],
+    ['PaleTurquoise','#AFEEEE'],['PaleVioletRed','#DB7093'],['PapayaWhip','#FFEFD5'],
+    ['PeachPuff','#FFDAB9'],['Peru','#CD853F'],['Pink','#FFC0CB'],
+    ['Plum','#DDA0DD'],['PowderBlue','#B0E0E6'],['Purple','#800080'],
+    ['Red','#FF0000'],['RosyBrown','#BC8F8F'],['RoyalBlue','#4169E1'],
+    ['SaddleBrown','#8B4513'],['Salmon','#FA8072'],['SandyBrown','#F4A460'],
+    ['SeaGreen','#2E8B57'],['Sienna','#A0522D'],['Silver','#C0C0C0'],
+    ['SkyBlue','#87CEEB'],['SlateBlue','#6A5ACD'],['SlateGray','#708090'],
+    ['SpringGreen','#00FF7F'],['SteelBlue','#4682B4'],['Tan','#D2B48C'],
+    ['Teal','#008080'],['Thistle','#D8BFD8'],['Tomato','#FF6347'],
+    ['Turquoise','#40E0D0'],['Violet','#EE82EE'],['Wheat','#F5DEB3'],
+    ['White','#FFFFFF'],['WhiteSmoke','#F5F5F5'],['Yellow','#FFFF00'],
+    ['YellowGreen','#9ACD32'],
+  ];
+
+  // ── Harmony descriptions ───────────────────────────────────────────
+  const HARMONY_DESCS = {
+    complementary: 'Complementary colors sit opposite each other on the wheel, creating strong visual contrast and maximum vibrancy.',
+    analogous: 'Analogous colors live next to each other on the wheel. They are harmonious and soothing, like colors found in nature.',
+    triadic: 'Triadic colors are spaced evenly at 120 degrees apart. They form vibrant, balanced palettes while keeping contrast.',
+    tetradic: 'Tetradic (rectangular) uses four colors in two complementary pairs. Rich and complex, it requires careful balancing.',
+    splitComp: 'Split complementary takes the complement and splits it into two adjacent hues. Less tension than full complementary.',
+    square: 'Square harmony uses four colors evenly spaced at 90 degrees, forming a balanced yet complex color relationship.',
+    doubleSplit: 'Double split complementary uses two pairs of split complements, producing six colors with rich, layered variety.',
+    monochromatic: 'Monochromatic palettes use a single hue at different saturations and lightnesses for a clean, cohesive look.',
+  };
+
+  // ── Math helpers ───────────────────────────────────────────────────
+  function hslToRgb(h, s, l) {
+    s /= 100; l /= 100;
+    const k = n => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    return [Math.round(f(0) * 255), Math.round(f(8) * 255), Math.round(f(4) * 255)];
+  }
+
+  function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) { h = s = 0; }
+    else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+        case g: h = ((b - r) / d + 2) / 6; break;
+        case b: h = ((r - g) / d + 4) / 6; break;
+      }
+    }
+    return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+  }
+
+  function hexToRgb(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+    const n = parseInt(hex, 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+
+  function rgbToHex(r, g, b) {
+    return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0').toUpperCase()).join('');
+  }
+
+  function hslToHex(h, s, l) {
+    return rgbToHex(...hslToRgb(h, s, l));
+  }
+
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function wrapHue(h) { return ((h % 360) + 360) % 360; }
+
+  // Relative luminance (WCAG)
+  function luminance(r, g, b) {
+    const sRGB = [r, g, b].map(c => {
+      c /= 255;
+      return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * sRGB[0] + 0.7152 * sRGB[1] + 0.0722 * sRGB[2];
+  }
+
+  function contrastRatio(rgb1, rgb2) {
+    const l1 = luminance(...rgb1), l2 = luminance(...rgb2);
+    const lighter = Math.max(l1, l2), darker = Math.min(l1, l2);
+    return (lighter + 0.05) / (darker + 0.05);
+  }
+
+  function wcagLabel(ratio) {
+    if (ratio >= 7) return 'AAA';
+    if (ratio >= 4.5) return 'AA';
+    if (ratio >= 3) return 'AA Large';
+    return 'Fail';
+  }
+
+  function approxColorTemp(r, g, b) {
+    const n = 0.23881 * r + 0.25499 * g - 0.58291 * b;
+    const d = 0.11109 * r - 0.85406 * g + 0.52289 * b;
+    const t = n === 0 || d === 0 ? 6500 : clamp(449 * Math.pow(n / d, 3) + 3525 * Math.pow(n / d, 2) + 6823.3 * (n / d) + 5520.33, 1000, 12000);
+    return Math.round(t);
+  }
+
+  function deltaE(hex1, hex2) {
+    const [r1,g1,b1] = hexToRgb(hex1), [r2,g2,b2] = hexToRgb(hex2);
+    return Math.sqrt((r1-r2)**2 + (g1-g2)**2 + (b1-b2)**2) / 4.41;
+  }
+
+  function nearestNamed(hex) {
+    let best = NAMED_COLORS[0], bestD = Infinity;
+    NAMED_COLORS.forEach(([name, nhex]) => {
+      const d = deltaE(hex, nhex);
+      if (d < bestD) { bestD = d; best = [name, nhex]; }
+    });
+    return { name: best[0], hex: best[1], delta: bestD.toFixed(1) };
+  }
+
+  function hslToOklch(h, s, l) {
+    const L = l / 100;
+    const C = (s / 100) * Math.min(l, 100 - l) / 100;
+    return { L: L.toFixed(3), C: C.toFixed(3), h: h };
+  }
+
+  function rgbaStr(r, g, b, a = 1) {
+    return `rgba(${r}, ${g}, ${b}, ${a})`;
+  }
+
+  const CVD_MATRICES = {
+    Protanopia:   [[0.567, 0.433, 0.000], [0.558, 0.442, 0.000], [0.000, 0.242, 0.758]],
+    Deuteranopia: [[0.625, 0.375, 0.000], [0.700, 0.300, 0.000], [0.000, 0.300, 0.700]],
+    Tritanopia:   [[0.950, 0.050, 0.000], [0.000, 0.433, 0.567], [0.000, 0.475, 0.525]],
+  };
+
+  function applyCVD(hex, matrix) {
+    const [r, g, b] = hexToRgb(hex);
+    const nr = clamp(Math.round(matrix[0][0]*r + matrix[0][1]*g + matrix[0][2]*b), 0, 255);
+    const ng = clamp(Math.round(matrix[1][0]*r + matrix[1][1]*g + matrix[1][2]*b), 0, 255);
+    const nb = clamp(Math.round(matrix[2][0]*r + matrix[2][1]*g + matrix[2][2]*b), 0, 255);
+    return rgbToHex(nr, ng, nb);
+  }
+
+  function renderCVD(hexList) {
+    const wrap = document.getElementById('ch-cvd-rows');
+    if (!wrap) return;
+    wrap.innerHTML = Object.entries(CVD_MATRICES).map(([name, matrix]) => {
+      const swatches = hexList.map(hex => {
+        const simHex = applyCVD(hex, matrix);
+        return `<div style="flex:1;height:32px;border-radius:6px;background:${simHex};border:1px solid var(--border);" title="${name}: ${simHex}"></div>`;
+      }).join('');
+      return `
+        <div>
+          <div style="font-family:'Outfit',sans-serif;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">${name}</div>
+          <div style="display:flex;gap:4px;">${swatches}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function generatePalette() {
+    const { h, s, l, mode, spread, satShift, litShift, lockSat } = state;
+    const ss = v => lockSat ? s : clamp(v + satShift, 5, 100);
+    const ll = v => clamp(v + litShift, 8, 95);
+
+    let hues = [];
+    switch (mode) {
+      case 'complementary': hues = [h, wrapHue(h + 180)]; break;
+      case 'analogous': hues = [wrapHue(h - spread), h, wrapHue(h + spread)]; break;
+      case 'triadic': hues = [h, wrapHue(h + 120), wrapHue(h + 240)]; break;
+      case 'tetradic': hues = [h, wrapHue(h + 90), wrapHue(h + 180), wrapHue(h + 270)]; break;
+      case 'splitComp': hues = [h, wrapHue(h + 150), wrapHue(h + 210)]; break;
+      case 'square': hues = [h, wrapHue(h + 90), wrapHue(h + 180), wrapHue(h + 270)]; break;
+      case 'doubleSplit': hues = [h, wrapHue(h+30), wrapHue(h+150), wrapHue(h+180), wrapHue(h+210), wrapHue(h+330)]; break;
+      case 'monochromatic':
+        return [
+          { h: h, s: ss(s), l: ll(20) },
+          { h: h, s: ss(s * 0.9), l: ll(35) },
+          { h: h, s: ss(s), l: ll(l) },
+          { h: h, s: ss(s * 0.8), l: ll(65) },
+          { h: h, s: ss(s * 0.5), l: ll(80) },
+        ];
+      default: hues = [h, wrapHue(h + 180)];
+    }
+
+    let palette = hues.map((hh, i) => {
+      const lVariant = i === 0 ? l : ll(l + (i % 2 === 0 ? 5 : -5));
+      return { h: hh, s: ss(s), l: lVariant };
+    });
+
+    if (state.colorCount >= 1) {
+      if (state.colorCount <= palette.length) {
+       
+        palette = palette.slice(0, state.colorCount);
+      } else {
+       
+        while (palette.length < state.colorCount) {
+          const idx = palette.length;
+          const extraHue = wrapHue(h + (360 / state.colorCount) * idx);
+          const lVariant = ll(l + (idx % 2 === 0 ? 8 : -8));
+          palette.push({ h: extraHue, s: ss(s), l: lVariant });
+        }
+      }
+    }
+
+    return palette;
+  }
+
+  function paletteToHexList(palette) {
+    return palette.map(c => hslToHex(c.h, c.s, c.l));
+  }
+
+  const wheelCanvas = document.getElementById('ch-wheel-canvas');
+  const wheelCtx = wheelCanvas.getContext('2d');
+
+  const WHEEL_D = 200; 
+  const WHEEL_R = WHEEL_D / 2; // 100
+  const WHEEL_CX = WHEEL_R;
+  const WHEEL_CY = WHEEL_R;
+  const WHEEL_MAX_R = WHEEL_R - 2; 
+
+  function drawWheel() {
+    wheelCanvas.width  = WHEEL_D;
+    wheelCanvas.height = WHEEL_D;
+    for (let angle = 0; angle < 360; angle += 1) {
+      const hueAtAngle = (angle + 90) % 360;
+      const startRad = (angle - 0.5) * Math.PI / 180;
+      const endRad   = (angle + 1.5) * Math.PI / 180;
+      const grad = wheelCtx.createRadialGradient(WHEEL_CX, WHEEL_CY, 0, WHEEL_CX, WHEEL_CY, WHEEL_MAX_R);
+      grad.addColorStop(0, `hsl(${hueAtAngle}, 0%, ${state.l}%)`);
+      grad.addColorStop(1, `hsl(${hueAtAngle}, 100%, ${state.l}%)`);
+      wheelCtx.beginPath();
+      wheelCtx.moveTo(WHEEL_CX, WHEEL_CY);
+      wheelCtx.arc(WHEEL_CX, WHEEL_CY, WHEEL_MAX_R, startRad, endRad);
+      wheelCtx.closePath();
+      wheelCtx.fillStyle = grad;
+      wheelCtx.fill();
+    }
+    // Soft white centre dot
+    const cGrad = wheelCtx.createRadialGradient(WHEEL_CX, WHEEL_CY, 0, WHEEL_CX, WHEEL_CY, 12);
+    cGrad.addColorStop(0, `hsla(0,0%,${state.l}%,0.7)`);
+    cGrad.addColorStop(1, `hsla(0,0%,${state.l}%,0)`);
+    wheelCtx.fillStyle = cGrad;
+    wheelCtx.beginPath();
+    wheelCtx.arc(WHEEL_CX, WHEEL_CY, 12, 0, Math.PI * 2);
+    wheelCtx.fill();
+  }
+
+  function hueToWheelPos(hue, sat) {
+    const r   = (sat / 100) * WHEEL_MAX_R;
+    const rad = (hue - 90) * Math.PI / 180;
+    return {
+      x: WHEEL_CX + Math.cos(rad) * r,
+      y: WHEEL_CY + Math.sin(rad) * r,
+    };
+  }
+
+  function wheelPosToHueSat(x, y) {
+    const dx   = x - WHEEL_CX;
+    const dy   = y - WHEEL_CY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const sat  = clamp((dist / WHEEL_MAX_R) * 100, 0, 100);
+    let hue    = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+    if (hue < 0)   hue += 360;
+    if (hue >= 360) hue -= 360;
+    return { h: Math.round(hue), s: Math.round(sat) };
+  }
+
+  function updateCrosshair() {
+    const pos = hueToWheelPos(state.h, state.s);
+    const ch  = document.getElementById('ch-crosshair');
+    ch.style.left       = pos.x + 'px';
+    ch.style.top        = pos.y + 'px';
+    ch.style.background = hslToHex(state.h, state.s, state.l);
+  }
+
+  (function () {
+    const container = document.getElementById('ch-wheel-container');
+    let dragging = false;
+
+    function handleWheelInteract(e) {
+      e.preventDefault();
+      const rect    = wheelCanvas.getBoundingClientRect();
+      const scaleX  = WHEEL_D / rect.width;
+      const scaleY  = WHEEL_D / rect.height;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const x       = (clientX - rect.left) * scaleX;
+      const y       = (clientY - rect.top)  * scaleY;
+      const { h, s } = wheelPosToHueSat(x, y);
+      state.h = h;
+      state.s = s;
+      syncFromHSL();
+    }
+
+    container.addEventListener('mousedown',  e => { dragging = true; handleWheelInteract(e); });
+    window.addEventListener('mousemove',     e => { if (dragging) handleWheelInteract(e); });
+    window.addEventListener('mouseup',       ()=> { if (dragging) { dragging = false; pushHistory(); } });
+    container.addEventListener('touchstart', e => { dragging = true; handleWheelInteract(e); }, { passive: false });
+    window.addEventListener('touchmove',     e => { if (dragging) handleWheelInteract(e); }, { passive: false });
+    window.addEventListener('touchend',      ()=> { if (dragging) { dragging = false; pushHistory(); } });
+  })();
+
+  function syncFromHSL() {
+    document.getElementById('ch-h-in').value = state.h;
+    document.getElementById('ch-s-in').value = state.s;
+    document.getElementById('ch-l-in').value = state.l;
+    const hex = hslToHex(state.h, state.s, state.l);
+    document.getElementById('ch-hex-in').value = hex;
+    document.getElementById('ch-preview-swatch').style.background = hex;
+    document.getElementById('ch-brightness-val').textContent = state.l + '%';
+    drawWheel();
+    updateCrosshair();
+    render();
+  }
+
+  document.getElementById('ch-h-in').addEventListener('input', e => {
+    state.h = clamp(+e.target.value, 0, 360); syncFromHSL();
+  });
+  document.getElementById('ch-s-in').addEventListener('input', e => {
+    state.s = clamp(+e.target.value, 0, 100); syncFromHSL();
+  });
+  document.getElementById('ch-l-in').addEventListener('input', e => {
+    state.l = clamp(+e.target.value, 0, 100); syncFromHSL();
+  });
+
+  document.getElementById('ch-brightness').addEventListener('input', e => {
+    state.l = +e.target.value; syncFromHSL();
+  });
+
+  document.getElementById('ch-hex-in').addEventListener('input', e => {
+    let v = e.target.value.trim();
+    if (!v.startsWith('#')) v = '#' + v;
+    if (/^#[0-9A-Fa-f]{6}$/.test(v)) {
+      const [r, g, b] = hexToRgb(v);
+      [state.h, state.s, state.l] = rgbToHsl(r, g, b);
+      syncFromHSL();
+    }
+  });
+
+  document.getElementById('ch-preview-swatch').addEventListener('click', () => {
+    const hex = hslToHex(state.h, state.s, state.l);
+    navigator.clipboard.writeText(hex).then(() => showToast('HEX copied: ' + hex));
+  });
+
+  document.getElementById('ch-brightness').addEventListener('input', e => {
+    state.l = +e.target.value;
+    document.getElementById('ch-brightness-val').textContent = state.l + '%';
+    document.getElementById('ch-l-in').value = state.l;
+    drawWheel(); updateCrosshair(); render();
+  });
+
+  document.getElementById('ch-modes-grid').querySelectorAll('.ch-mode-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.ch-mode-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.mode = btn.dataset.mode;
+      render();
+    });
+  });
+
+  document.getElementById('ch-spread').addEventListener('input', e => {
+    state.spread = +e.target.value;
+    document.getElementById('ch-spread-val').textContent = e.target.value;
+    render();
+  });
+  document.getElementById('ch-sat-shift').addEventListener('input', e => {
+    state.satShift = +e.target.value;
+    document.getElementById('ch-sat-val').textContent = (e.target.value > 0 ? '+' : '') + e.target.value;
+    render();
+  });
+  document.getElementById('ch-lit-shift').addEventListener('input', e => {
+    state.litShift = +e.target.value;
+    document.getElementById('ch-lit-val').textContent = (e.target.value > 0 ? '+' : '') + e.target.value;
+    render();
+  });
+
+  document.getElementById('ch-lock-sat').addEventListener('change', e => { state.lockSat = e.target.checked; render(); });
+  document.getElementById('ch-show-shades').addEventListener('change', e => {
+    state.showShades = e.target.checked;
+    document.getElementById('ch-shades-section').style.display = e.target.checked ? '' : 'none';
+  });
+  document.getElementById('ch-show-contrast').addEventListener('change', e => { state.showContrast = e.target.checked; render(); });
+  document.getElementById('ch-lock-hue').addEventListener('change', e => { state.lockHue = e.target.checked; });
+
+  (function () {
+    const decBtn   = document.getElementById('ch-count-dec');
+    const incBtn   = document.getElementById('ch-count-inc');
+    const dotsWrap = document.getElementById('ch-count-dots');
+    const valLabel = document.getElementById('ch-count-val');
+    const MAX = 6;
+
+    function renderCountDots() {
+      dotsWrap.innerHTML = '';
+      for (let i = 1; i <= MAX; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'ch-count-dot' + (state.colorCount >= i ? ' on' : '');
+        dot.title = `${i} color${i === 1 ? '' : 's'}`;
+        dot.addEventListener('click', () => {
+          if (state.colorCount === i) { state.colorCount = 0; }
+          else { state.colorCount = i; }
+          syncCountUI();
+          render();
+        });
+        dotsWrap.appendChild(dot);
+      }
+      valLabel.textContent = state.colorCount === 0 ? 'auto' : state.colorCount;
+      decBtn.disabled = state.colorCount <= 0;
+      incBtn.disabled = state.colorCount >= MAX;
+    }
+
+    function syncCountUI() { renderCountDots(); }
+
+    decBtn.addEventListener('click', () => {
+      if (state.colorCount === 0) return;
+      state.colorCount = Math.max(0, state.colorCount - 1);
+      syncCountUI();
+      render();
+    });
+
+    incBtn.addEventListener('click', () => {
+      if (state.colorCount >= MAX) return;
+      state.colorCount = Math.min(MAX, state.colorCount + 1);
+      syncCountUI();
+      render();
+    });
+
+    renderCountDots();
+  })();
+
+  const eyedropBtn = document.getElementById('ch-eyedrop-btn');
+  if (eyedropBtn) {
+    eyedropBtn.addEventListener('click', async () => {
+      if (!('EyeDropper' in window)) {
+        showToast('Eyedropper not supported in this browser');
+        return;
+      }
+      try {
+        const ed     = new EyeDropper();
+        const result = await ed.open();
+        const hex    = result.sRGBHex;
+        const [r, g, b] = hexToRgb(hex);
+        [state.h, state.s, state.l] = rgbToHsl(r, g, b);
+        pushHistory();
+        syncFromHSL();
+        showToast('Picked ' + hex.toUpperCase());
+      } catch (err) {
+      }
+    });
+  }
+
+  document.getElementById('ch-presets').querySelectorAll('.ch-preset-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const [r, g, b] = hexToRgb(btn.dataset.hex);
+      [state.h, state.s, state.l] = rgbToHsl(r, g, b);
+      pushHistory();
+      syncFromHSL();
+    });
+  });
+
+  document.getElementById('ch-randomize').addEventListener('click', () => {
+    if (!state.lockHue) state.h = Math.floor(Math.random() * 360);
+    state.s = 50 + Math.floor(Math.random() * 45);
+    state.l = 35 + Math.floor(Math.random() * 40);
+    pushHistory();
+    syncFromHSL();
+  });
+
+  document.getElementById('ch-save-fav').addEventListener('click', () => {
+    const hex  = hslToHex(state.h, state.s, state.l);
+    const favs = loadFavorites();
+    if (favs.length && favs[0].hex === hex && favs[0].mode === state.mode) {
+      showToast('Already saved');
+      return;
+    }
+    favs.unshift({ h: state.h, s: state.s, l: state.l, hex, mode: state.mode });
+    if (favs.length > 40) favs.length = 40;
+    saveFavoritesToStorage(favs);
+    renderFavorites();
+    showToast('Saved to favorites');
+  });
+
+  document.getElementById('ch-clear-hist').addEventListener('click', () => {
+    state.history = [];
+    renderHistory();
+    showToast('History cleared');
+  });
+
+  function pushHistory() {
+    const hex = hslToHex(state.h, state.s, state.l);
+    if (state.history.length && state.history[state.history.length - 1].hex === hex) return;
+    state.history.push({ h: state.h, s: state.s, l: state.l, hex });
+    if (state.history.length > 18) state.history.shift();
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const row = document.getElementById('ch-history-row');
+    if (!state.history.length) {
+      row.innerHTML = '<span style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:13px;color:var(--muted)">No history yet.</span>';
+      return;
+    }
+    row.innerHTML = state.history.slice().reverse().map(({ hex, h, s, l }) => `
+      <div class="ch-history-chip" data-h="${h}" data-s="${s}" data-l="${l}" title="${hex}">
+        <div class="ch-history-dot" style="background:${hex}"></div>
+        <span class="ch-history-hex">${hex}</span>
+      </div>
+    `).join('');
+    row.querySelectorAll('.ch-history-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        state.h = +chip.dataset.h; state.s = +chip.dataset.s; state.l = +chip.dataset.l;
+        syncFromHSL();
+      });
+    });
+  }
+
+  function drawTheory(palette) {
+    const canvas = document.getElementById('ch-theory-canvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width = canvas.offsetWidth * window.devicePixelRatio || 300;
+    const H = canvas.height = 130 * window.devicePixelRatio || 130;
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    const dW = canvas.offsetWidth || 300, dH = 130;
+    ctx.clearRect(0, 0, dW, dH);
+    const cx = dW / 2, cy = dH / 2, r = Math.min(dW, dH) * 0.38;
+
+    for (let angle = 0; angle < 360; angle += 1) {
+      const hueAtAngle = (angle + 90) % 360;
+      const start = (angle - 0.5) * Math.PI / 180;
+      const end = (angle + 1.5) * Math.PI / 180;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, r, start, end);
+      ctx.closePath();
+      ctx.fillStyle = `hsl(${hueAtAngle}, 80%, 55%)`;
+      ctx.fill();
+    }
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * 0.55, 0, Math.PI * 2);
+    ctx.fillStyle = document.documentElement.getAttribute('data-theme') === 'light' ? '#fff' : '#0a0f14';
+    ctx.fill();
+
+    const pts = palette.map(c => {
+      const rad = (c.h - 90) * Math.PI / 180;
+      const pr = r * 0.77;
+      return { x: cx + Math.cos(rad) * pr, y: cy + Math.sin(rad) * pr, hex: hslToHex(c.h, c.s, c.l) };
+    });
+
+    ctx.globalAlpha = 0.55;
+    ctx.strokeStyle = 'rgba(126,200,227,0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+    if (pts.length > 2) ctx.closePath();
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // Dots
+    pts.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = p.hex;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    });
+  }
+
+  function render() {
+    const palette = generatePalette();
+    state.palette = palette;
+    const hexList = paletteToHexList(palette);
+    const baseHex = hslToHex(state.h, state.s, state.l);
+    const baseRgb = hexToRgb(baseHex);
+    const whiteLum = luminance(255, 255, 255);
+    const blackLum = luminance(0, 0, 0);
+
+    const strip = document.getElementById('ch-hero-strip');
+    strip.innerHTML = hexList.map((hex, i) => {
+      const rgb = hexToRgb(hex);
+      const ratio = contrastRatio(rgb, [255,255,255]);
+      const textColor = contrastRatio(rgb, [255,255,255]) >= 4.5 ? '#fff' : '#0a0f14';
+      const dotBg = textColor === '#fff' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.3)';
+      const near = nearestNamed(hex);
+      return `
+        <div class="ch-swatch-hero swatch-animate" style="background:${hex};animation-delay:${i * 0.06}s" role="listitem" aria-label="Color ${hex}">
+          <div class="ch-swatch-contrast-dot" style="background:${dotBg}"></div>
+          <button class="ch-swatch-copy-btn" data-hex="${hex}">Copy ${hex}</button>
+          <div class="ch-swatch-hero-label">
+            <span class="ch-swatch-hero-hex">${hex}</span>
+            <span class="ch-swatch-hero-name">${near.name}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    strip.querySelectorAll('.ch-swatch-copy-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(btn.dataset.hex).then(() => showToast('Copied: ' + btn.dataset.hex));
+      });
+    });
+
+    const grid = document.getElementById('ch-detail-grid');
+    grid.style.setProperty('--palette-count', hexList.length);
+    grid.innerHTML = hexList.map((hex, i) => {
+      const c = palette[i];
+      const rgb = hexToRgb(hex);
+      const [r,g,b] = rgb;
+      const lum = luminance(r, g, b);
+      const crWhite = contrastRatio(rgb, [255,255,255]);
+      const crBlack = contrastRatio(rgb, [0,0,0]);
+      const oklch = hslToOklch(c.h, c.s, c.l);
+      const wcagW = wcagLabel(crWhite);
+      const wcagB = wcagLabel(crBlack);
+      const showC = state.showContrast;
+
+      const formats = [
+        ['HEX', hex],
+        ['RGB', `rgb(${r}, ${g}, ${b})`],
+        ['HSL', `hsl(${c.h}, ${c.s}%, ${c.l}%)`],
+        ['OKLCH', `oklch(${oklch.L} ${oklch.C} ${c.h})`],
+      ];
+
+      return `
+        <div class="ch-detail-cell">
+          <div class="ch-detail-cell-swatch swatch-animate" style="background:${hex};animation-delay:${i*0.07+0.15}s" data-hex="${hex}" title="Click to copy ${hex}"></div>
+          <div class="ch-detail-formats">
+            ${formats.map(([lbl, val]) => `
+              <div class="ch-format-row" data-copy="${val}">
+                <span class="ch-format-label">${lbl}</span>
+                <span class="ch-format-val">${val}</span>
+              </div>
+            `).join('')}
+          </div>
+          ${showC ? `
+          <div class="ch-detail-contrast">
+            <span class="ch-contrast-badge ${wcagW === 'Fail' ? 'fail' : wcagW === 'AAA' ? 'aaa' : 'aa'}" title="On white: ${crWhite.toFixed(1)}:1">on white: ${wcagW}</span>
+            <span class="ch-contrast-badge ${wcagB === 'Fail' ? 'fail' : wcagB === 'AAA' ? 'aaa' : 'aa'}" title="On black: ${crBlack.toFixed(1)}:1">on black: ${wcagB}</span>
+          </div>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    grid.querySelectorAll('.ch-detail-cell-swatch').forEach(sw => {
+      sw.addEventListener('click', () => {
+        navigator.clipboard.writeText(sw.dataset.hex).then(() => showToast('Copied: ' + sw.dataset.hex));
+      });
+    });
+    grid.querySelectorAll('.ch-format-row').forEach(row => {
+      row.addEventListener('click', () => {
+        navigator.clipboard.writeText(row.dataset.copy).then(() => showToast('Copied'));
+      });
+    });
+
+    const gradLinear = document.getElementById('ch-grad-linear');
+    const gradRadial = document.getElementById('ch-grad-radial');
+    const linearCss = `linear-gradient(135deg, ${hexList.join(', ')})`;
+    const radialCss = `radial-gradient(circle, ${hexList.join(', ')})`;
+    gradLinear.style.background = linearCss;
+    gradRadial.style.background = radialCss;
+
+    gradLinear.addEventListener('click', () => {
+      const css = `background: linear-gradient(135deg, ${hexList.join(', ')});`;
+      navigator.clipboard.writeText(css).then(() => showToast('Linear gradient CSS copied'));
+    }, { once: false });
+
+    gradRadial.addEventListener('click', () => {
+      const css = `background: radial-gradient(circle, ${hexList.join(', ')});`;
+      navigator.clipboard.writeText(css).then(() => showToast('Radial gradient CSS copied'));
+    }, { once: false });
+
+    const stopsEl = document.getElementById('ch-grad-stops');
+    stopsEl.innerHTML = hexList.map(hex => `<div class="ch-gradient-stop" style="background:${hex}" title="${hex}"></div>`).join('');
+
+    drawTheory(palette);
+    document.getElementById('ch-harmony-desc').textContent = HARMONY_DESCS[state.mode] || '';
+
+    const temp = approxColorTemp(...baseRgb);
+    const tempNorm = clamp((temp - 1000) / 11000, 0, 1);
+    document.getElementById('ch-temp-val').textContent = temp + ' K';
+    document.getElementById('ch-temp-needle').style.left = (tempNorm * 100) + '%';
+
+    const lum = luminance(...baseRgb);
+    document.getElementById('ch-lum-val').textContent = lum.toFixed(3);
+    document.getElementById('ch-lum-fill').style.width = (lum * 100) + '%';
+
+    const near = nearestNamed(baseHex);
+    document.getElementById('ch-named-dot').style.background = near.hex;
+    document.getElementById('ch-named-label').textContent = near.name;
+    document.getElementById('ch-named-dist').textContent = 'DeltaE: ' + near.delta;
+
+    // HSL breakdown
+    const hslBreakdown = document.getElementById('ch-hsl-breakdown');
+    const oklch = hslToOklch(state.h, state.s, state.l);
+    hslBreakdown.innerHTML = [
+      ['Hue', state.h + 'deg'],
+      ['Saturation', state.s + '%'],
+      ['Lightness', state.l + '%'],
+      ['Luminance', lum.toFixed(4)],
+    ].map(([l, v]) => `
+      <div class="ch-format-row">
+        <span class="ch-format-label">${l}</span>
+        <span class="ch-format-val">${v}</span>
+      </div>
+    `).join('');
+
+    const tintsRow = document.getElementById('ch-tints-row');
+    const steps = 12;
+    tintsRow.innerHTML = Array.from({ length: steps }, (_, i) => {
+      const ll = Math.round(5 + (i / (steps - 1)) * 90);
+      const hex = hslToHex(state.h, state.s, ll);
+      return `<div class="ch-tint-swatch" style="background:${hex}" data-hex="${hex}" title="${hex}" aria-label="${hex}"></div>`;
+    }).join('');
+    tintsRow.querySelectorAll('.ch-tint-swatch').forEach(s => {
+      s.addEventListener('click', () => {
+        navigator.clipboard.writeText(s.dataset.hex).then(() => showToast('Copied: ' + s.dataset.hex));
+      });
+    });
+
+    const accentHex = hexList[1] || hexList[0];
+    document.getElementById('ch-cmp-bg-d').style.cssText = `background:#0a0f14;color:${accentHex}`;
+    document.getElementById('ch-cmp-bg-l').style.cssText = `background:#f5f5f5;color:${accentHex}`;
+    document.getElementById('ch-cmp-txt-w').style.cssText = `background:#fff;color:${hexList[0]}`;
+    document.getElementById('ch-cmp-txt-b').style.cssText = `background:#0a0f14;color:${hexList[0]}`;
+
+    renderCVD(hexList);
+  }
+
+  document.getElementById('ch-export-css').addEventListener('click', () => {
+    const hexList = paletteToHexList(generatePalette());
+    const css = ':root {\n' + hexList.map((h, i) => `  --color-${i + 1}: ${h};`).join('\n') + '\n}';
+    navigator.clipboard.writeText(css).then(() => showToast('CSS vars copied'));
+  });
+
+  document.getElementById('ch-export-json').addEventListener('click', () => {
+    const palette = generatePalette();
+    const hexList = paletteToHexList(palette);
+    const json = JSON.stringify({
+      mode: state.mode,
+      base: hslToHex(state.h, state.s, state.l),
+      colors: hexList.map((hex, i) => ({
+        index: i + 1,
+        hex,
+        hsl: `hsl(${palette[i].h}, ${palette[i].s}%, ${palette[i].l}%)`
+      }))
+    }, null, 2);
+    navigator.clipboard.writeText(json).then(() => showToast('JSON copied'));
+  });
+
+  document.getElementById('ch-export-tailwind').addEventListener('click', () => {
+    const hexList = paletteToHexList(generatePalette());
+    const names = ['primary','secondary','tertiary','quaternary','quinary','senary'];
+    const tw = 'colors: {\n' + hexList.map((h, i) => `  '${names[i] || 'color-' + (i+1)}': '${h}',`).join('\n') + '\n}';
+    navigator.clipboard.writeText(tw).then(() => showToast('Tailwind config copied'));
+  });
+
+  document.getElementById('ch-export-figma').addEventListener('click', () => {
+    const hexList = paletteToHexList(generatePalette());
+    const tokens = JSON.stringify({
+      "$type": "color",
+      ...Object.fromEntries(hexList.map((hex, i) => [`color${i+1}`, { "$value": hex }]))
+    }, null, 2);
+    navigator.clipboard.writeText(tokens).then(() => showToast('Figma tokens copied'));
+  });
+
+  document.getElementById('ch-export-scss').addEventListener('click', () => {
+    const hexList = paletteToHexList(generatePalette());
+    const scss = hexList.map((h, i) => `$color-${i + 1}: ${h};`).join('\n');
+    navigator.clipboard.writeText(scss).then(() => showToast('SCSS vars copied'));
+  });
+
+  document.getElementById('ch-export-swift').addEventListener('click', () => {
+    const hexList = paletteToHexList(generatePalette());
+    const swift = hexList.map((h, i) => {
+      const [r, g, b] = hexToRgb(h);
+      return `let color${i + 1} = UIColor(red: ${(r/255).toFixed(3)}, green: ${(g/255).toFixed(3)}, blue: ${(b/255).toFixed(3)}, alpha: 1.0)`;
+    }).join('\n');
+    navigator.clipboard.writeText(swift).then(() => showToast('Swift colors copied'));
+  });
+
+  document.getElementById('ch-export-svg').addEventListener('click', () => {
+    const hexList = paletteToHexList(generatePalette());
+    const W = 80, H = 160;
+    const rects = hexList.map((hex, i) => `<rect x="${i * W}" y="0" width="${W}" height="${H}" fill="${hex}"/>`).join('');
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${hexList.length * W}" height="${H}">${rects}</svg>`;
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'palette.svg'; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast('SVG downloaded');
+  });
+
+  document.getElementById('ch-export-png').addEventListener('click', () => {
+    const hexList = paletteToHexList(generatePalette());
+    const W = 160, H = 240;
+    const cv = document.createElement('canvas');
+    cv.width = hexList.length * W; cv.height = H;
+    const ctx = cv.getContext('2d');
+    hexList.forEach((hex, i) => {
+      ctx.fillStyle = hex;
+      ctx.fillRect(i * W, 0, W, H);
+      ctx.fillStyle = contrastRatio(hexToRgb(hex), [255,255,255]) >= 4.5 ? '#fff' : '#0a0f14';
+      ctx.font = '14px JetBrains Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(hex, i * W + W / 2, H - 20);
+    });
+    cv.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'palette.png'; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      showToast('PNG downloaded');
+    });
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT') return;
+    if (e.key === 'r' || e.key === 'R') document.getElementById('ch-randomize').click();
+    if (e.key === 'c' || e.key === 'C') document.getElementById('ch-export-css').click();
+    if (e.key === 'h' || e.key === 'H') {
+      const pills = document.querySelectorAll('.ch-mode-pill');
+      const active = document.querySelector('.ch-mode-pill.active');
+      let idx = Array.from(pills).indexOf(active);
+      idx = (idx + 1) % pills.length;
+      pills[idx].click();
+    }
+  });
+
+  drawWheel();
+  updateCrosshair();
+  syncFromHSL();
+  pushHistory();
+  renderFavorites();
+
+})();
+</script>
+</body>
+</html>
