@@ -224,11 +224,6 @@
   function resetSliders(){get('e-hue-slider').value=0;get('e-sat-slider').value=100;get('e-bright-slider').value=100;get('e-contrast-slider').value=100;get('e-sepia-slider').value=0;get('e-invert-slider').value=0;document.querySelectorAll('.preset-lump').forEach(el=>el.classList.remove('chosen'));updateFilter();}
   get('editorResetSliders').addEventListener('click',resetSliders);get('editorReset').addEventListener('click',resetSliders);
 
-  // ── Load hue from any JSON color file ───────────────────────────
-  // Extracts every color it can find, then sets Hue Rotate to the
-  // average hue of those colors (with saturation/brightness nudged
-  // toward the primary color's values). This gives a meaningful
-  // starting point rather than an arbitrary single-color pick.
   const CSS_NAMED_HUE={black:'#000000',white:'#FFFFFF',red:'#FF0000',green:'#008000',blue:'#0000FF',yellow:'#FFFF00',orange:'#FFA500',purple:'#800080',pink:'#FFC0CB',brown:'#A52A2A',gray:'#808080',grey:'#808080',cyan:'#00FFFF',magenta:'#FF00FF',lime:'#00FF00',navy:'#000080',teal:'#008080',maroon:'#800000',olive:'#808000',silver:'#C0C0C0',gold:'#FFD700',coral:'#FF7F50',tomato:'#FF6347',steelblue:'#4682B4',salmon:'#FA8072',crimson:'#DC143C',indigo:'#4B0082',violet:'#EE82EE',turquoise:'#40E0D0',chocolate:'#D2691E',skyblue:'#87CEEB',royalblue:'#4169E1',hotpink:'#FF69B4'};
 
   function hueNormHex(s){if(!s||typeof s!=='string')return null;let h=s.trim();if(h[0]!=='#')h='#'+h;const b=h.slice(1);if(/^[0-9a-fA-F]{3}$/.test(b)){const[r,g,c]=b.split('');return('#'+r+r+g+g+c+c).toUpperCase();}if(/^[0-9a-fA-F]{6}$/.test(b))return h.toUpperCase();if(/^[0-9a-fA-F]{8}$/.test(b))return('#'+b.slice(0,6)).toUpperCase();return null;}
@@ -284,19 +279,13 @@
 
           if(!hslList.length){showToast('Could not parse those colors');return;}
 
-          // Use the first high-saturation color (most "meaningful" one) as the
-          // target, falling back to the first color if all are neutral.
           const sorted=[...hslList].sort((a,b)=>b[1]-a[1]);
           const primary=sorted[0][1]>10?sorted[0]:hslList[0];
           const [targetH,targetS,targetL]=primary;
 
-          // The Hue Rotate slider offset is the hue of the chosen color
-          // (since a hue-rotate of N degrees shifts reds to N degrees).
           get('e-hue-slider').value=targetH;
-          // Nudge saturation toward the color's saturation
           const sat=Math.round(50+targetS*1.5);
           get('e-sat-slider').value=Math.max(0,Math.min(300,sat));
-          // Nudge brightness toward the lightness
           const bright=Math.round(50+targetL*1.0);
           get('e-bright-slider').value=Math.max(10,Math.min(300,bright));
 
